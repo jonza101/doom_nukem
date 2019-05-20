@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 16:52:20 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/05/17 20:26:08 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/05/20 18:47:15 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,23 @@ typedef	struct	s_mlx
 	int					size_line;
 	int					endian;
 
+	double			theta;
+	double			angle;
+
 	t_mesh			*cube;
 	t_martix		*mat_proj;
+	t_triangle		*tri_proj;
+	t_triangle		*tri_translated;
+	
+	t_triangle		*tri_rotated_z;
+	t_triangle		*tri_rotated_zx;
+	t_triangle		*tri_rotated_zxy;
 }						t_mlx;
 
+void				ft_image(t_mlx *mlx, int x, int y, int color);
+
 void				ft_init_cube(t_mlx *mlx);
+
+void				ft_draw(t_mlx *mlx);
 
 #endif

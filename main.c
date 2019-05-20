@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 16:54:13 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/05/17 20:26:27 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/05/20 18:47:34 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,15 @@ void	ft_reset_image(t_mlx *mlx)
 
 int		key_press(int keycode, t_mlx *mlx)
 {
-	//printf("%d\n", keycode);
+	// printf("%d\n", keycode);
 	(keycode == 65307) ? exit(0) : 1;
+	if (keycode == 1739)
+	{
+		mlx->angle = -0.1;
+		ft_reset_image(mlx);
+		ft_draw(mlx);
+		mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
+	}
 }
 
 int		main()
@@ -41,9 +48,29 @@ int		main()
 	mlx->win = mlx_new_window(mlx->mlx, W, H, "Doom-Nukem");
 	mlx->img = mlx_new_image(mlx->mlx, W, H);
 	mlx->data = (int *)mlx_get_data_addr(mlx->img, &mlx->bpp, &mlx->size_line, &mlx->endian);
-	// mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
 
 	mlx->mat_proj = (t_martix*)malloc(sizeof(t_martix));
+	mlx->tri_proj = (t_triangle*)malloc(sizeof(t_triangle));
+	mlx->tri_translated = (t_triangle*)malloc(sizeof(t_triangle));
+	mlx->tri_rotated_z = (t_triangle*)malloc(sizeof(t_triangle));
+	mlx->tri_rotated_zx = (t_triangle*)malloc(sizeof(t_triangle));
+	mlx->tri_rotated_zxy = (t_triangle*)malloc(sizeof(t_triangle));
+
+	int j = 0;
+	while (j < 3)
+	{
+		mlx->tri_proj->points[j] = (t_vector_3d*)malloc(sizeof(t_vector_3d));
+		mlx->tri_translated->points[j] = (t_vector_3d*)malloc(sizeof(t_vector_3d));
+		mlx->tri_rotated_z->points[j] = (t_vector_3d*)malloc(sizeof(t_vector_3d));
+		mlx->tri_rotated_zx->points[j] = (t_vector_3d*)malloc(sizeof(t_vector_3d));
+		mlx->tri_rotated_zxy->points[j] = (t_vector_3d*)malloc(sizeof(t_vector_3d));
+
+		j++;
+	}
+
+	ft_draw(mlx);
+
+	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
 
 	mlx_hook(mlx->win, 2, 1L << 0, key_press, mlx);
 	mlx_loop(mlx->mlx);
