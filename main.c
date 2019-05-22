@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 16:54:13 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/05/20 18:47:34 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/05/22 19:30:59 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,9 @@ int		key_press(int keycode, t_mlx *mlx)
 	(keycode == 65307) ? exit(0) : 1;
 	if (keycode == 1739)
 	{
-		mlx->angle = -0.1;
+		mlx->angle = -0.05;
 		ft_reset_image(mlx);
-		ft_draw(mlx);
+		ft_draw(mlx, mlx->ch_fig);
 		mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
 	}
 }
@@ -56,6 +56,17 @@ int		main()
 	mlx->tri_rotated_zx = (t_triangle*)malloc(sizeof(t_triangle));
 	mlx->tri_rotated_zxy = (t_triangle*)malloc(sizeof(t_triangle));
 
+	mlx->normal = (t_vector_3d*)malloc(sizeof(t_vector_3d));
+	mlx->line_1 = (t_vector_3d*)malloc(sizeof(t_vector_3d));
+	mlx->line_2 = (t_vector_3d*)malloc(sizeof(t_vector_3d));
+
+	mlx->v_camera = (t_vector_3d*)malloc(sizeof(t_vector_3d));
+
+	mlx->light_dir = (t_vector_3d*)malloc(sizeof(t_vector_3d));
+	mlx->light_dir->x = 0.0;
+	mlx->light_dir->y = 0.0;
+	mlx->light_dir->z = -1.0;
+
 	int j = 0;
 	while (j < 3)
 	{
@@ -68,7 +79,12 @@ int		main()
 		j++;
 	}
 
-	ft_draw(mlx);
+	ft_init_cube(mlx);
+	ft_init_pyra(mlx);
+	ft_init_octahedron(mlx);
+
+	mlx->ch_fig = mlx->cube;
+	ft_draw(mlx, mlx->ch_fig);
 
 	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
 
