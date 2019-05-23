@@ -6,11 +6,30 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 18:23:44 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/05/22 20:23:55 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/05/23 22:00:52 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doom_nukem.h"
+
+void	ft_z_buffer_fill(t_mlx *mlx)
+{
+	int i;
+	int j;
+	int max;
+
+	i = 0;
+	while (i < W)
+	{
+		j = 0;
+		while (j < H)
+		{
+			mlx->z_buffer[i][j] = -2147483647;
+			j++;
+		}
+		i++;
+	}
+}
 
 int		ft_get_color(double lum)
 {
@@ -122,19 +141,19 @@ void	ft_draw(t_mlx *mlx, t_mesh *fig)
 		ft_multiply_matrix_vector(mlx->tri_rotated_z->points[1], mlx->tri_rotated_zx->points[1], mat_rot_x);
 		ft_multiply_matrix_vector(mlx->tri_rotated_z->points[2], mlx->tri_rotated_zx->points[2], mat_rot_x);
 
-		ft_multiply_matrix_vector(mlx->tri_rotated_zx->points[0], mlx->tri_rotated_zxy->points[0], mat_rot_y);
-		ft_multiply_matrix_vector(mlx->tri_rotated_zx->points[1], mlx->tri_rotated_zxy->points[1], mat_rot_y);
-		ft_multiply_matrix_vector(mlx->tri_rotated_zx->points[2], mlx->tri_rotated_zxy->points[2], mat_rot_y);
+		// ft_multiply_matrix_vector(mlx->tri_rotated_zx->points[0], mlx->tri_rotated_zxy->points[0], mat_rot_y);
+		// ft_multiply_matrix_vector(mlx->tri_rotated_zx->points[1], mlx->tri_rotated_zxy->points[1], mat_rot_y);
+		// ft_multiply_matrix_vector(mlx->tri_rotated_zx->points[2], mlx->tri_rotated_zxy->points[2], mat_rot_y);
 
 
-		mlx->tri_translated->points[0] = mlx->tri_rotated_zxy->points[0];
-		mlx->tri_translated->points[1] = mlx->tri_rotated_zxy->points[1];
-		mlx->tri_translated->points[2] = mlx->tri_rotated_zxy->points[2];
+		mlx->tri_translated->points[0] = mlx->tri_rotated_zx->points[0];
+		mlx->tri_translated->points[1] = mlx->tri_rotated_zx->points[1];
+		mlx->tri_translated->points[2] = mlx->tri_rotated_zx->points[2];
 
 		//OFFSET INTO SCREEN
-		mlx->tri_translated->points[0]->z = mlx->tri_rotated_zxy->points[0]->z + 3.0;
-		mlx->tri_translated->points[1]->z = mlx->tri_rotated_zxy->points[1]->z + 3.0;
-		mlx->tri_translated->points[2]->z = mlx->tri_rotated_zxy->points[2]->z + 3.0;
+		mlx->tri_translated->points[0]->z = mlx->tri_rotated_zx->points[0]->z + 3.0;
+		mlx->tri_translated->points[1]->z = mlx->tri_rotated_zx->points[1]->z + 3.0;
+		mlx->tri_translated->points[2]->z = mlx->tri_rotated_zx->points[2]->z + 3.0;
 
 		mlx->line_1->x = mlx->tri_translated->points[1]->x - mlx->tri_translated->points[0]->x;
 		mlx->line_1->y = mlx->tri_translated->points[1]->y - mlx->tri_translated->points[0]->y;
@@ -182,9 +201,7 @@ void	ft_draw(t_mlx *mlx, t_mesh *fig)
 			mlx->tri_proj->points[1]->x *= 0.5 * W;		mlx->tri_proj->points[1]->y *= 0.5 * H;
 			mlx->tri_proj->points[2]->x *= 0.5 * W;		mlx->tri_proj->points[2]->y *= 0.5 * H;
 
-			ft_fill_triangle(mlx, mlx->tri_proj->points[0]->x, mlx->tri_proj->points[0]->y,
-												mlx->tri_proj->points[1]->x, mlx->tri_proj->points[1]->y,
-												mlx->tri_proj->points[2]->x, mlx->tri_proj->points[2]->y, mlx->tri_proj->color);
+			ft_fill_triangle(mlx, mlx->tri_proj->points[0], mlx->tri_proj->points[1], mlx->tri_proj->points[2], mlx->tri_proj->color);
 
 			// ft_draw_triangle(mlx, mlx->tri_proj->points[0]->x, mlx->tri_proj->points[0]->y,
 			// 									mlx->tri_proj->points[1]->x, mlx->tri_proj->points[1]->y,

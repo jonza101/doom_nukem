@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 16:54:13 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/05/22 19:30:59 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/05/23 21:53:12 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,9 +79,9 @@ int		main()
 		j++;
 	}
 
+	ft_z_buffer_fill(mlx);
+
 	ft_init_cube(mlx);
-	ft_init_pyra(mlx);
-	ft_init_octahedron(mlx);
 
 	mlx->ch_fig = mlx->cube;
 	ft_draw(mlx, mlx->ch_fig);
