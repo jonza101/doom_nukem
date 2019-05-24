@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 18:23:44 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/05/23 22:00:52 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/05/24 23:10:11 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,9 @@ void	ft_z_buffer_fill(t_mlx *mlx)
 	}
 }
 
-int		ft_get_color(double lum)
+int		ft_get_color_(double lum)
 {
-	int pixel_bw = (int)(15.0 * lum);
+	int pixel_bw = (int)(255.0 * lum);
 	if (pixel_bw == 0)
 		return (0x111111);
 	if (pixel_bw == 1)
@@ -64,7 +64,6 @@ int		ft_get_color(double lum)
 		return (0xEEEEEE);
 	else
 		return (0xFFFFFF);
-	
 }
 
 void	ft_multiply_matrix_vector(t_vector_3d *input, t_vector_3d *output, t_martix *matrix)
@@ -145,7 +144,6 @@ void	ft_draw(t_mlx *mlx, t_mesh *fig)
 		// ft_multiply_matrix_vector(mlx->tri_rotated_zx->points[1], mlx->tri_rotated_zxy->points[1], mat_rot_y);
 		// ft_multiply_matrix_vector(mlx->tri_rotated_zx->points[2], mlx->tri_rotated_zxy->points[2], mat_rot_y);
 
-
 		mlx->tri_translated->points[0] = mlx->tri_rotated_zx->points[0];
 		mlx->tri_translated->points[1] = mlx->tri_rotated_zx->points[1];
 		mlx->tri_translated->points[2] = mlx->tri_rotated_zx->points[2];
@@ -184,7 +182,7 @@ void	ft_draw(t_mlx *mlx, t_mesh *fig)
 
 			double dot_prod = mlx->normal->x * mlx->light_dir->x + mlx->normal->y * mlx->light_dir->y + mlx->normal->z * mlx->light_dir->z;
 
-			mlx->tri_translated->color = ft_get_color(dot_prod);
+			mlx->tri_translated->color = ft_get_color(ft_dec_to_hex(fig->triangles->color), dot_prod);
 
 			//PROJECT TRIANGLES FROM 3D TO 2D
 			ft_multiply_matrix_vector(mlx->tri_translated->points[0], mlx->tri_proj->points[0], mlx->mat_proj);
@@ -207,7 +205,6 @@ void	ft_draw(t_mlx *mlx, t_mesh *fig)
 			// 									mlx->tri_proj->points[1]->x, mlx->tri_proj->points[1]->y,
 			// 									mlx->tri_proj->points[2]->x, mlx->tri_proj->points[2]->y, 0x000000);
 		}
-
 		i++;
 	}
 }

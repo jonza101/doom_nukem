@@ -6,11 +6,44 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/22 18:12:07 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/05/22 19:30:35 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/05/24 23:09:38 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doom_nukem.h"
+
+int		ft_hex_letter(char hex_l)
+{
+	if (hex_l == 'A')
+		return (10);
+	if (hex_l == 'B')
+		return (11);
+	if (hex_l == 'C')
+		return (12);
+	if (hex_l == 'D')
+		return (13);
+	if (hex_l == 'E')
+		return (14);
+	if (hex_l == 'F')
+		return (15);
+	return (hex_l - '0');
+}
+
+int		ft_hex_to_dec(char *rgb)
+{
+	int i;
+	int color;
+
+	i = 0;
+	color = 0;
+	while (i < 6)
+	{
+		color += ft_hex_letter(rgb[i]) * pow(16, (5 - i));
+		i++;
+	}
+	free(rgb);
+	return (color);
+}
 
 char	*ft_dec_to_hex(int number)
 {
@@ -18,7 +51,7 @@ char	*ft_dec_to_hex(int number)
 	int rem;
 	int i;
 
-	if (number <= 0)
+	if (number < 0)
 		return NULL;
 	hex = (char*)malloc(sizeof(char) * 7);
 	int j = 0;
@@ -53,4 +86,39 @@ char	*ft_dec_to_hex(int number)
 		i--;
 	}
 	return (hex);
+}
+
+int		ft_get_color(char *rgb, double lum)
+{
+	int r;
+	int g;
+	int b;
+	char *temp;
+	char *rc, *gc, *bc;
+
+	rc = ft_strnew(2);
+	gc = ft_strnew(2);
+	bc = ft_strnew(2);
+	r = (ft_hex_letter(rgb[0]) * 16 + ft_hex_letter(rgb[1])) * lum;
+	g = (ft_hex_letter(rgb[2]) * 16 + ft_hex_letter(rgb[3])) * lum;
+	b = (ft_hex_letter(rgb[4]) * 16 + ft_hex_letter(rgb[5])) * lum;
+	
+	temp = ft_dec_to_hex(r);
+	rc[0] = temp[4];
+	rc[1] = temp[5];
+
+	temp = ft_dec_to_hex(g);
+	gc[0] = temp[4];
+	gc[1] = temp[5];
+
+	temp = ft_dec_to_hex(b);
+	bc[0] = temp[4];
+	bc[1] = temp[5];
+
+	rc = ft_strjoin(rc, gc);
+	rc = ft_strjoin(rc, bc);
+	free(temp);
+	free(gc);
+	free(bc);
+	return (ft_hex_to_dec(rc));
 }

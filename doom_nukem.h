@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 16:52:20 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/05/23 21:53:18 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/05/24 22:34:48 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,5 +99,14 @@ void				ft_draw_triangle(t_mlx *mlx, int x1, int y1, int x2, int y2, int x3, int
 void				ft_fill_triangle(t_mlx *mlx, t_vector_3d *p1, t_vector_3d *p2, t_vector_3d *p3, int color);
 
 void				ft_z_buffer_fill(t_mlx *mlx);
+
+int					ft_load_obj_file(t_mlx *mlx, char *file_name);
+double			ft_datoi(char *str);
+void				ft_vec_swap(t_vector_3d *a, t_vector_3d *b);
+
+
+int		ft_hex_to_dec(char *rgb);
+char			*ft_dec_to_hex(int number);
+int					ft_get_color(char *rgb, double lum);
 
 #endif

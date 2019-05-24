@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 17:45:05 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/05/23 21:53:36 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/05/24 23:15:27 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,12 +98,14 @@ void	ft_init_cube(t_mlx *mlx)
 	mlx->cube = (t_mesh*)malloc(sizeof(t_mesh));
 	mlx->cube->tri_count = 12;
 	mlx->cube->triangles = (t_triangle*)malloc(sizeof(t_triangle) * mlx->cube->tri_count);
+
 	int i = 0;
 	while (i < mlx->cube->tri_count)
 	{
 		int j = 0;
 		while (j < 3)
 		{
+			mlx->cube->triangles->color = 0xD15AD1;
 			mlx->cube->triangles[i].points[j] = (t_vector_3d*)malloc(sizeof(t_vector_3d));
 			j++;
 		}
