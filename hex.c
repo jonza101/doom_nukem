@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/22 18:12:07 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/05/24 23:09:38 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/05/26 00:04:51 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,6 @@ char	*ft_dec_to_hex(int number)
 	int rem;
 	int i;
 
-	if (number < 0)
-		return NULL;
 	hex = (char*)malloc(sizeof(char) * 7);
 	int j = 0;
 	while (j < 6)
@@ -95,6 +93,7 @@ int		ft_get_color(char *rgb, double lum)
 	int b;
 	char *temp;
 	char *rc, *gc, *bc;
+	int res;
 
 	rc = ft_strnew(2);
 	gc = ft_strnew(2);
@@ -117,8 +116,12 @@ int		ft_get_color(char *rgb, double lum)
 
 	rc = ft_strjoin(rc, gc);
 	rc = ft_strjoin(rc, bc);
+
+	res = ft_hex_to_dec(rc);
+
 	free(temp);
 	free(gc);
 	free(bc);
-	return (ft_hex_to_dec(rc));
+	
+	return (res);
 }

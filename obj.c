@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/23 19:15:24 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/05/24 23:11:38 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/05/25 23:33:05 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,18 @@ double	ft_datoi(char *str)
 int		ft_load_obj_file(t_mlx *mlx, char *file_name)
 {
 	int i;
+	int f;
 	int fd;
 	char *line;
-	char **v;
+	char **vt;
 	t_vector_3d **verts;
 	t_vector_3d **temp;
+	t_mesh *tmp;
+
+	int color = 0xD15AD1;
 	
 	i = 1;
+	f = 1;
 	fd = open(file_name, O_RDONLY);
 	if (fd < 0)
 		return (0);
@@ -54,7 +59,7 @@ int		ft_load_obj_file(t_mlx *mlx, char *file_name)
 	{
 		if (line[0] == 'v' && line[1] == ' ')
 		{
-			v = ft_strsplit(line, ' ');
+			vt = ft_strsplit(line, ' ');
 			if (i > 1)
 			{
 				temp = (t_vector_3d**)malloc(sizeof(t_vector_3d*) * (i - 1));
@@ -76,35 +81,102 @@ int		ft_load_obj_file(t_mlx *mlx, char *file_name)
 				}
 				
 				verts[i - 1] = (t_vector_3d*)malloc(sizeof(t_vector_3d));
-				verts[i - 1]->x = (double)ft_datoi(v[1]);
-				verts[i - 1]->y =(double) ft_datoi(v[2]);
-				verts[i - 1]->z = (double)ft_datoi(v[3]);
-				// printf("%s   %s   %s\n", v[1], v[2], v[3]);
+				verts[i - 1]->x = (double)ft_datoi(vt[1]);
+				verts[i - 1]->y =(double) ft_datoi(vt[2]);
+				verts[i - 1]->z = (double)ft_datoi(vt[3]);
+				// printf("%s   %s   %s\n", vt[1], vt[2], vt[3]);
 				// printf("%f %f %f\n\n", verts[i - 1]->x, verts[i - 1]->y, verts[i - 1]->z);
 			}
 			else
 			{
 				verts = (t_vector_3d**)malloc(sizeof(t_vector_3d*) * 1);
 				verts[0] = (t_vector_3d*)malloc(sizeof(t_vector_3d));
-				verts[0]->x = (double)ft_datoi(v[1]);
-				verts[0]->y = (double)ft_datoi(v[2]);
-				verts[0]->z = (double)ft_datoi(v[3]);
-				// printf("%s   %s   %s\n", v[1], v[2], v[3]);
+				verts[0]->x = (double)ft_datoi(vt[1]);
+				verts[0]->y = (double)ft_datoi(vt[2]);
+				verts[0]->z = (double)ft_datoi(vt[3]);
+				// printf("%s   %s   %s\n", vt[1], vt[2], vt[3]);
 				// printf("%f %f %f\n\n", verts[0]->x, verts[0]->y, verts[0]->z);
 			}
 			i++;
 		}
-	}
-	mlx->cube = (t_mesh*)malloc(sizeof(t_mesh));
-	mlx->cube->triangles = (t_triangle*)malloc(sizeof(t_triangle) * (i - 1));
-	mlx->cube->tri_count = i - 1;
-	int j = 0;
-	while (j < mlx->cube->tri_count)
-	{
-		// mlx->cube->triangles[j]
-		j++;
+		if (line[0] == 'f' && line[1] == ' ')
+		{
+			vt = ft_strsplit(line, ' ');
+			if (f > 1)
+			{
+				tmp = (t_mesh*)malloc(sizeof(t_mesh));
+				tmp->triangles = (t_triangle*)malloc(sizeof(t_triangle) * (f - 1));
+				int j =  f - 2;
+				while (j >= 0)
+				{
+					int k = 0;
+					while (k < 3)
+					{
+						tmp->triangles[j].points[k] = (t_vector_3d*)malloc(sizeof(t_vector_3d));
+						tmp->triangles[j].points[k]->x = mlx->cube->triangles[j].points[k]->x;
+						tmp->triangles[j].points[k]->y = mlx->cube->triangles[j].points[k]->y;
+						tmp->triangles[j].points[k]->z = mlx->cube->triangles[j].points[k]->z;
+						free(mlx->cube->triangles[j].points[k]);
+						k++;
+					}
+					j--;
+				}
+				free(mlx->cube->triangles);
+				mlx->cube->triangles = (t_triangle*)malloc(sizeof(t_triangle) * f);
+				j = 0;
+				while (j < f - 1)
+				{
+					int k = 0;
+					while (k < 3)
+					{
+						mlx->cube->triangles[j].points[k] = (t_vector_3d*)malloc(sizeof(t_vector_3d));
+						mlx->cube->triangles[j].color = color;
+						mlx->cube->triangles[j].points[k]->x = tmp->triangles[j].points[k]->x;
+						mlx->cube->triangles[j].points[k]->y = tmp->triangles[j].points[k]->y;
+						mlx->cube->triangles[j].points[k]->z = tmp->triangles[j].points[k]->z;
+						free(tmp->triangles[j].points[k]);
+						k++;
+					}
+					j++;
+				}
+				free(tmp->triangles);
+				free(tmp);
+				int k = 0;
+				while (k < 3)
+				{
+					mlx->cube->triangles[f - 1].points[k] = (t_vector_3d*)malloc(sizeof(t_vector_3d));
+					mlx->cube->triangles[f - 1].color = color;
+					mlx->cube->triangles[f - 1].points[k]->x = verts[ft_atoi(vt[k + 1]) - 1]->x;
+					mlx->cube->triangles[f - 1].points[k]->y = verts[ft_atoi(vt[k + 1]) - 1]->y;
+					mlx->cube->triangles[f - 1].points[k]->z = verts[ft_atoi(vt[k + 1]) - 1]->z;
+					k++;
+				}
+			}
+			else
+			{
+				mlx->cube = (t_mesh*)malloc(sizeof(t_mesh));
+				mlx->cube->triangles = (t_triangle*)malloc(sizeof(t_triangle) * 1);
+				int j = 0;
+				while (j < 3)
+				{
+					mlx->cube->triangles[0].points[j] = (t_vector_3d*)malloc(sizeof(t_vector_3d));
+					mlx->cube->triangles[0].color= 0xD15AD1;
+					mlx->cube->triangles[0].points[j]->x = verts[ft_atoi(vt[j + 1]) - 1]->x;
+					mlx->cube->triangles[0].points[j]->y = verts[ft_atoi(vt[j + 1]) - 1]->y;
+					mlx->cube->triangles[0].points[j]->z = verts[ft_atoi(vt[j + 1]) - 1]->z;
+					j++;
+				}
+				// printf("x %f y %f z %f\n", mlx->cube->triangles[0].points[0]->x, mlx->cube->triangles[0].points[0]->y, mlx->cube->triangles[0].points[0]->z);
+				// printf("x %f y %f z %f\n", mlx->cube->triangles[0].points[1]->x, mlx->cube->triangles[0].points[1]->y, mlx->cube->triangles[0].points[1]->z);
+				// printf("x %f y %f z %f\n", mlx->cube->triangles[0].points[2]->x, mlx->cube->triangles[0].points[2]->y, mlx->cube->triangles[0].points[2]->z);
+			}
+			f++;
+		}
 	}
 	printf("count %d\n", i - 1);
+	printf("t count %d\n", f - 1);
+	mlx->cube->tri_count = f - 1;
 	close(fd);
+	
 	return (1);
 }

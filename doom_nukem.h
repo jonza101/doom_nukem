@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 16:52:20 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/05/24 22:34:48 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/05/26 02:17:52 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,9 @@ typedef	struct	s_mlx
 	double			theta;
 	double			angle;
 
-	int					z_buffer[W][H];
+	double			zoom;
+
+	double			z_buffer[H][W];
 
 	t_vector_3d	*v_camera;
 
@@ -78,6 +80,10 @@ typedef	struct	s_mlx
 	t_triangle		*tri_rotated_z;
 	t_triangle		*tri_rotated_zx;
 	t_triangle		*tri_rotated_zxy;
+
+	t_martix		*mat_rot_z;
+	t_martix		*mat_rot_x;
+	t_martix		*mat_rot_y;
 
 	t_vector_3d	*normal;
 	t_vector_3d	*line_1;
@@ -96,8 +102,9 @@ void				ft_draw(t_mlx *mlx, t_mesh *fig);
 
 void				ft_draw_line(t_mlx *mlx, int xo, int yo, int x, int y, int color);
 void				ft_draw_triangle(t_mlx *mlx, int x1, int y1, int x2, int y2, int x3, int y3, int color);
-void				ft_fill_triangle(t_mlx *mlx, t_vector_3d *p1, t_vector_3d *p2, t_vector_3d *p3, int color);
+void				ft_fill_triangle(t_mlx *mlx, t_vector_3d *p0, t_vector_3d *p1, t_vector_3d *p2, int color);
 
+void				ft_rot_mat_init(t_mlx *mlx);
 void				ft_z_buffer_fill(t_mlx *mlx);
 
 int					ft_load_obj_file(t_mlx *mlx, char *file_name);
@@ -105,7 +112,7 @@ double			ft_datoi(char *str);
 void				ft_vec_swap(t_vector_3d *a, t_vector_3d *b);
 
 
-int		ft_hex_to_dec(char *rgb);
+int					ft_hex_to_dec(char *rgb);
 char			*ft_dec_to_hex(int number);
 int					ft_get_color(char *rgb, double lum);
 

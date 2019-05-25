@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/21 20:08:11 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/05/24 22:52:54 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/05/26 02:39:42 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,12 @@ void	ft_vec_swap(t_vector_3d *a, t_vector_3d *b)
 	temp->x = a->x;
 	temp->y = a->y;
 	temp->z = a->z;
-	a->x = b->x;
-	a->y = b->y;
-	a->z = b->z;
-	b->x = temp->x;
-	b->y = temp->y;
-	b->z = temp->z;
+	a->x = (int)b->x;
+	a->y = (int)b->y;
+	a->z = (int)b->z;
+	b->x = (int)temp->x;
+	b->y = (int)temp->y;
+	b->z = (int)temp->z;
 }
 
 void	ft_swap(int *a, int *b)
@@ -87,147 +87,63 @@ void	ft_draw_triangle(t_mlx *mlx, int x1, int y1, int x2, int y2, int x3, int y3
 	ft_draw_line(mlx, x3, y3, x1, y1, color);
 }
 
-void	ft_fill_triangle(t_mlx *mlx, t_vector_3d *p1, t_vector_3d *p2, t_vector_3d *p3, int color)
+void	ft_fill_triangle(t_mlx *mlx, t_vector_3d *p0, t_vector_3d *p1, t_vector_3d *p2, int color)
 {
-	if ((int)p1->y == (int)p2->y && (int)p1->y == (int)p3->y)
+	if ((int)p0->y == (int)p1->y && (int)p0->y == (int)p2->y)
 		return ;
 	//SORT
-	if (p1->y > p2->y)
-	{
-		int tmp = (int)p1->x;
-		p1->x = p2->x;
-		p2->x = tmp;
-
-		tmp = (int)p1->y;
-		p1->y = (int)p2->y;
-		p2->y = tmp;
-		
-		// ft_swap(&p1->x, &p2->x);
-		// ft_swap(&p1->y, &p2->y);
-	}
-	if (p1->y > p3->y)
-	{
-		int tmp = (int)p1->x;
-		p1->x = (int)p3->x;
-		p3->x = tmp;
-
-		tmp = (int)p1->y;
-		p1->y = (int)p3->y;
-		p3->y = tmp;
-
-		// ft_swap(&p1->x, &p3->x);
-		// ft_swap(&p1->y, &p3->y);
-	}
-	if (p2->y > p3->y)
-	{
-		int tmp = (int)p2->x;
-		p2->x = (int)p3->x;
-		p3->x = tmp;
-
-		tmp = (int)p2->y;
-		p2->y = (int)p3->y;
-		p3->y = tmp;
-
-		// ft_swap(&p2->x, &p3->x);
-		// ft_swap(&p2->y, &p3->y);
-	}
+	if ((int)p0->y > (int)p1->y)
+		ft_vec_swap(p0, p1);
+	if ((int)p0->y > (int)p2->y)
+		ft_vec_swap(p0, p2);
+	if ((int)p1->y > (int)p2->y)
+		ft_vec_swap(p1, p2);
 	//
 
-	int total_h = (int)p3->y - (int)p1->y;
+	int total_h = (int)p2->y - (int)p0->y;
 	int i = 0;
 	while (i < total_h)
 	{
-		int second_half = (i > (int)p2->y - (int)p1->y || (int)p2->y == (int)p1->y) ? 1 : 0;
-		int segment_h = (second_half == 1) ? (int)p3->y - (int)p2->y : (int)p2->y - (int)p1->y;
+		int second_half = (i > (int)p1->y - (int)p0->y || (int)p1->y == (int)p0->y) ? 1 : 0;
+		int segment_h = (second_half == 1) ? (int)p2->y - (int)p1->y : (int)p1->y - (int)p0->y;
 		double alpha = (double)i / total_h;
-		double beta = (double)(i - (second_half == 1 ? (int)p2->y - (int)p1->y : 0)) / segment_h;
-		int a_x = (int)p1->x + (p3->x - p1->x) * alpha;
-		int a_y = (int)p1->y + (p3->y - p1->y) * alpha;
-		int a_z = (int)p1->z + (p3->z - p1->z) * alpha;
-		int b_x = (second_half == 1) ? (int)p2->x + (p3->x - p2->x) * beta : (int)p1->x + (p2->x - p1->x) * beta;
-		int b_y = (second_half == 1) ? (int)p2->y + (p3->y - p2->y) * beta : (int)p1->y + (p2->y - p1->y) * beta;
-		int b_z = (second_half == 1) ? (int)p2->z + (p3->z - p2->z) * beta : (int)p1->z + (p2->z - p1->z) * beta;
+		double beta = (double)(i - (second_half == 1 ? (int)p1->y - (int)p0->y : 0)) / segment_h;
 
-		if (a_x > b_x)
+		t_vector_3d *a = (t_vector_3d*)malloc(sizeof(t_vector_3d));
+		a->x = (int)((int)p0->x + ((int)p2->x - (int)p0->x) * alpha);
+		a->y = (int)((int)p0->y + ((int)p2->y - (int)p0->y) * alpha);
+		a->z = (int)((int)p0->z + ((int)p2->z - (int)p0->z) * alpha);
+
+		t_vector_3d *b = (t_vector_3d*)malloc(sizeof(t_vector_3d));
+		b->x = (second_half == 1) ? (int)((int)p1->x + ((int)p2->x - (int)p1->x) * beta) : (int)((int)p0->x + ((int)p1->x - (int)p0->x) * beta);
+		b->y = (second_half == 1) ? (int)((int)p1->y + ((int)p2->y - (int)p1->y) * beta) : (int)((int)p0->y + ((int)p1->y - (int)p0->y) * beta);
+		b->z = (second_half == 1) ? (int)((int)p1->z + ((int)p2->z - (int)p1->z) * beta) : (int)((int)p0->z + ((int)p1->z - (int)p0->z) * beta);
+
+		if (a->x > b->x)
+			ft_vec_swap(a, b);
+
+		int j = a->x;
+		while (j <= b->x)
 		{
-			ft_swap(&a_x, &b_x);
-			ft_swap(&a_y, &b_y);
-			ft_swap(&a_z, &b_z);
-		}
+			// double phi = (b->x == a->x) ? 1.0 : (double)(j - a->x) / (double)(b->x - a->x);
 
-		int j = a_x;
-		while (j <= b_x)
-		{
-			double phi = (b_x == a_x) ? 1.0 : (double)(j - a_x) / (double)(b_x - a_x);
-			int p_x = (double)a_x + (double)(b_x - a_x) * phi;
-			int p_y = (double)a_y + (double)(b_y - a_y) * phi;
-			int p_z = (double)a_z + ((double)b_z - a_z) * phi;
+			// t_vector_3d *p = (t_vector_3d*)malloc(sizeof(t_vector_3d));
+			// p->x = (int)((double)a->x + (double)(b->x - a->x) * phi);
+			// p->y = (int)((double)a->y + (double)(b->y - a->y) * phi);
+			// p->z = (int)((double)a->z + (double)(b->z - a->z) * phi);
 
-			if (p_x >= 0 && p_x < W && p_y >= 0 && p_y < H && mlx->z_buffer[p_x][p_y] <= p_z)
-			{
-				// printf("px %d		py %d\n", p_x, p_y);
-				mlx->z_buffer[p_x][p_y] = p_z;
-				ft_image(mlx, j, (int)p1->y + i, color);
-			}
+			// // printf("pz %f		z_buf %f\n", p->z, mlx->z_buffer[(int)p->y][(int)p->x]);
+			// if ((p->x >= 0 && p->x < W && p->y >= 0 && p->y < H &&
+			// 	p->z >= mlx->z_buffer[(int)p->y][(int)p->x]))
+			// {
+			// 	mlx->z_buffer[(int)p->y][(int)p->x] = p->z;
+				ft_image(mlx, /*p->x*/j, /*p->y*/ p0->y + i, color);
+			// }
+			//free(p);
 			j++;
 		}
+		free(a);
+		free(b);
 		i++;
 	}
 }
-
-// void	ft_fill_triangle(t_mlx *mlx, t_vector_3d *p1, t_vector_3d *p2, t_vector_3d *p3, int color)
-// {
-// 	if (p1->y == (int)p2->y && (int)p1->y == (int)p3->y)
-// 		return ;
-// 	//SORT
-// 	if (p1->y > p2->y)
-// 		ft_vec_swap(p1, p2);
-// 	if (p1->y > p3->y)
-// 		ft_vec_swap(p1, p3);
-// 	if (p2->y > p3->y)
-// 		ft_vec_swap(p2, p3);
-// 	//
-
-// 	int total_h = (int)p3->y - (int)p1->y;
-// 	int i = 0;
-// 	while (i < total_h)
-// 	{
-// 		int second_half = (i > (int)p2->y - (int)p1->y || (int)p2->y == (int)p1->y) ? 1 : 0;
-// 		int segment_h = (second_half == 1) ? (int)p3->y - (int)p2->y : (int)p2->y - (int)p1->y;
-// 		double alpha = (double)i / total_h;
-// 		double beta = (double)(i - (second_half == 1 ? (int)p2->y - (int)p1->y : 0)) / segment_h;
-
-// 		t_vector_3d *a = (t_vector_3d*)malloc(sizeof(t_vector_3d));
-// 		a->x = (int)p1->x + (p3->x - p1->x) * alpha;
-// 		a->y = (int)p1->y + (p3->y - p1->y) * alpha;
-// 		a->z = (int)p1->z + (p3->z - p1->z) * alpha;
-
-// 		t_vector_3d *b = (t_vector_3d*)malloc(sizeof(t_vector_3d));
-// 		b->x = (second_half == 1) ? (int)p2->x + (p3->x - p2->x) * beta : (int)p1->x + (p2->x - p1->x) * beta;
-// 		b->y = (second_half == 1) ? (int)p2->y + (p3->y - p2->y) * beta : (int)p1->y + (p2->y - p1->y) * beta;
-// 		b->z = (second_half == 1) ? (int)p2->z + (p3->z - p2->z) * beta : (int)p1->z + (p2->z - p1->z) * beta;
-
-// 		if (a->x > b->x)
-// 			ft_vec_swap(a, b);
-
-// 		int j = a->x;
-// 		while (j <= b->x)
-// 		{
-// 			double phi = (b->x == a->x) ? 1.0 : (double)(j - a->x) / (double)(b->x - a->x);
-
-// 			t_vector_3d *p = (t_vector_3d*)malloc(sizeof(t_vector_3d));
-// 			p->x = (double)a->x + (double)(b->x - a->x) * phi;
-// 			p->y = (double)a->y + (double)(b->y - a->y) * phi;
-// 			p->z = (double)a->z + (double)(b->z - a->z) * phi;
-
-// 			if (p->x >= 0 && p->x < W && p->y >= 0 && p->y < H && mlx->z_buffer[(int)p->x][(int)p->y] < p->z)
-// 			{
-// 				// printf("px %d		py %d\n", p_x, p_y);
-// 				mlx->z_buffer[(int)p->x][(int)p->y] = p->z;
-// 				ft_image(mlx, (int)p->x, (int)p->y, color);
-// 			}
-// 			j++;
-// 		}
-// 		i++;
-// 	}
-// }
