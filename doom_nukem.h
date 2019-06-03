@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 16:52:20 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/05/26 02:17:52 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/06/03 23:20:45 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,31 +24,52 @@
 #define W 1280
 #define H 720
 
-typedef	struct	s_matrix
-{
-	double			mat[4][4];
-}						t_martix;
+#define EYE_H 6
+#define CROUCH_H 3
+#define HEAD_MARGIN 1
+#define STAIRS_H 2
 
-typedef struct	s_vector_3d
+#define FOV_H (0.73 * H)
+#define FOV_V (0.2 * H)
+
+typedef struct	s_vec2
+{
+	double			x;
+	double			y;
+}						t_vec2;
+
+typedef struct	s_vec3
 {
 	double			x;
 	double			y;
 	double			z;
-}						t_vector_3d;
+}						t_vec3;
 
-typedef	struct	s_triangle
+typedef struct	s_sector
 {
-	t_vector_3d		*points[3];
-	int						color;
-}						t_triangle;
+	double			ceiling;
+	double			floor;
 
-typedef	struct	s_mesh
+	t_vec2			**verts;
+	
+	char			*neighbors;
+	int					verts_count;
+}						t_sector;
+
+typedef	struct	s_player
 {
-	int					tri_count;
-	t_triangle		*triangles;
-}						t_mesh;
+	t_vec3			*pos;
+	t_vec3			*velocity;
 
+	double			eye_h;
 
+	double			angle;
+	double			sin_angle;
+	double			cos_angle;
+	double			yaw;
+	
+	int					sector;
+}						t_player;
 
 typedef	struct	s_mlx
 {
@@ -60,60 +81,26 @@ typedef	struct	s_mlx
 	int					size_line;
 	int					endian;
 
-	double			theta;
-	double			angle;
+	t_sector		**sect;
+	int					num_sec;
 
-	double			zoom;
+	t_player		*player;
 
-	double			z_buffer[H][W];
-
-	t_vector_3d	*v_camera;
-
-	t_mesh			*cube;
-
-	t_mesh			*ch_fig;
-
-	t_martix		*mat_proj;
-	t_triangle		*tri_proj;
-	t_triangle		*tri_translated;
-	
-	t_triangle		*tri_rotated_z;
-	t_triangle		*tri_rotated_zx;
-	t_triangle		*tri_rotated_zxy;
-
-	t_martix		*mat_rot_z;
-	t_martix		*mat_rot_x;
-	t_martix		*mat_rot_y;
-
-	t_vector_3d	*normal;
-	t_vector_3d	*line_1;
-	t_vector_3d	*line_2;
-
-	t_vector_3d *light_dir;
 }						t_mlx;
 
 void				ft_image(t_mlx *mlx, int x, int y, int color);
 
-void				ft_init_cube(t_mlx *mlx);
-void				ft_init_pyra(t_mlx *mlx);
-void				ft_init_octahedron(t_mlx *mlx);
+void				ft_load_map(t_mlx *mlx, char *map_file);
 
-void				ft_draw(t_mlx *mlx, t_mesh *fig);
+double				ft_min(double a, double b);
+double				ft_max(double a, double b);
+double				ft_clamp(double a, double min, double max);
+int						ft_overlap(double a0, double a1, double b0, double b1);
+int						ft_intersect_box(double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3);
+double				ft_vec_cross_prod(double x0, double y0, double x1, double y1);
+double				ft_point_side(double px, double py, double x0, double y0, double x1, double y1);
+t_vec2				*ft_intersect(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4);
 
 void				ft_draw_line(t_mlx *mlx, int xo, int yo, int x, int y, int color);
-void				ft_draw_triangle(t_mlx *mlx, int x1, int y1, int x2, int y2, int x3, int y3, int color);
-void				ft_fill_triangle(t_mlx *mlx, t_vector_3d *p0, t_vector_3d *p1, t_vector_3d *p2, int color);
-
-void				ft_rot_mat_init(t_mlx *mlx);
-void				ft_z_buffer_fill(t_mlx *mlx);
-
-int					ft_load_obj_file(t_mlx *mlx, char *file_name);
-double			ft_datoi(char *str);
-void				ft_vec_swap(t_vector_3d *a, t_vector_3d *b);
-
-
-int					ft_hex_to_dec(char *rgb);
-char			*ft_dec_to_hex(int number);
-int					ft_get_color(char *rgb, double lum);
 
 #endif

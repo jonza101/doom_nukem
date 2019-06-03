@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 16:54:13 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/05/26 02:37:15 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/06/03 22:43:05 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,37 +26,10 @@ void	ft_reset_image(t_mlx *mlx)
 	mlx_clear_window(mlx->mlx, mlx->win);
 }
 
-int		mouse_press(int button, int x, int y, t_mlx *mlx)
-{
-	if (button == 4)
-	{
-		mlx->zoom -= 0.1;
-		mlx->angle = 0;
-		ft_reset_image(mlx);
-		ft_draw(mlx, mlx->ch_fig);
-		mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
-	}
-	if (button == 5)
-	{
-		mlx->zoom += 0.1;
-		mlx->angle = 0;
-		ft_reset_image(mlx);
-		ft_draw(mlx, mlx->ch_fig);
-		mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
-	}
-}
-
 int		key_press(int keycode, t_mlx *mlx)
 {
 	// printf("%d\n", keycode);
 	(keycode == 65307) ? exit(0) : 1;
-	if (keycode == 1739)
-	{
-		mlx->angle = -0.05;
-		ft_reset_image(mlx);
-		ft_draw(mlx, mlx->ch_fig);
-		mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
-	}
 }
 
 int		main()
@@ -69,50 +42,11 @@ int		main()
 	mlx->img = mlx_new_image(mlx->mlx, W, H);
 	mlx->data = (int *)mlx_get_data_addr(mlx->img, &mlx->bpp, &mlx->size_line, &mlx->endian);
 
-	mlx->mat_proj = (t_martix*)malloc(sizeof(t_martix));
-	mlx->tri_proj = (t_triangle*)malloc(sizeof(t_triangle));
-	mlx->tri_translated = (t_triangle*)malloc(sizeof(t_triangle));
-	mlx->tri_rotated_z = (t_triangle*)malloc(sizeof(t_triangle));
-	mlx->tri_rotated_zx = (t_triangle*)malloc(sizeof(t_triangle));
-	mlx->tri_rotated_zxy = (t_triangle*)malloc(sizeof(t_triangle));
-
-	mlx->normal = (t_vector_3d*)malloc(sizeof(t_vector_3d));
-	mlx->line_1 = (t_vector_3d*)malloc(sizeof(t_vector_3d));
-	mlx->line_2 = (t_vector_3d*)malloc(sizeof(t_vector_3d));
-
-	mlx->v_camera = (t_vector_3d*)malloc(sizeof(t_vector_3d));
-
-	mlx->light_dir = (t_vector_3d*)malloc(sizeof(t_vector_3d));
-	mlx->light_dir->x = 0.0;
-	mlx->light_dir->y = 0.0;
-	mlx->light_dir->z = -1.0;
-
-	mlx->zoom = 3;
-
-	int j = 0;
-	while (j < 3)
-	{
-		mlx->tri_proj->points[j] = (t_vector_3d*)malloc(sizeof(t_vector_3d));
-		mlx->tri_translated->points[j] = (t_vector_3d*)malloc(sizeof(t_vector_3d));
-		mlx->tri_rotated_z->points[j] = (t_vector_3d*)malloc(sizeof(t_vector_3d));
-		mlx->tri_rotated_zx->points[j] = (t_vector_3d*)malloc(sizeof(t_vector_3d));
-		mlx->tri_rotated_zxy->points[j] = (t_vector_3d*)malloc(sizeof(t_vector_3d));
-
-		j++;
-	}
-	ft_z_buffer_fill(mlx);
-	ft_rot_mat_init(mlx);
-
-	// ft_init_cube(mlx);
-	ft_load_obj_file(mlx, "models/icosphere.obj");
-
-	mlx->ch_fig = mlx->cube;
-	ft_draw(mlx, mlx->ch_fig);
+	ft_load_map(mlx, "map");
 
 	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
 
 	mlx_hook(mlx->win, 2, 1L << 0, key_press, mlx);
-	mlx_hook(mlx->win, 4, 1L<<2, mouse_press, mlx);
 	mlx_loop(mlx->mlx);
 	return (0);
 }
