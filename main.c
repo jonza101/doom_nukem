@@ -5,8 +5,20 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
+/*   Updated: 2019/06/09 23:19:46 by zjeyne-l         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 16:54:13 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/06/03 22:43:05 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/06/08 15:04:31 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +27,7 @@
 void	ft_image(t_mlx *mlx, int x, int y, int color)
 {
 	if (x >= 0 && x < W && y >= 0 && y < H)
-		mlx->data[x + y * W] = mlx_get_color_value(mlx->mlx, color);
+		mlx->data[y * W + x] = mlx_get_color_value(mlx->mlx, color);
 }
 
 void	ft_reset_image(t_mlx *mlx)
@@ -42,7 +54,15 @@ int		main()
 	mlx->img = mlx_new_image(mlx->mlx, W, H);
 	mlx->data = (int *)mlx_get_data_addr(mlx->img, &mlx->bpp, &mlx->size_line, &mlx->endian);
 
-	ft_load_map(mlx, "map");
+	printf("begin\n");
+	ft_load_map(mlx, "map_clear");
+
+	mlx->player->cos_angle = cosf(mlx->player->angle);
+	mlx->player->sin_angle = sinf(mlx->player->angle);
+
+	// LoadData();
+
+	ft_draw_screen(mlx);
 
 	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
 

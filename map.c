@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/05/28 18:44:25 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/06/03 22:56:03 by zjeyne-l         ###   ########.fr       */
+/*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
+/*   Updated: 2019/06/09 23:21:49 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,15 +87,15 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				}
 				free(tmp_v);
 				verts[v - 1] = (t_vec2*)malloc(sizeof(t_vec2));
-				verts[v - 1]->x = (double)ft_datoi(temp[1]);
-				verts[v - 1]->y = (double)ft_datoi(temp[2]);
+				verts[v - 1]->x = (double)ft_datoi(temp[2]);
+				verts[v - 1]->y = (double)ft_datoi(temp[1]);
 			}
 			else
 			{
 				verts = (t_vec2**)malloc(sizeof(t_vec2*) * 1);
 				verts[0] = (t_vec2*)malloc(sizeof(t_vec2));
-				verts[0]->x = (double)ft_datoi(temp[1]);
-				verts[0]->y = (double)ft_datoi(temp[2]);
+				verts[0]->x = (double)ft_datoi(temp[2]);
+				verts[0]->y = (double)ft_datoi(temp[1]);
 			}
 			v++;
 		}
@@ -136,13 +136,29 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				while (t[v_count])
 					v_count++;
 				mlx->sect[s - 1]->verts_count = v_count;
-				mlx->sect[s - 1]->verts = (t_vec2**)malloc(sizeof(t_vec2*) * v_count);
+				mlx->sect[s - 1]->verts = (t_vec2**)malloc(sizeof(t_vec2*) * (v_count + 1));
 				j = 0;
 				while (j < v_count)
 				{
-					mlx->sect[s - 1]->verts[j] = (t_vec2*)malloc(sizeof(t_vec2));
-					mlx->sect[s - 1]->verts[j]->x = (double)verts[ft_atoi(t[j])]->x;
-					mlx->sect[s - 1]->verts[j]->y = (double)verts[ft_atoi(t[j])]->y;
+					mlx->sect[s - 1]->verts[j + 1] = (t_vec2*)malloc(sizeof(t_vec2));
+					mlx->sect[s - 1]->verts[j + 1]->x = (double)verts[ft_atoi(t[j])]->x;
+					mlx->sect[s - 1]->verts[j + 1]->y = (double)verts[ft_atoi(t[j])]->y;
+					j++;
+				}
+				mlx->sect[s - 1]->verts[0] = (t_vec2*)malloc(sizeof(t_vec2));
+				mlx->sect[s - 1]->verts[0]->x = (double)verts[ft_atoi(t[j - 1])]->x;
+				mlx->sect[s - 1]->verts[0]->y = (double)verts[ft_atoi(t[j - 1])]->y;
+
+				t = ft_strsplit(temp[3], ' ');
+				int n_count = 0;
+				while (t[n_count])
+					n_count++;
+				mlx->sect[s - 1]->neighbors_count = n_count;
+				mlx->sect[s - 1]->neighbors = (char**)malloc(sizeof(char*) * n_count);
+				j = 0;
+				while (j < n_count)
+				{
+					mlx->sect[s - 1]->neighbors[j] = ft_strdup(t[j]);
 					j++;
 				}
 			}
@@ -161,13 +177,29 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				while (t[v_count])
 					v_count++;
 				mlx->sect[0]->verts_count = v_count;
-				mlx->sect[0]->verts = (t_vec2**)malloc(sizeof(t_vec2*) * v_count);
+				mlx->sect[0]->verts = (t_vec2**)malloc(sizeof(t_vec2*) * (v_count + 1));
 				int j = 0;
 				while (j < v_count)
 				{
-					mlx->sect[0]->verts[j] = (t_vec2*)malloc(sizeof(t_vec2));
-					mlx->sect[0]->verts[j]->x = (double)verts[ft_atoi(t[j])]->x;
-					mlx->sect[0]->verts[j]->y = (double)verts[ft_atoi(t[j])]->y;
+					mlx->sect[0]->verts[j + 1] = (t_vec2*)malloc(sizeof(t_vec2));
+					mlx->sect[0]->verts[j + 1]->x = (double)verts[ft_atoi(t[j])]->x;
+					mlx->sect[0]->verts[j + 1]->y = (double)verts[ft_atoi(t[j])]->y;
+					j++;
+				}
+				mlx->sect[0]->verts[0] = (t_vec2*)malloc(sizeof(t_vec2));
+				mlx->sect[0]->verts[0]->x = (double)verts[ft_atoi(t[j - 1])]->x;
+				mlx->sect[0]->verts[0]->y = (double)verts[ft_atoi(t[j - 1])]->y;
+
+				t = ft_strsplit(temp[3], ' ');
+				int n_counts = 0;
+				while (t[n_counts])
+					n_counts++;
+				mlx->sect[0]->neighbors_count = n_counts;
+				mlx->sect[0]->neighbors = (char**)malloc(sizeof(char*) * n_counts);
+				j = 0;
+				while (j < n_counts)
+				{
+					mlx->sect[0]->neighbors[j] = ft_strdup(t[j]);
 					j++;
 				}
 			}
@@ -190,19 +222,20 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 			mlx->player->pos->x = (double)ft_datoi(t[0]);
 			mlx->player->pos->y = (double)ft_datoi(t[1]);
 			mlx->player->pos->z = (double)mlx->sect[mlx->player->sector]->floor + mlx->player->eye_h;
-
 		}
 	}
 	close(fd);
+	mlx->num_sec = s - 1;
 
+	printf("px %f	py %f	sect %d\n", mlx->player->pos->x, mlx->player->pos->y, mlx->player->sector);
 	// int j = 0;
 	// printf("verts %d\n", v - 1);
 	// while (j < v - 1)
 	// {
-	// 	printf("x %f	y %f			%d\n", verts[j]->x, verts[j]->y, j);
+	// 	printf("x %f	y %f	%d\n", verts[j]->x, verts[j]->y, j);
 	// 	j++;
 	// }
-	// printf("sect %d\n", s - 1);
+	// printf("sect %d\n", mlx->num_sec);
 	int j = 0;
 	while (j < s - 1)
 	{
@@ -210,11 +243,18 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 		printf("v_count %d\n", mlx->sect[j]->verts_count);
 		printf("floor %f	ceiling %f\n\n", mlx->sect[j]->floor, mlx->sect[j]->ceiling);
 		int k = 0;
-		while (k < mlx->sect[j]->verts_count)
+		while (k < mlx->sect[j]->verts_count + 1)
 		{
 			printf("x %f	y %f\n", mlx->sect[j]->verts[k]->x, mlx->sect[j]->verts[k]->y);
 			k++;
 		}
+		k = 0;
+		while (k < mlx->sect[j]->neighbors_count)
+		{
+			printf("%s ", mlx->sect[j]->neighbors[k]);
+			k++;
+		}
+		printf("\n");
 		printf("________________________________\n", j);
 		j++;
 	}
