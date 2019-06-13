@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/06/09 22:53:35 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/06/13 17:44:59 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,22 +94,26 @@ typedef	struct	s_mlx
 	int					size_line;
 	int					endian;
 
-	int					thread_i;
-
 	t_sector		**sect;
 	int					num_sec;
 
-	t_item			*item;
-	t_item			*head;
-	t_item			*tail;
-	t_item			queue[MAX_QUEUE];
-	t_item			*now;
-
 	t_player		*player;
+	
+	float				yaw;
+	int					mouse_pos_x;
+	int					mouse_pos_y;
 
-	t_vec2			**verts;
+	int					wsad[4];
+	int					moving;
+	int					falling;
+	int					ground;
+	int					crouching;
 
 	t_vec2 *i1, *i2;
+	t_item			queue[MAX_QUEUE];
+	t_item			*head;
+	t_item			*tail;
+	t_item			*now;
 
 }						t_mlx;
 
@@ -117,22 +121,22 @@ void				ft_image(t_mlx *mlx, int x, int y, int color);
 
 void				ft_load_map(t_mlx *mlx, char *map_file);
 
-int						ft_min(int a, int b);
-int						ft_max(int a, int b);
-int						ft_clamp(int a, int min, int max);
-int						ft_overlap(float a0, float a1, float b0, float b1);
-int						ft_intersect_box(float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3);
-float					ft_vec_cross_prod(float x0, float y0, float x1, float y1);
-float					ft_point_side(float px, float py, float x0, float y0, float x1, float y1);
-void					ft_intersect(t_vec2 *p, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
-
-void				ft_draw(t_mlx *mlx);
+float				ft_min(float a, float b);
+float				ft_max(float a, float b);
+float				ft_clamp(float a, float min, float max);
+float				ft_overlap(float a0, float a1, float b0, float b1);
+float				ft_intersect_box(float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3);
+float				ft_vec_cross_prod(float x0, float y0, float x1, float y1);
+float				ft_point_side(float px, float py, float x0, float y0, float x1, float y1);
+void				ft_intersect(t_vec2 *p, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
+float				ft_yaw(float y, float z, float p_yaw);
 
 void				ft_draw_vline(t_mlx *mlx, int x, int y1,int y2, int top_color,int middle_color,int bottom_color);
 
-void				ft_thread(t_mlx *mlx);
+void				ft_draw(t_mlx *mlx);
 
-void	ft_draw_screen(t_mlx *mlx);
-void LoadData();
+void				ft_move_player(t_mlx *mlx, float dx, float dy);
+void				ft_move_calc(t_mlx *mlx);
+void				ft_collision(t_mlx *mlx);
 
 #endif

@@ -6,36 +6,42 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/06/09 23:24:46 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/06/13 20:32:17 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doom_nukem.h"
 
-void	ft_draw_screen(t_mlx *mlx)
+void	ft_draw(t_mlx *mlx)
 {
-	struct item { int sectorno,sx1,sx2; } queue[MAX_QUEUE], *head=queue, *tail=queue;
-	int ytop[W]={0};
-	int ybottom[W];
-	for (int x = 0; x < W; ++x)
+	int ytop[W] = {0};
+	int ybottom[W];	
+	int x = -1;
+	while (++x < W)
 		ybottom[x] = H - 1;
-	
-	*head = (struct item) { mlx->player->sector, 0, W - 1 };
-	if (++head == queue+MAX_QUEUE)
-		head = queue;
+
+	mlx->head = mlx->queue;
+	mlx->tail = mlx->queue;
+
+	mlx->head->sector_n = mlx->player->sector;
+	mlx->head->sx1 = 0;
+	mlx->head->sx2 = W - 1;
+	if (++mlx->head == mlx->queue + MAX_QUEUE)
+		mlx->head = mlx->queue;
 
 	int i = 0;
-	while (head != tail)
+	while (mlx->head != mlx->tail)
 	{
-		i++;
-		const struct item now = *tail;
-		if (++tail == queue+MAX_QUEUE)
-			tail = queue;
+		mlx->now = mlx->tail;
+		if (++mlx->tail == mlx->queue + MAX_QUEUE)
+			mlx->tail = mlx->queue;
 
-		const t_sector *sector = mlx->sect[now.sectorno];
+		t_sector *sector = mlx->sect[mlx->now->sector_n];
 
-		for (unsigned s = 0; s < sector->verts_count; ++s)
+		int s = -1;
+		while (++s < sector->verts_count)
 		{
+			// printf("s %d\n", s);
 			//	ACQUIRE THE X,Y COORDINATES OF THE TWO ENDPOINTS (VERTICES) OF THIS EDGE OF THE SECTOR
 			float vx1 = sector->verts[s + 0]->x - mlx->player->pos->x;
 			float vy1 = sector->verts[s + 0]->y - mlx->player->pos->y;
@@ -85,7 +91,7 @@ void	ft_draw_screen(t_mlx *mlx)
 			float yscale2 = FOV_V / tz2;
 			int x2 = W / 2 - (int)(tx2 * xscale2);
 
-			if (x1 >= x2 || x2 < now.sx1 || x1 > now.sx2)
+			if (x1 >= x2 || x2 < mlx->now->sx1 || x1 > mlx->now->sx2)
 				continue;
 
 			//	ACQUIRE THE FLOOR AND CEILING HEIGHTS, RELATIVE TO WHERE THE PLAYER'S VIEW IS
@@ -94,7 +100,6 @@ void	ft_draw_screen(t_mlx *mlx)
 
 			//	CHECK NEIGHBORS
 			int neighbor = ft_atoi(sector->neighbors[s]);
-			// printf("n %d\n", neighbor);
 			float nyceil = 0;
 			float nyfloor = 0;
 			if (neighbor >= 0)
@@ -104,22 +109,22 @@ void	ft_draw_screen(t_mlx *mlx)
 			}
 
 			//	PROJECT OUR CEILING & FLOOR HEIGHTS INTO SCREEN COORDINATES (Y COORDINATE)
-			#define Yaw(y, z) (y + z * mlx->player->yaw)
-			int y1a = H / 2 - (int)(Yaw(yceil, tz1) * yscale1);
-			int y1b = H / 2 - (int)(Yaw(yfloor, tz1) * yscale1);
-			int y2a = H / 2 - (int)(Yaw(yceil, tz2) * yscale2);
-			int y2b = H / 2 - (int)(Yaw(yfloor, tz2) * yscale2);
+			int y1a = H / 2 - (int)(ft_yaw(yceil, tz1, mlx->player->yaw) * yscale1);
+			int y1b = H / 2 - (int)(ft_yaw(yfloor, tz1, mlx->player->yaw) * yscale1);
+			int y2a = H / 2 - (int)(ft_yaw(yceil, tz2, mlx->player->yaw) * yscale2);
+			int y2b = H / 2 - (int)(ft_yaw(yfloor, tz2, mlx->player->yaw) * yscale2);
 
 			//	SAME FOR NEIGHBORS
-			int ny1a = H / 2 - (int)(Yaw(nyceil, tz1) * yscale1);
-			int ny1b = H / 2 - (int)(Yaw(nyfloor, tz1) * yscale1);
-			int ny2a = H / 2 - (int)(Yaw(nyceil, tz2) * yscale2);
-			int ny2b = H / 2 - (int)(Yaw(nyfloor, tz2) * yscale2);
+			int ny1a = H / 2 - (int)(ft_yaw(nyceil, tz1, mlx->player->yaw) * yscale1);
+			int ny1b = H / 2 - (int)(ft_yaw(nyfloor, tz1, mlx->player->yaw) * yscale1);
+			int ny2a = H / 2 - (int)(ft_yaw(nyceil, tz2, mlx->player->yaw) * yscale2);
+			int ny2b = H / 2 - (int)(ft_yaw(nyfloor, tz2, mlx->player->yaw) * yscale2);
 
 			//	RENDER THE WALL
-			int beginx = ft_max(x1, now.sx1);
-			int endx = ft_min(x2, now.sx2);
-			for (int x = beginx; x <= endx; ++x)
+			int beginx = ft_max(x1, mlx->now->sx1);
+			int endx = ft_min(x2, mlx->now->sx2);
+			int x = beginx - 1;
+			while (++x <= endx)
 			{
 				//	ACQUIRE THE Y COORDINATES FOR OUR CEILING & FLOOR FOR THIS X COORDINATE. CLAMP THEM
 				int ya = (x - x1) * (y2a - y1a) / (x2 - x1) + y1a;
@@ -128,9 +133,9 @@ void	ft_draw_screen(t_mlx *mlx)
 				int cyb = ft_clamp(yb, ytop[x], ybottom[x]);
 
 				//	RENDER CEILING
-				ft_draw_vline(mlx, x, ytop[x], cya - 1, 0xFFFFFF, 0x252525, 0xFFFFFF);
+				ft_draw_vline(mlx, x, ytop[x], cya - 1, 0, 0x252525, 0);		//		0x757575
 				//	RENDER FLOOR
-				ft_draw_vline(mlx, x, cyb + 1, ybottom[x], 0xFFFFFF, 0x252525, 0xFFFFFF);
+				ft_draw_vline(mlx, x, cyb + 1, ybottom[x], 0, 0x252525, 0);
 
 				// RENDER NEIGBORS
 				if (neighbor >= 0)
@@ -149,13 +154,15 @@ void	ft_draw_screen(t_mlx *mlx)
 				else
 					ft_draw_vline(mlx, x, cya, cyb, 0, x == x1 || x == x2 ? 0 : 0x454545, 0);
 			}
-			if (neighbor >= 0 && endx >= beginx && (head + MAX_QUEUE + 1 - tail) % MAX_QUEUE)
+			if (neighbor >= 0 && endx >= beginx && (mlx->head + MAX_QUEUE + 1 - mlx->tail) % MAX_QUEUE)
 			{
-				*head = (struct item) { neighbor, beginx, endx };
-				if (++head == queue + MAX_QUEUE)
-					head = queue;
+				mlx->head->sector_n = neighbor;
+				mlx->head->sx1 = beginx;
+				mlx->head->sx2 = endx;
+				if (++mlx->head == mlx->queue + MAX_QUEUE)
+					mlx->head = mlx->queue;
 			}
 		}
 	}
-	printf("end\n");
+	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
 }
