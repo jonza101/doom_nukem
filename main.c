@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/06/13 21:29:03 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/06/25 18:09:47 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,6 @@ void	ft_reset_image(t_mlx *mlx)
 	mlx_clear_window(mlx->mlx, mlx->win);
 }
 
-// int x,y;
-//         SDL_GetRelativeMouseState(&x,&y);
-//         player.angle += x * 0.03f;
-//         yaw          = clamp(yaw - y*0.05f, -5, 5);
-//         player.yaw   = yaw - player.velocity.z*0.5f;
-//         MovePlayer(0,0);
-
 // int		mouse_move(int x, int y, t_mlx *mlx)
 // {
 	// printf("x %d	y %d\n", x, y);
@@ -49,6 +42,25 @@ void	ft_reset_image(t_mlx *mlx)
 // 		ft_move_player(mlx, 0, 0);
 // 	return (0);
 // }
+
+int		ft_game_loop(t_mlx *mlx)
+{
+	// ft_collision(mlx);
+	// mlx->ground = 0;
+	// mlx->falling = 1;
+	// mlx->moving = 0;
+	// mlx->crouching = 0;
+	ft_collision(mlx);
+	ft_move_calc(mlx);
+	int i = -1;
+	while (++i < 4)
+		mlx->wsad[i] = 0;
+	ft_reset_image(mlx);
+	ft_draw(mlx);
+	// printf("px %f	py %f\n", mlx->player->pos->x, mlx->player->pos->y);
+	// printf("dx %f	dy %f	dz %f\n\n", mlx->player->velocity->x, mlx->player->velocity->y, mlx->player->velocity->z);
+	return (0);
+}
 
 int		ft_key_press(int keycode, t_mlx *mlx)
 {
@@ -68,13 +80,20 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 	if (keycode == 65362)	//	LOOK UP
 	{
 		mlx->player->yaw -= 0.25f - mlx->player->velocity->z * 0.5;
-		mlx->player->yaw = ft_clamp(mlx->player->yaw, -10, 10);
+		mlx->player->yaw = ft_clamp(mlx->player->yaw, -15, 15);
 	}
 	if (keycode == 65364)	//	LOOK DOWN
 	{
 		mlx->player->yaw += 0.25f - mlx->player->velocity->z * 0.5;
-		mlx->player->yaw = ft_clamp(mlx->player->yaw, -10, 10);
+		mlx->player->yaw = ft_clamp(mlx->player->yaw, -15, 15);
 	}
+	if (keycode == 65507)
+	{
+		if (mlx->sect[mlx->player->sector]->ceiling > mlx->player->pos->z + EYE_H)
+			mlx->crouching = !mlx->crouching;
+	}
+	if (keycode == 32 && mlx->ground && !mlx->crouching)
+		mlx->player->velocity->z += 0.75f;
 
 	if (keycode == 1731)
 	{
@@ -99,21 +118,27 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 	return (0);
 }
 
-int		ft_game_loop(t_mlx *mlx)
+void	ft_init(t_mlx *mlx)
 {
-	ft_collision(mlx);
-	mlx->ground = 0;
-	mlx->falling = 1;
-	mlx->moving = 0;
-	mlx->crouching = 0;
-	ft_collision(mlx);
-	ft_move_calc(mlx);
-	ft_reset_image(mlx);
-	ft_draw(mlx);
-	int i = -1;
-	while (++i < 4)
-		mlx->wsad[i] = 0;
-	return (0);
+	mlx->player->cos_angle = cosf(mlx->player->angle);
+	mlx->player->sin_angle = sinf(mlx->player->angle);
+	mlx->player->velocity->x = 0;
+	mlx->player->velocity->y = 0;
+	mlx->player->velocity->z = 0;
+	mlx->player->yaw = 0.0f;
+	mlx->yaw = 0.0;
+
+	mlx->texture = (t_image*)malloc(sizeof(t_image));
+	mlx->texture->w = 512;
+	mlx->texture->h = 512;
+	mlx->texture->img = mlx_xpm_file_to_image(mlx->mlx, "textures/brick.xpm", &mlx->texture->w, &mlx->texture->h);
+	mlx->texture->data = (int*)mlx_get_data_addr(mlx->texture->img, &mlx->texture->bpp, &mlx->texture->size_line, &mlx->texture->endian);
+
+	mlx->scaler = (t_scaler*)malloc(sizeof(t_scaler));
+	mlx->ya_int = (t_scaler*)malloc(sizeof(t_scaler));
+	mlx->yb_int = (t_scaler*)malloc(sizeof(t_scaler));
+	mlx->nya_int = (t_scaler*)malloc(sizeof(t_scaler));
+	mlx->nyb_int = (t_scaler*)malloc(sizeof(t_scaler));
 }
 
 int		main()
@@ -127,13 +152,8 @@ int		main()
 	mlx->data = (int *)mlx_get_data_addr(mlx->img, &mlx->bpp, &mlx->size_line, &mlx->endian);
 
 	ft_load_map(mlx, "map");
-	
-	// printf("yaw %f\n", mlx->player->yaw);
-	mlx->player->cos_angle = cosf(mlx->player->angle);
-	mlx->player->sin_angle = sinf(mlx->player->angle);
-	mlx->player->yaw = 0.0f;
-	mlx->yaw = 0.0;
-	// printf("yaw %f\n", mlx->player->yaw);
+
+	ft_init(mlx);
 
 	mlx_hook(mlx->win, 2, 1L << 0, ft_key_press, mlx);
 	// mlx_hook(mlx->win, 6, 1L<<6, mouse_move, mlx);

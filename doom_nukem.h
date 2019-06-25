@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/06/13 17:44:59 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/06/25 18:36:36 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 
 #define EYE_H 6
 #define CROUCH_H 3
-#define HEAD_MARGIN 1
+#define HEAD_MARGIN 5
 #define STAIRS_H 2
 
 #define FOV_H (0.73 * H)
@@ -69,6 +69,26 @@ typedef struct	s_sector
 	int					verts_count;
 }						t_sector;
 
+typedef	struct	s_image
+{
+	void			*img;
+	int					w;
+	int					h;
+	int					*data;
+	int					bpp;
+	int					size_line;
+	int					endian;
+}						t_image;
+
+typedef struct	s_scaler
+{
+	int					result;
+	int					bop;
+	int					fd;
+	int					ca;
+	int					cache;
+}						t_scaler;
+
 typedef	struct	s_player
 {
 	t_vec3			*pos;
@@ -109,12 +129,18 @@ typedef	struct	s_mlx
 	int					ground;
 	int					crouching;
 
-	t_vec2 *i1, *i2;
-	t_item			queue[MAX_QUEUE];
-	t_item			*head;
-	t_item			*tail;
-	t_item			*now;
+	t_item				queue[MAX_QUEUE];
+	t_item				*head;
+	t_item				*tail;
+	t_item				*now;
 
+	t_image				*texture;
+
+	t_scaler			*scaler;
+	t_scaler			*ya_int;
+	t_scaler			*yb_int;
+	t_scaler			*nya_int;
+	t_scaler			*nyb_int;
 }						t_mlx;
 
 void				ft_image(t_mlx *mlx, int x, int y, int color);
@@ -124,14 +150,17 @@ void				ft_load_map(t_mlx *mlx, char *map_file);
 float				ft_min(float a, float b);
 float				ft_max(float a, float b);
 float				ft_clamp(float a, float min, float max);
-float				ft_overlap(float a0, float a1, float b0, float b1);
-float				ft_intersect_box(float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3);
+int					ft_overlap(float a0, float a1, float b0, float b1);
+int					ft_intersect_box(float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3);
 float				ft_vec_cross_prod(float x0, float y0, float x1, float y1);
-float				ft_point_side(float px, float py, float x0, float y0, float x1, float y1);
+int					ft_point_side(float px, float py, float x0, float y0, float x1, float y1);
 void				ft_intersect(t_vec2 *p, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
 float				ft_yaw(float y, float z, float p_yaw);
+t_scaler		*ft_scaler_init(t_scaler *scaler, int a, int b, int c, int d, int f);
+int					ft_scaler_next(t_scaler *scaler);
 
 void				ft_draw_vline(t_mlx *mlx, int x, int y1,int y2, int top_color,int middle_color,int bottom_color);
+void				ft_draw_tvline(t_mlx *mlx, int x, int y1, int y2, t_scaler *ty, unsigned txtx, t_image *texture);
 
 void				ft_draw(t_mlx *mlx);
 

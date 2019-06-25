@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/06/13 20:32:17 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/06/25 18:35:55 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,13 @@ void	ft_draw(t_mlx *mlx)
 {
 	int ytop[W] = {0};
 	int ybottom[W];	
+	int rendered_sect[mlx->num_sec];
 	int x = -1;
 	while (++x < W)
 		ybottom[x] = H - 1;
+	x = -1;
+	while (++x < mlx->num_sec)
+		rendered_sect[x] = 0;
 
 	mlx->head = mlx->queue;
 	mlx->tail = mlx->queue;
@@ -35,6 +39,10 @@ void	ft_draw(t_mlx *mlx)
 		mlx->now = mlx->tail;
 		if (++mlx->tail == mlx->queue + MAX_QUEUE)
 			mlx->tail = mlx->queue;
+
+		if (rendered_sect[mlx->now->sector_n] & 0x21)
+			continue;
+		++rendered_sect[mlx->now->sector_n];
 
 		t_sector *sector = mlx->sect[mlx->now->sector_n];
 
@@ -61,6 +69,9 @@ void	ft_draw(t_mlx *mlx)
 			if (tz1 <= 0 && tz2 <= 0)
 				continue;
 
+			int u0 = 0;
+			int u1 = 512;
+
 			//	IF IT'S PARTIALLY BEHIND THE PLAYER, CLIP IT AGAINST PLAYER'S VIEW FRUSTRUM
 			if (tz1 <= 0 || tz2 <= 0)
 			{
@@ -76,11 +87,32 @@ void	ft_draw(t_mlx *mlx)
 				ft_intersect(i1, tx1, tz1, tx2, tz2, -nearside, near_z, -farside, far_z);
 				ft_intersect(i2, tx1, tz1, tx2, tz2, nearside, near_z, farside, far_z);
 
+				t_vec2 *org1 = (t_vec2*)malloc(sizeof(t_vec2));
+				t_vec2 *org2 = (t_vec2*)malloc(sizeof(t_vec2));
+				org1->x = tx1;
+				org1->y = tz1;
+				org2->x = tx2;
+				org2->y = tz2;
+
 				if (tz1 < near_z) { if (i1->y > 0) { tx1 = i1->x; tz1 = i1->y; } else { tx1 = i2->x; tz1 = i2->y; }}
 				if (tz2 < near_z) { if (i1->y > 0) { tx2 = i1->x; tz2 = i1->y; } else { tx2 = i2->x; tz2 = i2->y; }}
 
+				if (abs(tx2 - tx1) > abs(tz2 - tz1))
+				{
+					u0 = (tx1 - org1->x) * 512 / (org2->x - org1->x);
+					u1 = (tx2 - org1->x) * 512 / (org2->x - org1->x);
+				}
+				else
+				{
+					u0 = (tz1 - org1->y) * 512 / (org2->y - org1->y);
+					u1 = (tz2 - org1->y) * 512 / (org2->y - org1->y);
+				}
+
 				free(i1);
 				free(i2);
+
+				free(org1);
+				free(org2);
 			}
 
 			//	DO PERSPECTIVE TRANSFORMATION
@@ -123,14 +155,29 @@ void	ft_draw(t_mlx *mlx)
 			//	RENDER THE WALL
 			int beginx = ft_max(x1, mlx->now->sx1);
 			int endx = ft_min(x2, mlx->now->sx2);
+
+			mlx->ya_int = ft_scaler_init(mlx->ya_int, x1,beginx,x2, y1a,y2a);
+            mlx->yb_int = ft_scaler_init(mlx->yb_int, x1,beginx,x2, y1b,y2b);
+            mlx->nya_int = ft_scaler_init(mlx->nya_int, x1,beginx,x2, ny1a,ny2a);
+            mlx->nyb_int = ft_scaler_init(mlx->nyb_int, x1,beginx,x2, ny1b,ny2b);
+
 			int x = beginx - 1;
 			while (++x <= endx)
 			{
+				int txtx = (u0 * ((x2 - x) * tz2) + u1 * ((x - x1) * tz1)) / ((x2 - x) * tz2 + (x - x1) * tz1);
+
 				//	ACQUIRE THE Y COORDINATES FOR OUR CEILING & FLOOR FOR THIS X COORDINATE. CLAMP THEM
-				int ya = (x - x1) * (y2a - y1a) / (x2 - x1) + y1a;
-				int cya = ft_clamp(ya, ytop[x], ybottom[x]);
-				int yb = (x - x1) * (y2b - y1b) / (x2 - x1) + y1b;
-				int cyb = ft_clamp(yb, ytop[x], ybottom[x]);
+				int ya = ft_scaler_next(mlx->ya_int);
+				int yb = ft_scaler_next(mlx->yb_int);
+				
+                int cya = ft_clamp(ya, ytop[x],ybottom[x]);
+                int cyb = ft_clamp(yb, ytop[x],ybottom[x]);
+
+				//	ACQUIRE THE Y COORDINATES FOR OUR CEILING & FLOOR FOR THIS X COORDINATE. CLAMP THEM
+				// int ya = (x - x1) * (y2a - y1a) / (x2 - x1) + y1a;
+				// int cya = ft_clamp(ya, ytop[x], ybottom[x]);
+				// int yb = (x - x1) * (y2b - y1b) / (x2 - x1) + y1b;
+				// int cyb = ft_clamp(yb, ytop[x], ybottom[x]);
 
 				//	RENDER CEILING
 				ft_draw_vline(mlx, x, ytop[x], cya - 1, 0, 0x252525, 0);		//		0x757575
@@ -140,19 +187,38 @@ void	ft_draw(t_mlx *mlx)
 				// RENDER NEIGBORS
 				if (neighbor >= 0)
 				{
-					int nya = (x - x1) * (ny2a - ny1a) / (x2 - x1) + ny1a;
-					int cnya = ft_clamp(nya, ytop[x], ybottom[x]);
-					int nyb = (x - x1) * (ny2b - ny1b) / (x2 - x1) + ny1b;
-					int cnyb = ft_clamp(nyb, ytop[x], ybottom[x]);
+					int nya = ft_scaler_next(mlx->nya_int);
+					int nyb = ft_scaler_next(mlx->nyb_int);
 
-					ft_draw_vline(mlx, x, cya, cnya - 1, 0, x == x1 || x == x2 ? 0 : 0x4A0909, 0);
+                    int cnya = ft_clamp(nya, ytop[x],ybottom[x]);
+                    int cnyb = ft_clamp(nyb, ytop[x],ybottom[x]);
+
+					// int nya = (x - x1) * (ny2a - ny1a) / (x2 - x1) + ny1a;
+					// int cnya = ft_clamp(nya, ytop[x], ybottom[x]);
+					// int nyb = (x - x1) * (ny2b - ny1b) / (x2 - x1) + ny1b;
+					// int cnyb = ft_clamp(nyb, ytop[x], ybottom[x]);
+
+					// RENDER UPPER WALL
+					// ft_draw_vline(mlx, x, cya, cnya - 1, 0, x == x1 || x == x2 ? 0 : 0x330315, 0);
+					// ytop[x] = ft_clamp(ft_max(cya, cnya), ytop[x], H - 1);
+					mlx->scaler = ft_scaler_init(mlx->scaler, ya, cya, yb, 0, 511);
+					ft_draw_tvline(mlx, x, cya, cnya - 1, mlx->scaler, txtx, mlx->texture);
 					ytop[x] = ft_clamp(ft_max(cya, cnya), ytop[x], H - 1);
 
-					ft_draw_vline(mlx, x, cnyb + 1, cyb, 0, x == x1 || x == x2 ? 0 : 0x290A42, 0);
+					// RENDER LOWER WALL
+					// ft_draw_vline(mlx, x, cnyb + 1, cyb, 0, x == x1 || x == x2 ? 0 : 0x1B0030, 0);
+					// ybottom[x] = ft_clamp(ft_min(cyb, cnyb), 0, ybottom[x]);
+					mlx->scaler = ft_scaler_init(mlx->scaler, ya, cnyb + 1, yb, 0, 511);
+					ft_draw_tvline(mlx, x, cnyb + 1, cyb, mlx->scaler, txtx, mlx->texture);
 					ybottom[x] = ft_clamp(ft_min(cyb, cnyb), 0, ybottom[x]);
 				}
 				else
-					ft_draw_vline(mlx, x, cya, cyb, 0, x == x1 || x == x2 ? 0 : 0x454545, 0);
+				{
+					// ft_draw_vline(mlx, x, cya, cyb, 0, x == x1 || x == x2 ? 0 : 0x454545, 0);
+					mlx->scaler = ft_scaler_init(mlx->scaler, ya, cya, yb, 0, 511);
+					ft_draw_tvline(mlx, x, cya, cyb, mlx->scaler, txtx, mlx->texture);
+				}
+					
 			}
 			if (neighbor >= 0 && endx >= beginx && (mlx->head + MAX_QUEUE + 1 - mlx->tail) % MAX_QUEUE)
 			{
@@ -163,6 +229,7 @@ void	ft_draw(t_mlx *mlx)
 					mlx->head = mlx->queue;
 			}
 		}
+		++rendered_sect[mlx->now->sector_n];
 	}
 	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
 }
