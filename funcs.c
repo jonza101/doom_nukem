@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:38 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/06/25 18:04:33 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/06/28 22:44:30 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,36 +152,15 @@ void	ft_draw_vline(t_mlx *mlx, int x, int y1,int y2, int top_color,int middle_co
 	}
 }
 
-void	ft_draw_tvline(t_mlx *mlx, int x, int y1, int y2, t_scaler *ty, unsigned txtx, t_image *texture)
+void	ft_draw_tvline(t_mlx *mlx, int x, int y1, int y2, t_scaler *ty, unsigned txtx, t_img *texture)
 {
 	if (y1 < 0 || y1 > H - 1 || y2 < 0 || y2 > H - 1)
 		return ;
 	int y = y1 - 1;
-	// printf("txtx %u\n", txtx);
 	while (++y <= y2)
 	{
 		unsigned txty = ft_scaler_next(ty);
-		// printf("txty %u\n", txty);
-			ft_image(mlx, x, y, texture->data[txty % texture->h * texture->h + txtx % texture->w]);
-		// mlx->data += W;
+		// printf("txtx %u	txty %u\n", txtx, txty);
+		ft_image(mlx, x, y, texture->data[txty % texture->h * texture->h + txtx % texture->w]);
 	}
 }
-
-// static void vline2(int x, int y1,int y2, struct Scaler ty,unsigned txtx, const struct TextureSet* t)
-// {
-//     int *pix = (int*) surface->pixels;
-//     y1 = clamp(y1, 0, H-1);
-//     y2 = clamp(y2, 0, H-1);
-//     pix += y1 * W2 + x;
-
-//     for(int y = y1; y <= y2; ++y)
-//     {
-//         unsigned txty = Scaler_Next(&ty);
-//   #ifdef LightMapping
-//         *pix = ApplyLight( t->texture[txtx % 1024][txty % 1024], t->lightmap[txtx % 1024][txty % 1024] );
-//   #else
-//         *pix = t->texture[txtx % 1024][txty % 1024];
-//   #endif
-//         pix += W2;
-//     }
-// }

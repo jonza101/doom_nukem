@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/06/25 18:09:47 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/06/28 23:29:07 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,12 @@ void	ft_reset_image(t_mlx *mlx)
 
 int		ft_game_loop(t_mlx *mlx)
 {
-	// ft_collision(mlx);
-	// mlx->ground = 0;
-	// mlx->falling = 1;
-	// mlx->moving = 0;
-	// mlx->crouching = 0;
 	ft_collision(mlx);
+	// mlx->ground = 0;
+	mlx->falling = 1;
+	mlx->moving = 0;
+	// mlx->crouching = 0;
+	// ft_collision(mlx);
 	ft_move_calc(mlx);
 	int i = -1;
 	while (++i < 4)
@@ -59,6 +59,7 @@ int		ft_game_loop(t_mlx *mlx)
 	ft_draw(mlx);
 	// printf("px %f	py %f\n", mlx->player->pos->x, mlx->player->pos->y);
 	// printf("dx %f	dy %f	dz %f\n\n", mlx->player->velocity->x, mlx->player->velocity->y, mlx->player->velocity->z);
+	// printf("g %d\nf %d\nm %d\nc %d\n\n", mlx->ground, mlx->falling, mlx->moving, mlx->crouching);
 	return (0);
 }
 
@@ -128,7 +129,7 @@ void	ft_init(t_mlx *mlx)
 	mlx->player->yaw = 0.0f;
 	mlx->yaw = 0.0;
 
-	mlx->texture = (t_image*)malloc(sizeof(t_image));
+	mlx->texture = (t_img*)malloc(sizeof(t_img));
 	mlx->texture->w = 512;
 	mlx->texture->h = 512;
 	mlx->texture->img = mlx_xpm_file_to_image(mlx->mlx, "textures/brick.xpm", &mlx->texture->w, &mlx->texture->h);
@@ -151,8 +152,8 @@ int		main()
 	mlx->img = mlx_new_image(mlx->mlx, W, H);
 	mlx->data = (int *)mlx_get_data_addr(mlx->img, &mlx->bpp, &mlx->size_line, &mlx->endian);
 
+	ft_init_textures(mlx);
 	ft_load_map(mlx, "map");
-
 	ft_init(mlx);
 
 	mlx_hook(mlx->win, 2, 1L << 0, ft_key_press, mlx);

@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/06/25 18:35:55 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/06/28 23:27:30 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	ft_draw(t_mlx *mlx)
 				continue;
 
 			int u0 = 0;
-			int u1 = 512;
+			int u1 = 511;
 
 			//	IF IT'S PARTIALLY BEHIND THE PLAYER, CLIP IT AGAINST PLAYER'S VIEW FRUSTRUM
 			if (tz1 <= 0 || tz2 <= 0)
@@ -99,13 +99,13 @@ void	ft_draw(t_mlx *mlx)
 
 				if (abs(tx2 - tx1) > abs(tz2 - tz1))
 				{
-					u0 = (tx1 - org1->x) * 512 / (org2->x - org1->x);
-					u1 = (tx2 - org1->x) * 512 / (org2->x - org1->x);
+					u0 = (tx1 - org1->x) * 511 / (org2->x - org1->x);
+					u1 = (tx2 - org1->x) * 511 / (org2->x - org1->x);
 				}
 				else
 				{
-					u0 = (tz1 - org1->y) * 512 / (org2->y - org1->y);
-					u1 = (tz2 - org1->y) * 512 / (org2->y - org1->y);
+					u0 = (tz1 - org1->y) * 511 / (org2->y - org1->y);
+					u1 = (tz2 - org1->y) * 511 / (org2->y - org1->y);
 				}
 
 				free(i1);
@@ -167,17 +167,17 @@ void	ft_draw(t_mlx *mlx)
 				int txtx = (u0 * ((x2 - x) * tz2) + u1 * ((x - x1) * tz1)) / ((x2 - x) * tz2 + (x - x1) * tz1);
 
 				//	ACQUIRE THE Y COORDINATES FOR OUR CEILING & FLOOR FOR THIS X COORDINATE. CLAMP THEM
-				int ya = ft_scaler_next(mlx->ya_int);
-				int yb = ft_scaler_next(mlx->yb_int);
+				// int ya = ft_scaler_next(mlx->ya_int);
+				// int yb = ft_scaler_next(mlx->yb_int);
 				
-                int cya = ft_clamp(ya, ytop[x],ybottom[x]);
-                int cyb = ft_clamp(yb, ytop[x],ybottom[x]);
+                // int cya = ft_clamp(ya, ytop[x],ybottom[x]);
+                // int cyb = ft_clamp(yb, ytop[x],ybottom[x]);
 
 				//	ACQUIRE THE Y COORDINATES FOR OUR CEILING & FLOOR FOR THIS X COORDINATE. CLAMP THEM
-				// int ya = (x - x1) * (y2a - y1a) / (x2 - x1) + y1a;
-				// int cya = ft_clamp(ya, ytop[x], ybottom[x]);
-				// int yb = (x - x1) * (y2b - y1b) / (x2 - x1) + y1b;
-				// int cyb = ft_clamp(yb, ytop[x], ybottom[x]);
+				int ya = (x - x1) * (y2a - y1a) / (x2 - x1) + y1a;
+				int cya = ft_clamp(ya, ytop[x], ybottom[x]);
+				int yb = (x - x1) * (y2b - y1b) / (x2 - x1) + y1b;
+				int cyb = ft_clamp(yb, ytop[x], ybottom[x]);
 
 				//	RENDER CEILING
 				ft_draw_vline(mlx, x, ytop[x], cya - 1, 0, 0x252525, 0);		//		0x757575

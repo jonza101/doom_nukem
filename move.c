@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/11 15:06:15 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/06/25 18:28:43 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/06/28 23:51:35 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,7 +190,7 @@ void	ft_move_calc(t_mlx *mlx)
 	}
 
 	int pushing = mlx->wsad[0] || mlx->wsad[1] || mlx->wsad[2] || mlx->wsad[3];
-	float acceleration = pushing ? 0.4f : 0.5f;
+	float acceleration = (pushing) ? 0.7f : 0.5f;
 
 	mlx->player->velocity->x = mlx->player->velocity->x * (1 - acceleration) + move_vec[0] * acceleration;
 	mlx->player->velocity->y = mlx->player->velocity->y * (1 - acceleration) + move_vec[1] * acceleration;

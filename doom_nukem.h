@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/06/25 18:36:36 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/06/28 23:03:19 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,14 @@
 #define HEAD_MARGIN 5
 #define STAIRS_H 2
 
-#define FOV_H (0.73 * H)
+#define FOV_H (0.63 * H)
 #define FOV_V (0.2 * H)
 
 #define MAX_QUEUE 32
 
 #define THREAD 16
+
+#define TXT 2
 
 typedef struct	s_vec2
 {
@@ -57,19 +59,7 @@ typedef struct	s_item
 	int					sx2;
 }						t_item;
 
-typedef struct	s_sector
-{
-	float			ceiling;
-	float			floor;
-
-	t_vec2			**verts;
-	
-	char			**neighbors;
-	int					neighbors_count;
-	int					verts_count;
-}						t_sector;
-
-typedef	struct	s_image
+typedef	struct	s_img
 {
 	void			*img;
 	int					w;
@@ -78,7 +68,22 @@ typedef	struct	s_image
 	int					bpp;
 	int					size_line;
 	int					endian;
-}						t_image;
+}						t_img;
+
+typedef struct	s_sector
+{
+	float			ceiling;
+	float			floor;
+
+	t_vec2			**verts;
+
+	char				**texts;
+	t_img				**textures;
+
+	char			**neighbors;
+	int					neighbors_count;
+	int					verts_count;
+}						t_sector;
 
 typedef struct	s_scaler
 {
@@ -134,13 +139,15 @@ typedef	struct	s_mlx
 	t_item				*tail;
 	t_item				*now;
 
-	t_image				*texture;
+	t_img				*texture;
 
 	t_scaler			*scaler;
 	t_scaler			*ya_int;
 	t_scaler			*yb_int;
 	t_scaler			*nya_int;
 	t_scaler			*nyb_int;
+
+	t_img				*txt_temp[TXT];
 }						t_mlx;
 
 void				ft_image(t_mlx *mlx, int x, int y, int color);
@@ -160,12 +167,14 @@ t_scaler		*ft_scaler_init(t_scaler *scaler, int a, int b, int c, int d, int f);
 int					ft_scaler_next(t_scaler *scaler);
 
 void				ft_draw_vline(t_mlx *mlx, int x, int y1,int y2, int top_color,int middle_color,int bottom_color);
-void				ft_draw_tvline(t_mlx *mlx, int x, int y1, int y2, t_scaler *ty, unsigned txtx, t_image *texture);
+void				ft_draw_tvline(t_mlx *mlx, int x, int y1, int y2, t_scaler *ty, unsigned txtx, t_img *texture);
 
 void				ft_draw(t_mlx *mlx);
 
 void				ft_move_player(t_mlx *mlx, float dx, float dy);
 void				ft_move_calc(t_mlx *mlx);
 void				ft_collision(t_mlx *mlx);
+
+void				ft_init_textures(t_mlx *mlx);
 
 #endif
