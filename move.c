@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/11 15:06:15 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/06/28 23:51:35 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/03 18:17:06 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,14 @@ void	ft_move_player(t_mlx *mlx, float dx, float dy)
 	float py = mlx->player->pos->y;
 
 	t_sector *sector = mlx->sect[mlx->player->sector];
+
+	mlx->player->sin_angle = sinf(mlx->player->angle);
+	mlx->player->cos_angle = cosf(mlx->player->angle);
+	if (!dx && !dy)
+		return ;
+	mlx->player->pos->x += dx;
+	mlx->player->pos->y += dy;
+
 	int s = -1;
 	while (++s < sector->verts_count)
 	{
@@ -34,10 +42,6 @@ void	ft_move_player(t_mlx *mlx, float dx, float dy)
 				break ;
 			}
 	}
-	mlx->player->pos->x += dx;
-	mlx->player->pos->y += dy;
-	mlx->player->sin_angle = sinf(mlx->player->angle);
-	mlx->player->cos_angle = cosf(mlx->player->angle);
 }
 
 void	ft_collision(t_mlx *mlx)
@@ -147,8 +151,8 @@ void	ft_collision(t_mlx *mlx)
 					if (hole_high < mlx->player->pos->z + 0 ||				//eye_h
 						hole_low > mlx->player->pos->z - eye_h + STAIRS_H)
 					{
-						float xd = sector->verts[s + 1]->x - sector->verts[s]->x;
-						float yd = sector->verts[s + 1]->y - sector->verts[s]->y;
+						float xd = sector->verts[s + 1]->x - sector->verts[s + 0]->x;
+						float yd = sector->verts[s + 1]->y - sector->verts[s + 0]->y;
 						mlx->player->velocity->x = xd * (dx * xd + yd * dy) / (xd * xd + yd * yd);
 						mlx->player->velocity->y = yd * (dx * xd + yd * dy) / (xd * xd + yd * yd);
 						mlx->moving = 0;
@@ -170,27 +174,27 @@ void	ft_move_calc(t_mlx *mlx)
 	float move_vec[2] = { 0.0f, 0.0f };
 	if (mlx->wsad[0])
 	{
-		move_vec[0] += mlx->player->cos_angle * 0.5f;
-		move_vec[1] += mlx->player->sin_angle * 0.5f;
+		move_vec[0] += mlx->player->cos_angle * 0.2f;
+		move_vec[1] += mlx->player->sin_angle * 0.2f;
 	}
-	else if (mlx->wsad[1])
+	if (mlx->wsad[1])
 	{
-		move_vec[0] -= mlx->player->cos_angle * 0.5f;
-		move_vec[1] -= mlx->player->sin_angle * 0.5f;
+		move_vec[0] -= mlx->player->cos_angle * 0.2f;
+		move_vec[1] -= mlx->player->sin_angle * 0.2f;
 	}
-	else if (mlx->wsad[2])
+	if (mlx->wsad[2])
 	{
-		move_vec[0] += mlx->player->sin_angle * 0.5f;
-		move_vec[1] -= mlx->player->cos_angle * 0.5f;
+		move_vec[0] += mlx->player->sin_angle * 0.2f;
+		move_vec[1] -= mlx->player->cos_angle * 0.2f;
 	}
-	else if (mlx->wsad[3])
+	if (mlx->wsad[3])
 	{
-		move_vec[0] -= mlx->player->sin_angle * 0.5f;
-		move_vec[1] += mlx->player->cos_angle * 0.5f;
+		move_vec[0] -= mlx->player->sin_angle * 0.2f;
+		move_vec[1] += mlx->player->cos_angle * 0.2f;
 	}
 
 	int pushing = mlx->wsad[0] || mlx->wsad[1] || mlx->wsad[2] || mlx->wsad[3];
-	float acceleration = (pushing) ? 0.7f : 0.5f;
+	float acceleration = (pushing) ? 0.35f : 0.35f;
 
 	mlx->player->velocity->x = mlx->player->velocity->x * (1 - acceleration) + move_vec[0] * acceleration;
 	mlx->player->velocity->y = mlx->player->velocity->y * (1 - acceleration) + move_vec[1] * acceleration;

@@ -1,3 +1,4 @@
+
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
@@ -103,9 +104,6 @@ t_scaler	*ft_scaler_init(t_scaler *scaler, int a, int b, int c, int d, int f)
 	return (scaler);
 }
 
-// for(i->cache += i->fd; i->cache >= i->ca; i->cache -= i->ca) i->result += i->bop;
-    // return i->result;
-
 int		ft_scaler_next(t_scaler *scaler)
 {
 	scaler->cache += scaler->fd;
@@ -161,6 +159,6 @@ void	ft_draw_tvline(t_mlx *mlx, int x, int y1, int y2, t_scaler *ty, unsigned tx
 	{
 		unsigned txty = ft_scaler_next(ty);
 		// printf("txtx %u	txty %u\n", txtx, txty);
-		ft_image(mlx, x, y, texture->data[txty % texture->h * texture->h + txtx % texture->w]);
+		ft_image(mlx, x, y, texture->data[txty % texture->h * texture->w + txtx % texture->w]);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/06/28 23:52:50 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/03 17:23:08 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 
 	t_img **tmp_t;
 
-	while (get_next_line(fd, &line) == 1)
+	while (get_next_line(fd, &line))
 	{
 		if (line[0] == 'v' && line[1] == ' ')
 		{
@@ -74,7 +74,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				while (j >= 0)
 				{
 					tmp_v[j] = (t_vec2*)malloc(sizeof(t_vec2));
-					ft_memcpy((void*)tmp_v[j], (const void*)verts[j], sizeof(t_vec2));
+					ft_memcpy(tmp_v[j], verts[j], sizeof(t_vec2));
 					free(verts[j]);
 					j--;
 				}
@@ -84,7 +84,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				while (j < v - 1)
 				{
 					verts[j] = (t_vec2*)malloc(sizeof(t_vec2));
-					ft_memcpy((void*)verts[j], (const void*)tmp_v[j], sizeof(t_vec2));
+					ft_memcpy(verts[j], tmp_v[j], sizeof(t_vec2));
 					free(tmp_v[j]);
 					j++;
 				}
@@ -112,7 +112,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				while (j >= 0)
 				{
 					tmp_s[j] = (t_sector*)malloc(sizeof(t_sector));
-					ft_memcpy((void*)tmp_s[j], (const void*)mlx->sect[j], sizeof(t_sector));
+					ft_memcpy(tmp_s[j], mlx->sect[j], sizeof(t_sector));
 					free(mlx->sect[j]);
 					j--;
 				}
@@ -122,7 +122,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				while (j < s - 1)
 				{
 					mlx->sect[j] = (t_sector*)malloc(sizeof(t_sector));
-					ft_memcpy((void*)mlx->sect[j], (const void*)tmp_s[j], sizeof(t_sector));
+					ft_memcpy(mlx->sect[j], tmp_s[j], sizeof(t_sector));
 					free(tmp_s[j]);
 					j++;
 				}
@@ -214,7 +214,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 
 			if (t > 1)
 			{
-				
+				int i = 1;
 			}
 			else
 			{
@@ -223,6 +223,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				int txt_count = 0;
 				while (tmp_t[txt_count])
 					txt_count++;
+				printf("txt_c %d\n", txt_count);
 				mlx->sect[tmp]->textures = (t_img**)malloc(sizeof(t_img*) * txt_count);
 				mlx->sect[tmp]->texts = (char**)malloc(sizeof(char*) * txt_count);
 				int j = -1;
@@ -268,27 +269,27 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 	// 	printf("x %f	y %f	%d\n", verts[j]->x, verts[j]->y, j);
 	// 	j++;
 	// }
-	// printf("sect %d\n", mlx->num_sec);
-	// int j = 0;
-	// while (j < s - 1)
-	// {
-	// 	printf("sect %d\n\n", j);
-	// 	printf("v_count %d\n", mlx->sect[j]->verts_count);
-	// 	printf("floor %f	ceiling %f\n\n", mlx->sect[j]->floor, mlx->sect[j]->ceiling);
-	// 	int k = 0;
-	// 	while (k < mlx->sect[j]->verts_count + 1)
-	// 	{
-	// 		printf("x %f	y %f\n", mlx->sect[j]->verts[k]->x, mlx->sect[j]->verts[k]->y);
-	// 		k++;
-	// 	}
-	// 	k = 0;
-	// 	while (k < mlx->sect[j]->neighbors_count)
-	// 	{
-	// 		printf("%s ", mlx->sect[j]->neighbors[k]);
-	// 		k++;
-	// 	}
-	// 	printf("\n");
-	// 	printf("________________________________\n", j);
-	// 	j++;
-	// }
+	printf("sect %d\n", mlx->num_sec);
+	int j = 0;
+	while (j < s - 1)
+	{
+		printf("\nsect %d\n", j);
+		printf("v_count %d\n", mlx->sect[j]->verts_count);
+		printf("floor %f	ceiling %f\n\n", mlx->sect[j]->floor, mlx->sect[j]->ceiling);
+		int k = 0;
+		while (k < mlx->sect[j]->verts_count + 1)
+		{
+			printf("x %f	y %f\n", mlx->sect[j]->verts[k]->x, mlx->sect[j]->verts[k]->y);
+			k++;
+		}
+		k = 0;
+		while (k < mlx->sect[j]->neighbors_count)
+		{
+			printf("%s ", mlx->sect[j]->neighbors[k]);
+			k++;
+		}
+		printf("\n");
+		printf("________________________________\n");
+		j++;
+	}
 }

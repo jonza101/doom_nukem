@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/06/28 23:03:19 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/03 18:21:34 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 #include "mlx.h"
 #include "gnl/get_next_line.h"
-// #include "mac_keys.h"
+#include "mac_keys.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -29,6 +29,7 @@
 #define CROUCH_H 3
 #define HEAD_MARGIN 5
 #define STAIRS_H 2
+#define JUMP_H 0.75
 
 #define FOV_H (0.63 * H)
 #define FOV_V (0.2 * H)
@@ -106,7 +107,12 @@ typedef	struct	s_player
 	float			cos_angle;
 	float			yaw;
 	
-	int					sector;
+	int				sector;
+
+	int				left;
+	int				right;
+	int				up;
+	int				down;
 }						t_player;
 
 typedef	struct	s_mlx
@@ -146,6 +152,9 @@ typedef	struct	s_mlx
 	t_scaler			*yb_int;
 	t_scaler			*nya_int;
 	t_scaler			*nyb_int;
+
+	int					l;
+	int					r;
 
 	t_img				*txt_temp[TXT];
 }						t_mlx;

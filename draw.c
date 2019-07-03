@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/06/28 23:27:30 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/03 16:47:17 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	ft_draw(t_mlx *mlx)
 	if (++mlx->head == mlx->queue + MAX_QUEUE)
 		mlx->head = mlx->queue;
 
-	int i = 0;
+	// int i = 0;
 	while (mlx->head != mlx->tail)
 	{
 		mlx->now = mlx->tail;
@@ -45,6 +45,8 @@ void	ft_draw(t_mlx *mlx)
 		++rendered_sect[mlx->now->sector_n];
 
 		t_sector *sector = mlx->sect[mlx->now->sector_n];
+
+		// printf("now %d		head %d		tail %d\nx1 %d		x1 %d		x1 %d\nx2 %d		x2 %d		x2 %d\n\n", mlx->now->sector_n, mlx->head->sector_n, mlx->tail->sector_n, mlx->now->sx1, mlx->head->sx1, mlx->tail->sx1, mlx->now->sx2, mlx->head->sx2, mlx->tail->sx2);
 
 		int s = -1;
 		while (++s < sector->verts_count)
@@ -97,7 +99,7 @@ void	ft_draw(t_mlx *mlx)
 				if (tz1 < near_z) { if (i1->y > 0) { tx1 = i1->x; tz1 = i1->y; } else { tx1 = i2->x; tz1 = i2->y; }}
 				if (tz2 < near_z) { if (i1->y > 0) { tx2 = i1->x; tz2 = i1->y; } else { tx2 = i2->x; tz2 = i2->y; }}
 
-				if (abs(tx2 - tx1) > abs(tz2 - tz1))
+				if (fabs(tx2 - tx1) > fabs(tz2 - tz1))
 				{
 					u0 = (tx1 - org1->x) * 511 / (org2->x - org1->x);
 					u1 = (tx2 - org1->x) * 511 / (org2->x - org1->x);
@@ -167,17 +169,17 @@ void	ft_draw(t_mlx *mlx)
 				int txtx = (u0 * ((x2 - x) * tz2) + u1 * ((x - x1) * tz1)) / ((x2 - x) * tz2 + (x - x1) * tz1);
 
 				//	ACQUIRE THE Y COORDINATES FOR OUR CEILING & FLOOR FOR THIS X COORDINATE. CLAMP THEM
-				// int ya = ft_scaler_next(mlx->ya_int);
-				// int yb = ft_scaler_next(mlx->yb_int);
+				int ya = ft_scaler_next(mlx->ya_int);
+				int yb = ft_scaler_next(mlx->yb_int);
 				
-                // int cya = ft_clamp(ya, ytop[x],ybottom[x]);
-                // int cyb = ft_clamp(yb, ytop[x],ybottom[x]);
+                int cya = ft_clamp(ya, ytop[x],ybottom[x]);
+                int cyb = ft_clamp(yb, ytop[x],ybottom[x]);
 
 				//	ACQUIRE THE Y COORDINATES FOR OUR CEILING & FLOOR FOR THIS X COORDINATE. CLAMP THEM
-				int ya = (x - x1) * (y2a - y1a) / (x2 - x1) + y1a;
-				int cya = ft_clamp(ya, ytop[x], ybottom[x]);
-				int yb = (x - x1) * (y2b - y1b) / (x2 - x1) + y1b;
-				int cyb = ft_clamp(yb, ytop[x], ybottom[x]);
+				// int ya = (x - x1) * (y2a - y1a) / (x2 - x1) + y1a;
+				// int cya = ft_clamp(ya, ytop[x], ybottom[x]);
+				// int yb = (x - x1) * (y2b - y1b) / (x2 - x1) + y1b;
+				// int cyb = ft_clamp(yb, ytop[x], ybottom[x]);
 
 				//	RENDER CEILING
 				ft_draw_vline(mlx, x, ytop[x], cya - 1, 0, 0x252525, 0);		//		0x757575
@@ -199,18 +201,18 @@ void	ft_draw(t_mlx *mlx)
 					// int cnyb = ft_clamp(nyb, ytop[x], ybottom[x]);
 
 					// RENDER UPPER WALL
-					// ft_draw_vline(mlx, x, cya, cnya - 1, 0, x == x1 || x == x2 ? 0 : 0x330315, 0);
-					// ytop[x] = ft_clamp(ft_max(cya, cnya), ytop[x], H - 1);
-					mlx->scaler = ft_scaler_init(mlx->scaler, ya, cya, yb, 0, 511);
-					ft_draw_tvline(mlx, x, cya, cnya - 1, mlx->scaler, txtx, mlx->texture);
+					ft_draw_vline(mlx, x, cya, cnya - 1, 0, x == x1 || x == x2 ? 0 : 0x330315, 0);
 					ytop[x] = ft_clamp(ft_max(cya, cnya), ytop[x], H - 1);
+					// mlx->scaler = ft_scaler_init(mlx->scaler, ya, cya, yb, 0, 511);
+					// ft_draw_tvline(mlx, x, cya, cnya - 1, mlx->scaler, txtx, mlx->texture);
+					// ytop[x] = ft_clamp(ft_max(cya, cnya), ytop[x], H - 1);
 
 					// RENDER LOWER WALL
-					// ft_draw_vline(mlx, x, cnyb + 1, cyb, 0, x == x1 || x == x2 ? 0 : 0x1B0030, 0);
-					// ybottom[x] = ft_clamp(ft_min(cyb, cnyb), 0, ybottom[x]);
-					mlx->scaler = ft_scaler_init(mlx->scaler, ya, cnyb + 1, yb, 0, 511);
-					ft_draw_tvline(mlx, x, cnyb + 1, cyb, mlx->scaler, txtx, mlx->texture);
+					ft_draw_vline(mlx, x, cnyb + 1, cyb, 0, x == x1 || x == x2 ? 0 : 0x1B0030, 0);
 					ybottom[x] = ft_clamp(ft_min(cyb, cnyb), 0, ybottom[x]);
+					// mlx->scaler = ft_scaler_init(mlx->scaler, ya, cnyb + 1, yb, 0, 511);
+					// ft_draw_tvline(mlx, x, cnyb + 1, cyb, mlx->scaler, txtx, mlx->texture);
+					// ybottom[x] = ft_clamp(ft_min(cyb, cnyb), 0, ybottom[x]);
 				}
 				else
 				{
@@ -218,18 +220,28 @@ void	ft_draw(t_mlx *mlx)
 					mlx->scaler = ft_scaler_init(mlx->scaler, ya, cya, yb, 0, 511);
 					ft_draw_tvline(mlx, x, cya, cyb, mlx->scaler, txtx, mlx->texture);
 				}
-					
 			}
 			if (neighbor >= 0 && endx >= beginx && (mlx->head + MAX_QUEUE + 1 - mlx->tail) % MAX_QUEUE)
 			{
+				// printf("keep drawing\n");
 				mlx->head->sector_n = neighbor;
 				mlx->head->sx1 = beginx;
 				mlx->head->sx2 = endx;
 				if (++mlx->head == mlx->queue + MAX_QUEUE)
 					mlx->head = mlx->queue;
+				// printf("neig %d		end %d		beging %d		bool %ld\n", neighbor, endx, beginx, (mlx->head + MAX_QUEUE + 1 - mlx->tail) % MAX_QUEUE);
+				// printf("sect %d		s %d\n", mlx->now->sector_n, s);
 			}
+			// else
+			// {
+				// printf("neig %d		end %d		beging %d		bool %ld\n", neighbor, endx, beginx, (mlx->head + MAX_QUEUE + 1 - mlx->tail) % MAX_QUEUE);
+				// printf("sect %d		s %d\n", mlx->now->sector_n, s);
+			// }
+			
 		}
 		++rendered_sect[mlx->now->sector_n];
 	}
+	// printf("\n");
+	// printf("\n__________________________________________________________\n\n");
 	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
 }
