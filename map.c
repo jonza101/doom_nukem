@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/03 17:23:08 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/04 16:44:57 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 					free(mlx->sect[j]);
 					j--;
 				}
-				free(mlx->sect);
+				// free(mlx->sect);
 				mlx->sect = (t_sector**)malloc(sizeof(t_sector) * s);
 				j = 0;
 				while (j < s - 1)
@@ -126,8 +126,10 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 					free(tmp_s[j]);
 					j++;
 				}
-				free(tmp_s);
+				// free(tmp_s);
 				mlx->sect[s - 1] = (t_sector*)malloc(sizeof(t_sector));
+
+				mlx->sect[s - 1]->txt_count = 0;
 
 				char **t;
 				t = ft_strsplit(temp[1], ' ');
@@ -169,7 +171,9 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 			{
 				mlx->sect = (t_sector**)malloc(sizeof(t_sector*) * 1);
 				mlx->sect[0] = (t_sector*)malloc(sizeof(t_sector));
-				
+
+				mlx->sect[0]->txt_count = 0;
+
 				char **t;
 				t = ft_strsplit(temp[1], ' ');
 				mlx->sect[0]->floor = (double)ft_datoi(t[0]);
@@ -211,33 +215,16 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 		if (line[0] == 't' && line[1] == '|')
 		{
 			temp = ft_strsplit(line, '|');
-
-			if (t > 1)
-			{
-				int i = 1;
-			}
-			else
-			{
-				int tmp = ft_atoi(temp[1]);
-				char **tmp_t = ft_strsplit(temp[2], ' ');
-				int txt_count = 0;
-				while (tmp_t[txt_count])
-					txt_count++;
-				printf("txt_c %d\n", txt_count);
-				mlx->sect[tmp]->textures = (t_img**)malloc(sizeof(t_img*) * txt_count);
-				mlx->sect[tmp]->texts = (char**)malloc(sizeof(char*) * txt_count);
-				int j = -1;
-				while (++j < txt_count)
-				{
-					mlx->sect[tmp]->texts[j] = ft_strdup(tmp_t[j]);
-					int index = ft_atoi(tmp_t[j]);
-					if (index >= 0)
-					{
-						mlx->sect[tmp]->textures[j] = (t_img*)malloc(sizeof(t_img));
-						ft_memcpy((void*)mlx->sect[tmp]->textures[j], (const void*)mlx->txt_temp[index], sizeof(t_img));
-					}
-				}
-			}
+			int tmp = ft_atoi(temp[1]);
+			char **tmp_t = ft_strsplit(temp[2], ' ');
+			int txt_count = 0;
+			while (tmp_t[txt_count])
+				txt_count++;
+			mlx->sect[tmp]->texts = (char**)malloc(sizeof(char*) * txt_count);
+			mlx->sect[tmp]->txt_count = txt_count;
+			int j = -1;
+			while (++j < txt_count)
+				mlx->sect[tmp]->texts[j] = ft_strdup(tmp_t[j]);
 		}
 		if (line[0] == 'p' && line[1] == '|')
 		{
@@ -262,34 +249,31 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 	mlx->num_sec = s - 1;
 
 	printf("px %f	py %f	sect %d\n\n", mlx->player->pos->x, mlx->player->pos->y, mlx->player->sector);
-	// int j = 0;
+	// int j = -1;
 	// printf("verts %d\n", v - 1);
-	// while (j < v - 1)
+	// while (++j < v - 1)
 	// {
-	// 	printf("x %f	y %f	%d\n", verts[j]->x, verts[j]->y, j);
+	// 	// printf("x %f	y %f	%d\n", verts[j]->x, verts[j]->y, j);
+	// 	printf("y %f	x %f\n", verts[j]->y, verts[j]->x);
+	// }
+	// printf("sect %d\n", mlx->num_sec);
+	// int j = 0;
+	// while (j < s - 1)
+	// {
+	// 	printf("\nsect %d\n", j);
+	// 	printf("v_count %d\n", mlx->sect[j]->verts_count);
+	// 	printf("floor %f	ceiling %f\n\n", mlx->sect[j]->floor, mlx->sect[j]->ceiling);
+	// 	int k = -1;
+	// 	while (++k < mlx->sect[j]->verts_count + 1)
+	// 		printf("x %f	y %f\n", mlx->sect[j]->verts[k]->x, mlx->sect[j]->verts[k]->y);
+	// 	k = -1;
+	// 	while (++k < mlx->sect[j]->neighbors_count)
+	// 		printf("%s ", mlx->sect[j]->neighbors[k]);
+	// 	printf("\n");
+	// 	k = -1;
+	// 	while (++k < mlx->sect[j]->txt_count)
+	// 		printf("%s ", mlx->sect[j]->texts[k]);
+	// 	printf("\n________________________________\n");
 	// 	j++;
 	// }
-	printf("sect %d\n", mlx->num_sec);
-	int j = 0;
-	while (j < s - 1)
-	{
-		printf("\nsect %d\n", j);
-		printf("v_count %d\n", mlx->sect[j]->verts_count);
-		printf("floor %f	ceiling %f\n\n", mlx->sect[j]->floor, mlx->sect[j]->ceiling);
-		int k = 0;
-		while (k < mlx->sect[j]->verts_count + 1)
-		{
-			printf("x %f	y %f\n", mlx->sect[j]->verts[k]->x, mlx->sect[j]->verts[k]->y);
-			k++;
-		}
-		k = 0;
-		while (k < mlx->sect[j]->neighbors_count)
-		{
-			printf("%s ", mlx->sect[j]->neighbors[k]);
-			k++;
-		}
-		printf("\n");
-		printf("________________________________\n");
-		j++;
-	}
 }

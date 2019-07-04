@@ -33,26 +33,26 @@
     vxs(vxs(x1,y1, x2,y2), (x1)-(x2), vxs(x3,y3, x4,y4), (x3)-(x4)) / vxs((x1)-(x2), (y1)-(y2), (x3)-(x4), (y3)-(y4)), \
     vxs(vxs(x1,y1, x2,y2), (y1)-(y2), vxs(x3,y3, x4,y4), (y3)-(y4)) / vxs((x1)-(x2), (y1)-(y2), (x3)-(x4), (y3)-(y4)) })
 
-float		ft_min(float a, float b)
+double		ft_min(double a, double b)
 {
 	if (b < a)
 		return (b);
 	return (a);
 }
 
-float		ft_max(float a, float b)
+double		ft_max(double a, double b)
 {
 	if (b > a)
 		return (b);
 	return (a);
 }
 
-float	ft_clamp(float a, float min, float max)
+double	ft_clamp(double a, double min, double max)
 {
 	return (ft_min(ft_max(a, min), max));
 }
 
-int		ft_sign(float val)
+int		ft_sign(double val)
 {
 	if (val > 0)
 		return (1);
@@ -61,27 +61,27 @@ int		ft_sign(float val)
 	return (0);
 }
 
-int		ft_overlap(float a0, float a1, float b0, float b1)
+int		ft_overlap(double a0, double a1, double b0, double b1)
 {
 	return(ft_min(a0, a1) <= ft_max(b0, b1) && ft_min(b0, b1) <= ft_max(a0, a1));
 }
 
-int		ft_intersect_box(float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3)
+int		ft_intersect_box(double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3)
 {
 	return (ft_overlap(x0, x1, x2, x3) && ft_overlap(y0, y1, y2, y3));
 }
 
-float	ft_vec_cross_prod(float x0, float y0, float x1, float y1)
+double	ft_vec_cross_prod(double x0, double y0, double x1, double y1)
 {
 	return ((x0 * y1) - (x1 * y0));
 }
 
-int		ft_point_side(float px, float py, float x0, float y0, float x1, float y1)
+int		ft_point_side(double px, double py, double x0, double y0, double x1, double y1)
 {
 	return (ft_sign(ft_vec_cross_prod(x1 - x0, y1 - y0, px - x0, py - y0)));
 }
 
-void	ft_intersect(t_vec2 *p, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
+void	ft_intersect(t_vec2 *p, double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
 {
 	p->x = ft_vec_cross_prod(ft_vec_cross_prod(x1, y1, x2, y2), x1 - x2, ft_vec_cross_prod(x3, y3, x4, y4), x3 - x4) /
 		ft_vec_cross_prod(x1 - x2, y1 - y2, x3 - x4, y3 - y4);
@@ -89,7 +89,7 @@ void	ft_intersect(t_vec2 *p, float x1, float y1, float x2, float y2, float x3, f
 		ft_vec_cross_prod(x1 - x2, y1 - y2, x3 - x4, y3 - y4);
 }
 
-float	ft_yaw(float y, float z, float p_yaw)
+double	ft_yaw(double y, double z, double p_yaw)
 {
 	return (y + z * p_yaw);
 }
@@ -161,4 +161,30 @@ void	ft_draw_tvline(t_mlx *mlx, int x, int y1, int y2, t_scaler *ty, unsigned tx
 		// printf("txtx %u	txty %u\n", txtx, txty);
 		ft_image(mlx, x, y, texture->data[txty % texture->h * texture->w + txtx % texture->w]);
 	}
+}
+
+void	ft_upper_solid(t_mlx *mlx, int x, int cya, int cnya, int top_c, int middle_c, int bottom_c, int *ar_top)
+{
+	ft_draw_vline(mlx, x, cya, cnya - 1, top_c, middle_c, bottom_c);
+	*ar_top = ft_clamp(ft_max(cya, cnya), *ar_top, H - 1);
+}
+
+void	ft_lower_solid(t_mlx *mlx, int x, int cnyb, int cyb, int bottom_c, int middle_c, int top_c, int *ar_bottom)
+{
+	ft_draw_vline(mlx, x, cnyb + 1, cyb, top_c, middle_c, bottom_c);
+	*ar_bottom = ft_clamp(ft_min(cyb, cnyb), 0, *ar_bottom);
+}
+
+void	ft_upper_txt(t_mlx *mlx, int x, int cya, int cnya, int txtx, int txt_i, int ya, int yb, int *ar_top)
+{
+	mlx->scaler = ft_scaler_init(mlx->scaler, ya, cya, yb, 0, 511);
+	ft_draw_tvline(mlx, x, cya, cnya - 1, mlx->scaler, txtx, mlx->txt_temp[txt_i]);
+	*ar_top = ft_clamp(ft_max(cya, cnya), *ar_top, H - 1);
+}
+
+void	ft_lower_txt(t_mlx *mlx, int x, int cnyb, int cyb, int txtx, int txt_i, int ya, int yb, int *ar_bottom)
+{
+	mlx->scaler = ft_scaler_init(mlx->scaler, ya, cnyb + 1, yb, 0, 511);
+	ft_draw_tvline(mlx, x, cnyb + 1, cyb, mlx->scaler, txtx, mlx->txt_temp[txt_i]);
+	*ar_bottom = ft_clamp(ft_min(cyb, cnyb), 0, *ar_bottom);
 }

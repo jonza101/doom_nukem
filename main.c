@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/03 18:26:50 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/04 17:27:27 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,16 @@ void	ft_player_view(t_mlx *mlx)
 	if (mlx->player->left)
 	{
 		mlx->player->angle -= 0.045f;
-		ft_move_player(mlx, 0, 0);
+		mlx->player->sin_angle = sinf(mlx->player->angle);
+		mlx->player->cos_angle = cosf(mlx->player->angle);
+		// ft_move_player(mlx, 0, 0);
 	}
 	if (mlx->player->right)
 	{
 		mlx->player->angle += 0.045f;
-		ft_move_player(mlx, 0, 0);
+		mlx->player->sin_angle = sinf(mlx->player->angle);
+		mlx->player->cos_angle = cosf(mlx->player->angle);
+		// ft_move_player(mlx, 0, 0);
 	}
 	if (mlx->player->up)
 	{
@@ -76,14 +80,14 @@ void	ft_player_view(t_mlx *mlx)
 int		ft_game_loop(t_mlx *mlx)
 {
 	ft_collision(mlx);
-	ft_move_calc(mlx);
-	
 	ft_player_view(mlx);
+	ft_move_calc(mlx);
 
 	ft_reset_image(mlx);
 	ft_draw(mlx);
-	// printf("sect %d		px %f		py %f\n", mlx->player->sector, mlx->player->pos->x, mlx->player->pos->y);
-	// printf("angle %f\n", mlx->player->angle);
+	// printf("p_sect %d\n", mlx->player->sector);
+	// printf("px %f	py %f	pz %f\n", mlx->player->pos->x, mlx->player->pos->y, mlx->player->pos->z);
+	// printf("angle %f	sin %f	cos %f\n", mlx->player->angle, mlx->player->sin_angle, mlx->player->cos_angle);
 	// printf("dx %f	dy %f	dz %f\n\n", mlx->player->velocity->x, mlx->player->velocity->y, mlx->player->velocity->z);
 	// printf("g %d\nf %d\nm %d\nc %d\n\n", mlx->ground, mlx->falling, mlx->moving, mlx->crouching);
 	return (0);

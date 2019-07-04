@@ -6,25 +6,18 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/11 15:06:15 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/03 18:17:06 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/04 16:57:47 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doom_nukem.h"
 
-void	ft_move_player(t_mlx *mlx, float dx, float dy)
+void	ft_move_player(t_mlx *mlx, double dx, double dy)
 {
-	float px = mlx->player->pos->x;
-	float py = mlx->player->pos->y;
+	double px = mlx->player->pos->x;
+	double py = mlx->player->pos->y;
 
 	t_sector *sector = mlx->sect[mlx->player->sector];
-
-	mlx->player->sin_angle = sinf(mlx->player->angle);
-	mlx->player->cos_angle = cosf(mlx->player->angle);
-	if (!dx && !dy)
-		return ;
-	mlx->player->pos->x += dx;
-	mlx->player->pos->y += dy;
 
 	int s = -1;
 	while (++s < sector->verts_count)
@@ -42,17 +35,21 @@ void	ft_move_player(t_mlx *mlx, float dx, float dy)
 				break ;
 			}
 	}
+	mlx->player->sin_angle = sinf(mlx->player->angle);
+	mlx->player->cos_angle = cosf(mlx->player->angle);
+	mlx->player->pos->x += dx;
+	mlx->player->pos->y += dy;
 }
 
 void	ft_collision(t_mlx *mlx)
 {
 	//	VERTICAL COLLISION
-	float eye_h = mlx->crouching ? CROUCH_H : EYE_H;
+	double eye_h = mlx->crouching ? CROUCH_H : EYE_H;
 	mlx->ground = !mlx->falling;
 	if (mlx->falling)
 	{
 		mlx->player->velocity->z -= 0.05f;
-		float next_z = mlx->player->pos->z + mlx->player->velocity->z;
+		double next_z = mlx->player->pos->z + mlx->player->velocity->z;
 		if (mlx->player->velocity->z < 0 && next_z < mlx->sect[mlx->player->sector]->floor + eye_h)
 		{
 			mlx->player->pos->z = mlx->sect[mlx->player->sector]->floor + eye_h;
@@ -75,10 +72,10 @@ void	ft_collision(t_mlx *mlx)
 	//	HORIZONTAL COLLISION
 	if (mlx->moving)
 	{
-		float px = mlx->player->pos->x;
-		float py = mlx->player->pos->y;
-		float dx = mlx->player->velocity->x;
-		float dy = mlx->player->velocity->y;
+		double px = mlx->player->pos->x;
+		double py = mlx->player->pos->y;
+		double dx = mlx->player->velocity->x;
+		double dy = mlx->player->velocity->y;
 		int stop = 0;
 
 		t_sector *sector = mlx->sect[mlx->player->sector];
@@ -141,8 +138,8 @@ void	ft_collision(t_mlx *mlx)
 				if (!stop)
 				{
 					// printf("calc\n");
-					float hole_low = 9e9;
-					float hole_high = -9e9;
+					double hole_low = 9e9;
+					double hole_high = -9e9;
 					if (neighbor >= 0)
 					{
 						hole_low = ft_max(sector->floor, mlx->sect[neighbor]->floor);
@@ -151,8 +148,8 @@ void	ft_collision(t_mlx *mlx)
 					if (hole_high < mlx->player->pos->z + 0 ||				//eye_h
 						hole_low > mlx->player->pos->z - eye_h + STAIRS_H)
 					{
-						float xd = sector->verts[s + 1]->x - sector->verts[s + 0]->x;
-						float yd = sector->verts[s + 1]->y - sector->verts[s + 0]->y;
+						double xd = sector->verts[s + 1]->x - sector->verts[s + 0]->x;
+						double yd = sector->verts[s + 1]->y - sector->verts[s + 0]->y;
 						mlx->player->velocity->x = xd * (dx * xd + yd * dy) / (xd * xd + yd * yd);
 						mlx->player->velocity->y = yd * (dx * xd + yd * dy) / (xd * xd + yd * yd);
 						mlx->moving = 0;
@@ -171,7 +168,7 @@ void	ft_collision(t_mlx *mlx)
 
 void	ft_move_calc(t_mlx *mlx)
 {
-	float move_vec[2] = { 0.0f, 0.0f };
+	double move_vec[2] = { 0.0f, 0.0f };
 	if (mlx->wsad[0])
 	{
 		move_vec[0] += mlx->player->cos_angle * 0.2f;
@@ -194,10 +191,10 @@ void	ft_move_calc(t_mlx *mlx)
 	}
 
 	int pushing = mlx->wsad[0] || mlx->wsad[1] || mlx->wsad[2] || mlx->wsad[3];
-	float acceleration = (pushing) ? 0.35f : 0.35f;
+	// double acceleration = (pushing) ? 0.35f : 0.35f;
 
-	mlx->player->velocity->x = mlx->player->velocity->x * (1 - acceleration) + move_vec[0] * acceleration;
-	mlx->player->velocity->y = mlx->player->velocity->y * (1 - acceleration) + move_vec[1] * acceleration;
+	mlx->player->velocity->x = mlx->player->velocity->x * (1 - 0.35f) + move_vec[0] * 0.35f;
+	mlx->player->velocity->y = mlx->player->velocity->y * (1 - 0.35f) + move_vec[1] * 0.35f;
 	// printf("dx %f	dy %f	dz %f\n\n", mlx->player->velocity->x, mlx->player->velocity->y, mlx->player->velocity->z);
 
 	if (pushing)
