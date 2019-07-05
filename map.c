@@ -6,11 +6,21 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/04 16:44:57 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/05 18:43:47 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doom_nukem.h"
+
+void	ft_strsplit_free(char **temp)
+{
+	int i;
+
+	i = -1;
+	while (temp[++i])
+		free(temp[i]);
+	free(temp);
+}
 
 double	ft_datoi(char *str)
 {
@@ -49,18 +59,18 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 	int s = 1;
 	int t = 1;
 	
-	char *line;
+	char *line = NULL;
 	int fd = open(map_file, O_RDONLY);
 	if (fd < 0)
 		return ;
 	
-	char **temp;
+	char **temp = NULL;
 
-	t_vec2 **verts, **tmp_v;
+	t_vec2 **verts = NULL, **tmp_v = NULL;
 
-	t_sector **tmp_s;
+	t_sector **tmp_s = NULL;
 
-	t_img **tmp_t;
+	t_img **tmp_t = NULL;
 
 	while (get_next_line(fd, &line))
 	{
@@ -100,6 +110,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				verts[0]->x = (double)ft_datoi(temp[2]);
 				verts[0]->y = (double)ft_datoi(temp[1]);
 			}
+			ft_strsplit_free(temp);
 			v++;
 		}
 		if (line[0] == 's' && line[1] == '|')
@@ -136,6 +147,8 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->sect[s - 1]->floor = (double)ft_datoi(t[0]);
 				mlx->sect[s - 1]->ceiling = (double)ft_datoi(t[1]);
 
+				ft_strsplit_free(t);
+
 				t = ft_strsplit(temp[2], ' ');
 				int v_count = 0;
 				while (t[v_count])
@@ -154,6 +167,8 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->sect[s - 1]->verts[0]->x = (double)verts[ft_atoi(t[j - 1])]->x;
 				mlx->sect[s - 1]->verts[0]->y = (double)verts[ft_atoi(t[j - 1])]->y;
 
+				ft_strsplit_free(t);
+
 				t = ft_strsplit(temp[3], ' ');
 				int n_count = 0;
 				while (t[n_count])
@@ -166,6 +181,8 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 					mlx->sect[s - 1]->neighbors[j] = ft_strdup(t[j]);
 					j++;
 				}
+
+				ft_strsplit_free(t);
 			}
 			else
 			{
@@ -178,6 +195,8 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				t = ft_strsplit(temp[1], ' ');
 				mlx->sect[0]->floor = (double)ft_datoi(t[0]);
 				mlx->sect[0]->ceiling = (double)ft_datoi(t[1]);
+
+				ft_strsplit_free(t);
 
 				t = ft_strsplit(temp[2], ' ');
 				int v_count = 0;
@@ -197,6 +216,8 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->sect[0]->verts[0]->x = (double)verts[ft_atoi(t[j - 1])]->x;
 				mlx->sect[0]->verts[0]->y = (double)verts[ft_atoi(t[j - 1])]->y;
 
+				ft_strsplit_free(t);
+
 				t = ft_strsplit(temp[3], ' ');
 				int n_counts = 0;
 				while (t[n_counts])
@@ -209,7 +230,11 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 					mlx->sect[0]->neighbors[j] = ft_strdup(t[j]);
 					j++;
 				}
+
+				ft_strsplit_free(t);
 			}
+			ft_strsplit_free(temp);
+
 			s++;
 		}
 		if (line[0] == 't' && line[1] == '|')
@@ -225,6 +250,9 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 			int j = -1;
 			while (++j < txt_count)
 				mlx->sect[tmp]->texts[j] = ft_strdup(tmp_t[j]);
+
+			ft_strsplit_free(temp);
+			ft_strsplit_free(tmp_t);
 		}
 		if (line[0] == 'p' && line[1] == '|')
 		{
@@ -243,6 +271,9 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 			mlx->player->pos->x = (double)ft_datoi(t[0]);
 			mlx->player->pos->y = (double)ft_datoi(t[1]);
 			mlx->player->pos->z = (double)mlx->sect[mlx->player->sector]->floor + mlx->player->eye_h;
+
+			ft_strsplit_free(t);
+			ft_strsplit_free(temp);
 		}
 	}
 	close(fd);

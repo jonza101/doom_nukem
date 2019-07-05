@@ -1,4 +1,3 @@
-
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
@@ -7,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:38 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/06/28 22:44:30 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/05 18:49:22 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,14 +93,13 @@ double	ft_yaw(double y, double z, double p_yaw)
 	return (y + z * p_yaw);
 }
 
-t_scaler	*ft_scaler_init(t_scaler *scaler, int a, int b, int c, int d, int f)
+void	ft_scaler_init(t_scaler *scaler, int a, int b, int c, int d, int f)
 {
 	scaler->result = d + (b - 1 - a) * (f - d) / (c - a);
 	scaler->bop = ((f < d) ^ (c < a)) ? -1 : 1;
 	scaler->fd = abs(f - d);
 	scaler->ca = abs(c - a);
 	scaler->cache = (int)((b - 1 - a) * abs(f - d)) % abs(c  - a);
-	return (scaler);
 }
 
 int		ft_scaler_next(t_scaler *scaler)
@@ -152,13 +150,12 @@ void	ft_draw_vline(t_mlx *mlx, int x, int y1,int y2, int top_color,int middle_co
 
 void	ft_draw_tvline(t_mlx *mlx, int x, int y1, int y2, t_scaler *ty, unsigned txtx, t_img *texture)
 {
-	if (y1 < 0 || y1 > H - 1 || y2 < 0 || y2 > H - 1)
-		return ;
+	// if (y1 < 0 || y1 > H - 1 || y2 < 0 || y2 > H - 1)
+		// return ;
 	int y = y1 - 1;
 	while (++y <= y2)
 	{
 		unsigned txty = ft_scaler_next(ty);
-		// printf("txtx %u	txty %u\n", txtx, txty);
 		ft_image(mlx, x, y, texture->data[txty % texture->h * texture->w + txtx % texture->w]);
 	}
 }
@@ -177,14 +174,29 @@ void	ft_lower_solid(t_mlx *mlx, int x, int cnyb, int cyb, int bottom_c, int midd
 
 void	ft_upper_txt(t_mlx *mlx, int x, int cya, int cnya, int txtx, int txt_i, int ya, int yb, int *ar_top)
 {
-	mlx->scaler = ft_scaler_init(mlx->scaler, ya, cya, yb, 0, 511);
+	ft_scaler_init(mlx->scaler, ya, cya, yb, mlx->u0, mlx->u1);
 	ft_draw_tvline(mlx, x, cya, cnya - 1, mlx->scaler, txtx, mlx->txt_temp[txt_i]);
 	*ar_top = ft_clamp(ft_max(cya, cnya), *ar_top, H - 1);
 }
 
 void	ft_lower_txt(t_mlx *mlx, int x, int cnyb, int cyb, int txtx, int txt_i, int ya, int yb, int *ar_bottom)
 {
-	mlx->scaler = ft_scaler_init(mlx->scaler, ya, cnyb + 1, yb, 0, 511);
+	ft_scaler_init(mlx->scaler, ya, cnyb + 1, yb, mlx->u0, mlx->u1);
 	ft_draw_tvline(mlx, x, cnyb + 1, cyb, mlx->scaler, txtx, mlx->txt_temp[txt_i]);
 	*ar_bottom = ft_clamp(ft_min(cyb, cnyb), 0, *ar_bottom);
+}
+
+void	ft_relative_to_absolute(t_mlx *mlx)
+{
+	double rt_x = mlx->map_z * mlx->player->cos_angle + mlx->map_x * mlx->player->sin_angle;
+	double rt_z = mlx->map_z * mlx->player->sin_angle - mlx->map_x * mlx->player->cos_angle;
+	mlx->map_x = rt_x;// + mlx->player->pos->z;
+	mlx->map_z = rt_z + mlx->player->pos->y;
+}
+
+void	ft_screenpoint_to_mappoint(t_mlx *mlx, double map_y, double screen_x, double screen_y)
+{
+	mlx->map_z = map_y * H * FOV_V / ((H / 2 - screen_y) - mlx->player->yaw * H * FOV_V);
+	mlx->map_x = mlx->map_z * (W / 2 - (screen_x)) / (W * FOV_H);
+	ft_relative_to_absolute(mlx);
 }

@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/04 18:05:42 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/05 18:44:59 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void	ft_draw(t_mlx *mlx)
 				continue;
 
 			int u0 = 0;
-			int u1 = 511;
+			int u1 = mlx->u1;
 
 			//	IF IT'S PARTIALLY BEHIND THE PLAYER, CLIP IT AGAINST PLAYER'S VIEW FRUSTRUM
 			if (tz1 <= 0 || tz2 <= 0)
@@ -101,13 +101,13 @@ void	ft_draw(t_mlx *mlx)
 
 				if (fabs(tx2 - tx1) > fabs(tz2 - tz1))
 				{
-					u0 = (tx1 - org1->x) * 511 / (org2->x - org1->x);
-					u1 = (tx2 - org1->x) * 511 / (org2->x - org1->x);
+					u0 = (tx1 - org1->x) * mlx->u1 / (org2->x - org1->x);
+					u1 = (tx2 - org1->x) * mlx->u1 / (org2->x - org1->x);
 				}
 				else
 				{
-					u0 = (tz1 - org1->y) * 511 / (org2->y - org1->y);
-					u1 = (tz2 - org1->y) * 511 / (org2->y - org1->y);
+					u0 = (tz1 - org1->y) * mlx->u1 / (org2->y - org1->y);
+					u1 = (tz2 - org1->y) * mlx->u1 / (org2->y - org1->y);
 				}
 
 				free(i1);
@@ -118,18 +118,18 @@ void	ft_draw(t_mlx *mlx)
 			}
 
 			//	DO PERSPECTIVE TRANSFORMATION
-			double xscale1 = FOV_H / tz1;
-			double yscale1 = FOV_V / tz1;
-			int x1 = W / 2 - (int)(tx1 * xscale1);
-			double xscale2 = FOV_H / tz2;
-			double yscale2 = FOV_V / tz2;
-			int x2 = W / 2 - (int)(tx2 * xscale2);
+			double xscale1 = (W * FOV_H) / tz1;
+			double yscale1 = (H * FOV_V) / tz1;
+			int x1 = W / 2 + (int)(-tx1 * xscale1);
+			double xscale2 = (W * FOV_H) / tz2;
+			double yscale2 = (H * FOV_V) / tz2;
+			int x2 = W / 2 + (int)(-tx2 * xscale2);
 
 			if (x1 >= x2 || x2 < mlx->now->sx1 || x1 > mlx->now->sx2)
 				continue;
 
 			//	ACQUIRE THE FLOOR AND CEILING HEIGHTS, RELATIVE TO WHERE THE PLAYER'S VIEW IS
-			double yceil = sector->ceiling - mlx->player->pos->z;
+			double yceil = (sector->ceiling) - mlx->player->pos->z;
 			double yfloor = sector->floor - mlx->player->pos->z;
 
 			//	CHECK NEIGHBORS
@@ -143,25 +143,25 @@ void	ft_draw(t_mlx *mlx)
 			}
 
 			//	PROJECT OUR CEILING & FLOOR HEIGHTS INTO SCREEN COORDINATES (Y COORDINATE)
-			int y1a = H / 2 - (int)(ft_yaw(yceil, tz1, mlx->player->yaw) * yscale1);
-			int y1b = H / 2 - (int)(ft_yaw(yfloor, tz1, mlx->player->yaw) * yscale1);
-			int y2a = H / 2 - (int)(ft_yaw(yceil, tz2, mlx->player->yaw) * yscale2);
-			int y2b = H / 2 - (int)(ft_yaw(yfloor, tz2, mlx->player->yaw) * yscale2);
+			int y1a = H / 2 + (int)(-ft_yaw(yceil, tz1, mlx->player->yaw) * yscale1);
+			int y1b = H / 2 + (int)(-ft_yaw(yfloor, tz1, mlx->player->yaw) * yscale1);
+			int y2a = H / 2 + (int)(-ft_yaw(yceil, tz2, mlx->player->yaw) * yscale2);
+			int y2b = H / 2 + (int)(-ft_yaw(yfloor, tz2, mlx->player->yaw) * yscale2);
 
 			//	SAME FOR NEIGHBORS
-			int ny1a = H / 2 - (int)(ft_yaw(nyceil, tz1, mlx->player->yaw) * yscale1);
-			int ny1b = H / 2 - (int)(ft_yaw(nyfloor, tz1, mlx->player->yaw) * yscale1);
-			int ny2a = H / 2 - (int)(ft_yaw(nyceil, tz2, mlx->player->yaw) * yscale2);
-			int ny2b = H / 2 - (int)(ft_yaw(nyfloor, tz2, mlx->player->yaw) * yscale2);
+			int ny1a = H / 2 + (int)(-ft_yaw(nyceil, tz1, mlx->player->yaw) * yscale1);
+			int ny1b = H / 2 + (int)(-ft_yaw(nyfloor, tz1, mlx->player->yaw) * yscale1);
+			int ny2a = H / 2 + (int)(-ft_yaw(nyceil, tz2, mlx->player->yaw) * yscale2);
+			int ny2b = H / 2 + (int)(-ft_yaw(nyfloor, tz2, mlx->player->yaw) * yscale2);
 
 			//	RENDER THE WALL
 			int beginx = ft_max(x1, mlx->now->sx1);
 			int endx = ft_min(x2, mlx->now->sx2);
 
-			mlx->ya_int = ft_scaler_init(mlx->ya_int, x1,beginx,x2, y1a,y2a);
-            mlx->yb_int = ft_scaler_init(mlx->yb_int, x1,beginx,x2, y1b,y2b);
-            mlx->nya_int = ft_scaler_init(mlx->nya_int, x1,beginx,x2, ny1a,ny2a);
-            mlx->nyb_int = ft_scaler_init(mlx->nyb_int, x1,beginx,x2, ny1b,ny2b);
+			ft_scaler_init(mlx->ya_int, x1, beginx, x2, y1a, y2a);
+            ft_scaler_init(mlx->yb_int, x1, beginx, x2, y1b, y2b);
+            ft_scaler_init(mlx->nya_int, x1, beginx, x2, ny1a, ny2a);
+            ft_scaler_init(mlx->nyb_int, x1, beginx, x2, ny1b, ny2b);
 
 			int x = beginx - 1;
 			while (++x <= endx)
@@ -181,10 +181,26 @@ void	ft_draw(t_mlx *mlx)
 				// int yb = (x - x1) * (y2b - y1b) / (x2 - x1) + y1b;
 				// int cyb = ft_clamp(yb, ytop[x], ybottom[x]);
 
+				int y = ytop[x] - 1;
+				while (++y <= ybottom[x])
+				{
+					if (y >= cya && y <= cyb)
+					{
+						y = cyb;
+						continue ;
+					}
+					double h = y < cya ? yceil : yfloor;
+					ft_screenpoint_to_mappoint(mlx, h, x, y);
+					unsigned txtx = (mlx->map_x * 128);
+					unsigned txtz = (mlx->map_z * 128);
+					if (y < cya)
+						ft_image(mlx, x, y, mlx->txt_temp[1]->data[txtz % mlx->txt_temp[1]->h * mlx->txt_temp[1]->w + txtx % mlx->txt_temp[1]->w]);
+				}
 				//	RENDER CEILING
-				ft_draw_vline(mlx, x, ytop[x], cya - 1, 0, 0x252525, 0);		//		0x757575
+				// printf("%d\n", (cya - 1) * s);
+				// ft_draw_vline(mlx, x, ytop[x], (cya - 1), 0, CEILING_COLOR, 0);		//		0x757575
 				//	RENDER FLOOR
-				ft_draw_vline(mlx, x, cyb + 1, ybottom[x], 0, 0x252525, 0);
+				ft_draw_vline(mlx, x, (cyb + 1), ybottom[x], 0, FLOOR_COLOR, 0);
 
 				// RENDER NEIGBORS
 				if (neighbor >= 0)
@@ -211,43 +227,44 @@ void	ft_draw(t_mlx *mlx)
 							int up = ft_atoi(asd[1]);
 							int low = ft_atoi(asd[0]);
 							
-							if (up >= 0)
+							if (up >= 0 && up < TXT)
 								ft_upper_txt(mlx, x, cya, cnya, txtx, up, ya, yb, &ytop[x]);
 							else
-								ft_upper_solid(mlx, x, cya, cnya, 0, x == x1 || x == x2 ? 0 : 0x330315, 0, &ytop[x]);
+								ft_upper_solid(mlx, x, cya, cnya, 0, x == x1 || x == x2 ? 0 : UPPER_COLOR, 0, &ytop[x]);
 
-							if (low >= 0)
+							if (low >= 0 && low < TXT)
 								ft_lower_txt(mlx, x, cnyb, cyb, txtx, low, ya, yb, &ybottom[x]);
 							else
-								ft_lower_solid(mlx, x, cnyb, cyb, 0, x == x1 || x == x2 ? 0 : 0x1B0030, 0, &ybottom[x]);
+								ft_lower_solid(mlx, x, cnyb, cyb, 0, x == x1 || x == x2 ? 0 : LOWER_COLOR, 0, &ybottom[x]);
 						}
 						else
 						{
 							int txt_i = ft_atoi(sector->texts[s]);
-							if (txt_i >= 0)
+							if (txt_i >= 0 && txt_i < TXT)
 							{
 								ft_upper_txt(mlx, x, cya, cnya, txtx, txt_i, ya, yb, &ytop[x]);
 								ft_lower_txt(mlx, x, cnyb, cyb, txtx, txt_i, ya, yb, &ybottom[x]);
 							}
 							else
 							{
-								ft_upper_solid(mlx, x, cya, cnya, 0, x == x1 || x == x2 ? 0 : 0x330315, 0, &ytop[x]);
-								ft_lower_solid(mlx, x, cnyb, cyb, 0, x == x1 || x == x2 ? 0 : 0x1B0030, 0, &ybottom[x]);
+								ft_upper_solid(mlx, x, cya, cnya, 0, x == x1 || x == x2 ? 0 : UPPER_COLOR, 0, &ytop[x]);
+								ft_lower_solid(mlx, x, cnyb, cyb, 0, x == x1 || x == x2 ? 0 : LOWER_COLOR, 0, &ybottom[x]);
 							}
 							
 						}
+						ft_strsplit_free(asd);
 					}
 					else
 					{
-						// // RENDER UPPER WALL
-						// ft_draw_vline(mlx, x, cya, cnya - 1, 0, x == x1 || x == x2 ? 0 : 0x330315, 0);
-						// ytop[x] = ft_clamp(ft_max(cya, cnya), ytop[x], H - 1);
-						ft_upper_solid(mlx, x, cya, cnya, 0, x == x1 || x == x2 ? 0 : 0x330315, 0, &ytop[x]);
+						// RENDER UPPER WALL
+						ft_draw_vline(mlx, x, cya, cnya - 1, 0, x == x1 || x == x2 ? 0 : 0x330315, 0);
+						ytop[x] = ft_clamp(ft_max(cya, cnya), ytop[x], H - 1);
+						ft_upper_solid(mlx, x, cya, cnya, 0, x == x1 || x == x2 ? 0 : UPPER_COLOR, 0, &ytop[x]);
 
-						// // RENDER LOWER WALL
-						// ft_draw_vline(mlx, x, cnyb + 1, cyb, 0, x == x1 || x == x2 ? 0 : 0x1B0030, 0);
-						// ybottom[x] = ft_clamp(ft_min(cyb, cnyb), 0, ybottom[x]);
-						ft_lower_solid(mlx, x, cnyb, cyb, 0, x == x1 || x == x2 ? 0 : 0x1B0030, 0, &ybottom[x]);
+						// RENDER LOWER WALL
+						ft_draw_vline(mlx, x, cnyb + 1, cyb, 0, x == x1 || x == x2 ? 0 : 0x1B0030, 0);
+						ybottom[x] = ft_clamp(ft_min(cyb, cnyb), 0, ybottom[x]);
+						ft_lower_solid(mlx, x, cnyb, cyb, 0, x == x1 || x == x2 ? 0 : LOWER_COLOR, 0, &ybottom[x]);
 					}
 				}
 				else
@@ -255,16 +272,16 @@ void	ft_draw(t_mlx *mlx)
 					if (sector->txt_count > 0)
 					{
 						int txt_i = ft_atoi(sector->texts[s]);
-						if (txt_i >= 0)
+						if (txt_i >= 0 && txt_i < TXT)
 						{
-							mlx->scaler = ft_scaler_init(mlx->scaler, ya, cya, yb, 0, 511);
+							ft_scaler_init(mlx->scaler, ya, cya, yb, mlx->u0, mlx->u1);
 							ft_draw_tvline(mlx, x, cya, cyb, mlx->scaler, txtx, mlx->txt_temp[txt_i]);
 						}
 						else
-							ft_draw_vline(mlx, x, cya, cyb, 0, x == x1 || x == x2 ? 0 : 0x454545, 0);
+							ft_draw_vline(mlx, x, cya, cyb, 0, x == x1 || x == x2 ? 0 : WALL_COLOR, 0);
 					}
 					else
-						ft_draw_vline(mlx, x, cya, cyb, 0, x == x1 || x == x2 ? 0 : 0x454545, 0);
+						ft_draw_vline(mlx, x, cya, cyb, 0, x == x1 || x == x2 ? 0 : WALL_COLOR, 0);
 				}
 			}
 			if (neighbor >= 0 && beginx <= endx && (mlx->head + MAX_QUEUE + 1 - mlx->tail) % MAX_QUEUE)
@@ -289,5 +306,4 @@ void	ft_draw(t_mlx *mlx)
 		// ++rendered_sect[mlx->now->sector_n];
 	}
 	// printf("\n__________________________________________________________\n\n");
-	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
 }

@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/11 15:06:15 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/04 16:57:47 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/05 12:30:56 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,7 +145,7 @@ void	ft_collision(t_mlx *mlx)
 						hole_low = ft_max(sector->floor, mlx->sect[neighbor]->floor);
 						hole_high = ft_min(sector->ceiling, mlx->sect[neighbor]->ceiling);
 					}
-					if (hole_high < mlx->player->pos->z + 0 ||				//eye_h
+					if (hole_high < mlx->player->pos->z + 0 ||				//	HEAD_MARGIN
 						hole_low > mlx->player->pos->z - eye_h + STAIRS_H)
 					{
 						double xd = sector->verts[s + 1]->x - sector->verts[s + 0]->x;

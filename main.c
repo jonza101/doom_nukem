@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/04 17:27:27 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/05 17:29:19 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,13 +32,13 @@ int		ft_close(int i)
 	exit(0);
 }
 
-// int		mouse_move(int x, int y, t_mlx *mlx)
+// int		ft_mouse_move(int x, int y, t_mlx *mlx)
 // {
-	// printf("x %d	y %d\n", x, y);
-		// if (x > mlx->mouse_pos_x)
-		// 	mlx->player->angle += x * 0.00001f;
-		// if (x < mlx->mouse_pos_x)
-		// 	mlx->player->angle -= x * 0.00001f;
+// 	printf("x %d	y %d\n", x, y);
+// 		if (x > mlx->mouse_pos_x)
+// 			mlx->player->angle += x * 0.0001f;
+// 		if (x < mlx->mouse_pos_x)
+// 			mlx->player->angle -= x * 0.0001f;
 // 		printf("yaww %f\n", mlx->yaw + y * 0.05f);
 // 		mlx->yaw = ft_clamp(mlx->yaw - y * 0.05f, -0.5, 0.5);
 // 		mlx->player->yaw = mlx->yaw - mlx->player->velocity->z * 0.5;
@@ -82,9 +82,14 @@ int		ft_game_loop(t_mlx *mlx)
 	ft_collision(mlx);
 	ft_player_view(mlx);
 	ft_move_calc(mlx);
-
+	if (mlx->player->jump && mlx->ground && !mlx->crouching)
+	{
+		mlx->player->velocity->z += JUMP_H;
+		mlx->falling = 1;
+	}
 	ft_reset_image(mlx);
 	ft_draw(mlx);
+	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
 	// printf("p_sect %d\n", mlx->player->sector);
 	// printf("px %f	py %f	pz %f\n", mlx->player->pos->x, mlx->player->pos->y, mlx->player->pos->z);
 	// printf("angle %f	sin %f	cos %f\n", mlx->player->angle, mlx->player->sin_angle, mlx->player->cos_angle);
@@ -103,6 +108,9 @@ int		ft_key_realese(int keycode, t_mlx *mlx)
 		mlx->player->up = 0;
 	if (keycode == MAC_DOWN)
 		mlx->player->down = 0;
+
+	if (keycode == MAC_SPACE)
+		mlx->player->jump = 0;
 
 	if (keycode == MAC_W)
 		mlx->wsad[0] = 0;
@@ -129,17 +137,23 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 		mlx->player->down = 1;
 	if (keycode == MAC_CTRL_L)	//	CROUCH
 	{
-		if (mlx->sect[mlx->player->sector]->ceiling > mlx->player->pos->z + EYE_H)
+		if (mlx->crouching)
 		{
-			mlx->crouching = !mlx->crouching;
-			mlx->falling = 1;
+			if (mlx->sect[mlx->player->sector]->ceiling >= mlx->player->pos->z + (EYE_H - CROUCH_H))
+			{
+				mlx->crouching = 0;
+				mlx->falling = 1;
+			}
 		}
+		else
+		{
+			mlx->crouching = 1;
+			// mlx->falling = 1;
+		}
+		
 	}
 	if (keycode == MAC_SPACE && mlx->ground && !mlx->crouching)	//	JUMP
-	{
-		mlx->player->velocity->z += JUMP_H;
-		mlx->falling = 1;
-	}
+		mlx->player->jump = 1;
 
 	if (keycode == MAC_W)	//	W
 		mlx->wsad[0] = 1;
@@ -149,6 +163,27 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 		mlx->wsad[2] = 1;
 	if (keycode == MAC_D)	//	D
 		mlx->wsad[3] = 1;
+
+	if (keycode == MAC_NUM_PLUS)
+	{
+		mlx->u1 += 32;
+		printf("u1 %d\n", mlx->u1);
+	}
+	if (keycode == MAC_NUM_MINUS && mlx->u1 > 128)
+	{
+		mlx->u1 -= 32;
+		printf("u1 %d\n", mlx->u1);
+	}
+	if (keycode == MAC_EQUAL)
+	{
+		mlx->u0 += 32;
+		printf("u0 %d\n", mlx->u0);
+	}
+	if (keycode == MAC_MINUS)
+	{
+		mlx->u0 -= 32;
+		printf("u0 %d\n", mlx->u0);
+	}
 	return (0);
 }
 
@@ -161,20 +196,20 @@ void	ft_init(t_mlx *mlx)
 	mlx->player->velocity->z = 0;
 	mlx->player->yaw = 0.0f;
 	mlx->yaw = 0.0;
-	mlx->l = 0;
-	mlx->r = 0;
-
-	mlx->texture = (t_img*)malloc(sizeof(t_img));
-	mlx->texture->w = 512;
-	mlx->texture->h = 512;
-	mlx->texture->img = mlx_xpm_file_to_image(mlx->mlx, "textures/brick.xpm", &mlx->texture->w, &mlx->texture->h);
-	mlx->texture->data = (int*)mlx_get_data_addr(mlx->texture->img, &mlx->texture->bpp, &mlx->texture->size_line, &mlx->texture->endian);
+	mlx->player->left = 0;
+	mlx->player->right = 0;
+	mlx->player->up = 0;
+	mlx->player->down = 0;
+	mlx->player->jump = 0;
 
 	mlx->scaler = (t_scaler*)malloc(sizeof(t_scaler));
 	mlx->ya_int = (t_scaler*)malloc(sizeof(t_scaler));
 	mlx->yb_int = (t_scaler*)malloc(sizeof(t_scaler));
 	mlx->nya_int = (t_scaler*)malloc(sizeof(t_scaler));
 	mlx->nyb_int = (t_scaler*)malloc(sizeof(t_scaler));
+
+	mlx->u0 = 0;
+	mlx->u1 = 2048;
 }
 
 int		main()
@@ -191,7 +226,7 @@ int		main()
 	ft_load_map(mlx, "map");
 	ft_init(mlx);
 
-	// mlx_hook(mlx->win, 6, 1L<<6, mouse_move, mlx);
+	// mlx_hook(mlx->win, 6, 1L<<6, ft_mouse_move, mlx);
 	mlx_loop_hook(mlx->mlx, ft_game_loop, mlx);
 	mlx_hook(mlx->win, 2, 1L << 0, ft_key_press, mlx);
 	mlx_hook(mlx->win, 3, 0, ft_key_realese, mlx);
