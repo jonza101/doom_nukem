@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/05 18:43:47 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/06 17:35:45 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -241,7 +241,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 		{
 			temp = ft_strsplit(line, '|');
 			int tmp = ft_atoi(temp[1]);
-			char **tmp_t = ft_strsplit(temp[2], ' ');
+			char **tmp_t = ft_strsplit(temp[3], ' ');
 			int txt_count = 0;
 			while (tmp_t[txt_count])
 				txt_count++;
@@ -250,6 +250,10 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 			int j = -1;
 			while (++j < txt_count)
 				mlx->sect[tmp]->texts[j] = ft_strdup(tmp_t[j]);
+
+			tmp_t = ft_strsplit(temp[2], ' ');
+			mlx->sect[tmp]->floor_txt = ft_atoi(tmp_t[0]);
+			mlx->sect[tmp]->ceil_txt = ft_atoi(tmp_t[1]);
 
 			ft_strsplit_free(temp);
 			ft_strsplit_free(tmp_t);
@@ -280,13 +284,15 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 	mlx->num_sec = s - 1;
 
 	printf("px %f	py %f	sect %d\n\n", mlx->player->pos->x, mlx->player->pos->y, mlx->player->sector);
-	// int j = -1;
+	int j = -1;
 	// printf("verts %d\n", v - 1);
-	// while (++j < v - 1)
-	// {
-	// 	// printf("x %f	y %f	%d\n", verts[j]->x, verts[j]->y, j);
-	// 	printf("y %f	x %f\n", verts[j]->y, verts[j]->x);
-	// }
+	while (++j < v - 1)
+	{
+		free(verts[j]);
+		// printf("x %f	y %f	%d\n", verts[j]->x, verts[j]->y, j);
+		// printf("y %f	x %f\n", verts[j]->y, verts[j]->x);
+	}
+	free(verts);
 	// printf("sect %d\n", mlx->num_sec);
 	// int j = 0;
 	// while (j < s - 1)

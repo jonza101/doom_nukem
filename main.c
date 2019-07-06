@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/05 17:29:19 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/06 16:44:26 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,21 +167,25 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 	if (keycode == MAC_NUM_PLUS)
 	{
 		mlx->u1 += 32;
+		mlx->c1 += 32;
 		printf("u1 %d\n", mlx->u1);
 	}
 	if (keycode == MAC_NUM_MINUS && mlx->u1 > 128)
 	{
 		mlx->u1 -= 32;
+		mlx->c1 -= 32;
 		printf("u1 %d\n", mlx->u1);
 	}
 	if (keycode == MAC_EQUAL)
 	{
 		mlx->u0 += 32;
+		mlx->c0 += 32;
 		printf("u0 %d\n", mlx->u0);
 	}
 	if (keycode == MAC_MINUS)
 	{
 		mlx->u0 -= 32;
+		mlx->c0 -= 32;
 		printf("u0 %d\n", mlx->u0);
 	}
 	return (0);
@@ -209,7 +213,9 @@ void	ft_init(t_mlx *mlx)
 	mlx->nyb_int = (t_scaler*)malloc(sizeof(t_scaler));
 
 	mlx->u0 = 0;
-	mlx->u1 = 2048;
+	mlx->u1 = 512;
+	mlx->c0 = 128;
+	mlx->c1 = 128;
 }
 
 int		main()

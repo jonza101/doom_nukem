@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:38 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/05 18:49:22 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/06 11:43:00 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,8 +190,8 @@ void	ft_relative_to_absolute(t_mlx *mlx)
 {
 	double rt_x = mlx->map_z * mlx->player->cos_angle + mlx->map_x * mlx->player->sin_angle;
 	double rt_z = mlx->map_z * mlx->player->sin_angle - mlx->map_x * mlx->player->cos_angle;
-	mlx->map_x = rt_x;// + mlx->player->pos->z;
-	mlx->map_z = rt_z + mlx->player->pos->y;
+	mlx->map_x = rt_x + mlx->player->pos->x;
+	mlx->map_z = rt_z + mlx->player->pos->y;// - mlx->player->pos->x;
 }
 
 void	ft_screenpoint_to_mappoint(t_mlx *mlx, double map_y, double screen_x, double screen_y)

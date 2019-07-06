@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/05 18:44:39 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/06 16:11:17 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,8 @@ typedef struct		s_sector
 
 	t_vec2			**verts;
 
+	int				ceil_txt;
+	int				floor_txt;
 	char			**texts;
 	int				txt_count;
 
@@ -176,7 +178,9 @@ typedef	struct		s_mlx
 
 	t_img			*txt_temp[TXT];
 	int				u0;
-	id_t			u1;
+	int				u1;
+	int				c0;
+	int				c1;
 }					t_mlx;
 
 void				ft_image(t_mlx *mlx, int x, int y, int color);

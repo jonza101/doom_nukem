@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/11 15:06:15 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/05 12:30:56 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/06 11:45:38 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ void	ft_collision(t_mlx *mlx)
 					sector->verts[s + 1]->x, sector->verts[s + 1]->y) < 0)		//	=
 			{
 				int neighbor = ft_atoi(sector->neighbors[s]);
+				//	!!!
 				if (neighbor == -1)
 				{
 					int n, nt, i;
@@ -135,6 +136,7 @@ void	ft_collision(t_mlx *mlx)
 							}
 					}
 				}
+				//	!!!
 				if (!stop)
 				{
 					// printf("calc\n");

@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/05 18:44:59 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/06 19:29:46 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,13 @@ void	ft_draw(t_mlx *mlx)
 {
 	int ytop[W] = {0};
 	int ybottom[W];	
-	// int rendered_sect[mlx->num_sec];
+	int rendered_sect[mlx->num_sec];
 	int i = -1;
 	while (++i < W)
 		ybottom[i] = H - 1;
 	i = -1;
-	// while (++i < mlx->num_sec)
-		// rendered_sect[i] = 0;
+	while (++i < mlx->num_sec)
+		rendered_sect[i] = 0;
 
 	mlx->head = mlx->queue;
 	mlx->tail = mlx->queue;
@@ -40,15 +40,11 @@ void	ft_draw(t_mlx *mlx)
 		if (++mlx->tail == mlx->queue + MAX_QUEUE)
 			mlx->tail = mlx->queue;
 
-		// if ((rendered_sect[mlx->now->sector_n] & 0x21))
-			// continue;
-		// ++rendered_sect[mlx->now->sector_n];
+		if ((rendered_sect[mlx->now->sector_n] & 0x21))
+			continue;
+		++rendered_sect[mlx->now->sector_n];
 
 		t_sector *sector = mlx->sect[mlx->now->sector_n];
-
-		// printf("now %d		head %d		tail %d\nx1 %d		x1 %d		x1 %d\nx2 %d		x2 %d		x2 %d\n\n", mlx->now->sector_n, mlx->head->sector_n, mlx->tail->sector_n, mlx->now->sx1, mlx->head->sx1, mlx->tail->sx1, mlx->now->sx2, mlx->head->sx2, mlx->tail->sx2);
-
-		// printf("head_s %d tail_s %d\n", mlx->head->sector_n, mlx->tail->sector_n);
 		int s = -1;
 		while (++s < sector->verts_count)
 		{
@@ -175,27 +171,29 @@ void	ft_draw(t_mlx *mlx)
                 int cya = ft_clamp(ya, ytop[x],ybottom[x]);
                 int cyb = ft_clamp(yb, ytop[x],ybottom[x]);
 
-				//	ACQUIRE THE Y COORDINATES FOR OUR CEILING & FLOOR FOR THIS X COORDINATE. CLAMP THEM
-				// int ya = (x - x1) * (y2a - y1a) / (x2 - x1) + y1a;
-				// int cya = ft_clamp(ya, ytop[x], ybottom[x]);
-				// int yb = (x - x1) * (y2b - y1b) / (x2 - x1) + y1b;
-				// int cyb = ft_clamp(yb, ytop[x], ybottom[x]);
-
-				int y = ytop[x] - 1;
-				while (++y <= ybottom[x])
+				int ceil_t = sector->ceil_txt;
+				int floor_t = sector->floor_txt;
+				if (ceil_t >= 0 && ceil_t < TXT)
 				{
-					if (y >= cya && y <= cyb)
+					int y = ytop[x] - 1;
+					while (++y <= ybottom[x])
 					{
-						y = cyb;
-						continue ;
+						if (y >= cya && y <= cyb)
+						{
+							y = cyb;
+							continue ;
+						}
+						double h = y < cya ? yceil : yfloor;
+						ft_screenpoint_to_mappoint(mlx, h, x, y);
+						unsigned txtx = (mlx->map_x * 64);
+						unsigned txtz = (mlx->map_z * 64);
+						//	RENDER CEILING
+						if (y < cya)
+							ft_image(mlx, x, y, mlx->txt_temp[ceil_t]->data[txtz % mlx->txt_temp[ceil_t]->h * mlx->txt_temp[ceil_t]->w + txtx % mlx->txt_temp[ceil_t]->w]);
 					}
-					double h = y < cya ? yceil : yfloor;
-					ft_screenpoint_to_mappoint(mlx, h, x, y);
-					unsigned txtx = (mlx->map_x * 128);
-					unsigned txtz = (mlx->map_z * 128);
-					if (y < cya)
-						ft_image(mlx, x, y, mlx->txt_temp[1]->data[txtz % mlx->txt_temp[1]->h * mlx->txt_temp[1]->w + txtx % mlx->txt_temp[1]->w]);
 				}
+				else
+					ft_draw_vline(mlx, x, ytop[x], (cya - 1), 0, CEILING_COLOR, 0);
 				//	RENDER CEILING
 				// printf("%d\n", (cya - 1) * s);
 				// ft_draw_vline(mlx, x, ytop[x], (cya - 1), 0, CEILING_COLOR, 0);		//		0x757575
@@ -210,11 +208,6 @@ void	ft_draw(t_mlx *mlx)
 
                     int cnya = ft_clamp(nya, ytop[x],ybottom[x]);
                     int cnyb = ft_clamp(nyb, ytop[x],ybottom[x]);
-
-					// int nya = (x - x1) * (ny2a - ny1a) / (x2 - x1) + ny1a;
-					// int cnya = ft_clamp(nya, ytop[x], ybottom[x]);
-					// int nyb = (x - x1) * (ny2b - ny1b) / (x2 - x1) + ny1b;
-					// int cnyb = ft_clamp(nyb, ytop[x], ybottom[x]);
 
 					if (sector->txt_count > 0)
 					{
@@ -291,19 +284,9 @@ void	ft_draw(t_mlx *mlx)
 				mlx->head->sx2 = endx;
 				if (++mlx->head == mlx->queue + MAX_QUEUE)
 					mlx->head = mlx->queue;
-				// printf("neig %d		begin %d		end %d			bool %ld\n", neighbor, beginx, endx, (mlx->head + MAX_QUEUE + 1 - mlx->tail) % MAX_QUEUE);
-				// printf("sect %d		s %d\n", mlx->now->sector_n, s);
-				// ft_draw_vline(mlx, beginx, 0, H - 1, 0xDB0B0B, 0xDB0B0B, 0xDB0B0B);
-				// ft_draw_vline(mlx, endx, 0, H - 1, 0xDB0B0B, 0xDB0B0B, 0xDB0B0B);
 			}
-			// else
-			// {
-			// 	printf("\nnot!\n");
-			// 	printf("neig %d		begin %d		end %d			bool %ld\n", neighbor, beginx, endx, (mlx->head + MAX_QUEUE + 1 - mlx->tail) % MAX_QUEUE);
-			// 	printf("sect %d		s %d\n", mlx->now->sector_n, s);
-			// }
 		}
-		// ++rendered_sect[mlx->now->sector_n];
+		++rendered_sect[mlx->now->sector_n];
 	}
 	// printf("\n__________________________________________________________\n\n");
 }
