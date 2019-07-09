@@ -6,31 +6,11 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:38 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/06 11:43:00 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/09 19:36:05 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doom_nukem.h"
-
-// Utility functions. Because C doesn't have templates,
-// we use the slightly less safe preprocessor macros to
-// implement these functions that work with multiple types.
-#define min(a,b) (((a) < (b)) ? (a) : (b)) // min: Choose smaller of two values.
-#define max(a,b) (((a) > (b)) ? (a) : (b)) // max: Choose bigger of two values.
-#define abs(a) ((a) < 0 ? -(a) : (a))
-#define clamp(a, mi,ma) min(max(a,mi),ma)  // clamp: Clamp value into set range.
-#define sign(v) (((v) > 0) - ((v) < 0))    // sign: Return the sign of a value (-1, 0 or 1)
-#define vxs(x0,y0, x1,y1) ((x0)*(y1) - (x1)*(y0)) // vxs: Vector cross product
-// Overlap:  Determine whether the two number ranges overlap.
-#define Overlap(a0,a1,b0,b1) (min(a0,a1) <= max(b0,b1) && min(b0,b1) <= max(a0,a1))
-// IntersectBox: Determine whether two 2D-boxes intersect.
-#define IntersectBox(x0,y0, x1,y1, x2,y2, x3,y3) (Overlap(x0,x1,x2,x3) && Overlap(y0,y1,y2,y3))
-// PointSide: Determine which side of a line the point is on. Return value: -1, 0 or 1.
-#define PointSide(px,py, x0,y0, x1,y1) sign(vxs((x1)-(x0), (y1)-(y0), (px)-(x0), (py)-(y0)))
-// Intersect: Calculate the point of intersection between two lines.
-#define Intersect(x1,y1, x2,y2, x3,y3, x4,y4) ((struct xy) { \
-    vxs(vxs(x1,y1, x2,y2), (x1)-(x2), vxs(x3,y3, x4,y4), (x3)-(x4)) / vxs((x1)-(x2), (y1)-(y2), (x3)-(x4), (y3)-(y4)), \
-    vxs(vxs(x1,y1, x2,y2), (y1)-(y2), vxs(x3,y3, x4,y4), (y3)-(y4)) / vxs((x1)-(x2), (y1)-(y2), (x3)-(x4), (y3)-(y4)) })
 
 double		ft_min(double a, double b)
 {
@@ -60,12 +40,59 @@ int		ft_sign(double val)
 	return (0);
 }
 
-int		ft_overlap(double a0, double a1, double b0, double b1)
+int		ft_line_intersect(t_vec2 *p0, t_vec2 *p1, t_vec2 *v0, t_vec2 *v1)
+{
+	double s1_x, s1_y;
+	double s2_x, s2_y;
+	s1_x = p1->x - p0->x;
+	s1_y = p1->y - p0->y;
+	s2_x = v1->x - v0->x;
+	s2_y = v1->y - v0->y;
+
+	float s, t;
+	s = (-s1_y * (p0->x - v0->x) + s1_x * (p0->y - v0->y)) / (-s2_x * s1_y + s1_x * s2_y);
+	t = (s2_x * (p0->y - v0->y) - s2_y * (p0->x - v0->x)) / (-s2_x * s1_y + s1_x * s2_y);
+
+	if (s >= 0 && s <= 1 && t >= 0 && t <= 1)
+		return (1);
+	return (0);
+}
+
+int		ft_is_inside(t_sector *sector, double px, double py, double dx, double dy)
+{
+	int count = 0;
+	int s = -1;
+	t_vec2 *ray = (t_vec2*)malloc(sizeof(t_vec2));
+	ray->x = dx;
+	ray->y = dy;
+
+	t_vec2 *p = (t_vec2*)malloc(sizeof(t_vec2));
+	p->x = px;
+	p->y = py;
+	t_vec2 *v0 = (t_vec2*)malloc(sizeof(t_vec2));
+	t_vec2 *v1 = (t_vec2*)malloc(sizeof(t_vec2));
+	while (++s < sector->verts_count)
+	{
+		v0->x = sector->verts[s]->x;
+		v0->y = sector->verts[s]->y;
+		v1->x = sector->verts[s + 1]->x;
+		v1->y = sector->verts[s + 1]->y;
+		if (ft_line_intersect(p, ray, v0, v1))
+			count++;
+	}
+	free(ray);
+	free(p);
+	free(v0);
+	free(v1);
+	return (count);
+}
+
+int		ft_overlap(int a0, int a1, int b0, int b1)
 {
 	return(ft_min(a0, a1) <= ft_max(b0, b1) && ft_min(b0, b1) <= ft_max(a0, a1));
 }
 
-int		ft_intersect_box(double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3)
+int		ft_intersect_box(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3)
 {
 	return (ft_overlap(x0, x1, x2, x3) && ft_overlap(y0, y1, y2, y3));
 }
@@ -117,7 +144,8 @@ int		ft_scaler_next(t_scaler *scaler)
 
 void	ft_draw_vline(t_mlx *mlx, int x, int y1,int y2, int top_color,int middle_color,int bottom_color)
 {
-	if (y1 < 0 || y1 > H - 1 || y2 < 0 || y2 > H - 1)
+	if ((y1 < 0 || y1 > H - 1 || y2 < 0 || y2 > H - 1)
+			&& (x < 0 || x > W - 1))
 		return ;
 	// y1 = ft_clamp(y1, 0, H - 1);
 	// y2 = ft_clamp(y2, 0, H - 1);
@@ -150,8 +178,9 @@ void	ft_draw_vline(t_mlx *mlx, int x, int y1,int y2, int top_color,int middle_co
 
 void	ft_draw_tvline(t_mlx *mlx, int x, int y1, int y2, t_scaler *ty, unsigned txtx, t_img *texture)
 {
-	// if (y1 < 0 || y1 > H - 1 || y2 < 0 || y2 > H - 1)
-		// return ;
+	if ((y1 < 0 || y1 > H - 1 || y2 < 0 || y2 > H - 1)
+			&& (x < 0 || x > W - 1))
+		return ;
 	int y = y1 - 1;
 	while (++y <= y2)
 	{
@@ -191,7 +220,7 @@ void	ft_relative_to_absolute(t_mlx *mlx)
 	double rt_x = mlx->map_z * mlx->player->cos_angle + mlx->map_x * mlx->player->sin_angle;
 	double rt_z = mlx->map_z * mlx->player->sin_angle - mlx->map_x * mlx->player->cos_angle;
 	mlx->map_x = rt_x + mlx->player->pos->x;
-	mlx->map_z = rt_z + mlx->player->pos->y;// - mlx->player->pos->x;
+	mlx->map_z = rt_z + mlx->player->pos->y;
 }
 
 void	ft_screenpoint_to_mappoint(t_mlx *mlx, double map_y, double screen_x, double screen_y)

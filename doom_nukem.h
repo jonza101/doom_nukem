@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/06 16:11:17 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/09 19:44:20 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,6 @@
 #define STAIRS_H 2
 #define JUMP_H 0.75
 
-//  hfov (1.0 * 0.73f*H/W)
-// #define vfov (1.0 * .2f)
-
 #define FOV_H (1.0 * 0.63 * H / W)
 #define FOV_V (1.0 * 0.2f)
 
@@ -44,6 +41,9 @@
 #define WALL_COLOR 0x454545
 #define CEILING_COLOR 0x252525
 #define FLOOR_COLOR 0x252525
+#define LINE_COLOR 0x0
+
+#define MAX_DBL 1.7976931348623157E+308
 
 #define THREAD 16
 
@@ -79,13 +79,6 @@ typedef	struct		s_img
 	int				size_line;
 	int				endian;
 }					t_img;
-
-typedef struct		s_txt
-{
-	int				u1;
-	int				w;
-	int				h;
-}					t_txt;
 
 typedef struct		s_sector
 {
@@ -190,8 +183,8 @@ void				ft_load_map(t_mlx *mlx, char *map_file);
 double				ft_min(double a, double b);
 double				ft_max(double a, double b);
 double				ft_clamp(double a, double min, double max);
-int					ft_overlap(double a0, double a1, double b0, double b1);
-int					ft_intersect_box(double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3);
+int					ft_overlap(int a0, int a1, int b0, int b1);
+int					ft_intersect_box(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3);
 double				ft_vec_cross_prod(double x0, double y0, double x1, double y1);
 int					ft_point_side(double px, double py, double x0, double y0, double x1, double y1);
 void				ft_intersect(t_vec2 *p, double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4);
@@ -220,5 +213,8 @@ void				ft_lower_txt(t_mlx *mlx, int x, int cnyb, int cyb, int txtx, int txt_i, 
 
 void				ft_screenpoint_to_mappoint(t_mlx *mlx, double map_y, double screen_x, double screen_y);
 void				ft_relative_to_absolute(t_mlx *mlx);
+
+int					ft_line_intersect(t_vec2 *p0, t_vec2 *p1, t_vec2 *v0, t_vec2 *v1);
+int					ft_is_inside(t_sector *sector, double px, double py, double dx, double dy);
 
 #endif

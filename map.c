@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/06 17:35:45 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/07 18:55:35 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,6 +181,8 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 					mlx->sect[s - 1]->neighbors[j] = ft_strdup(t[j]);
 					j++;
 				}
+				mlx->sect[s - 1]->ceil_txt = -1;
+				mlx->sect[s - 1]->floor_txt = -1;
 
 				ft_strsplit_free(t);
 			}
@@ -230,6 +232,8 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 					mlx->sect[0]->neighbors[j] = ft_strdup(t[j]);
 					j++;
 				}
+				mlx->sect[0]->ceil_txt = -1;
+				mlx->sect[0]->floor_txt = -1;
 
 				ft_strsplit_free(t);
 			}

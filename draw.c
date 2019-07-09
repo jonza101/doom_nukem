@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/06 19:29:46 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/09 14:28:42 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void	ft_draw(t_mlx *mlx)
 			if (tz1 <= 0 || tz2 <= 0)
 			{
 				double near_z = 1e-4f;
-				double far_z = 5;
+				double far_z = 5.0f;
 				double nearside = 1e-5f;
 				double farside = 20.0f;
 
@@ -92,8 +92,32 @@ void	ft_draw(t_mlx *mlx)
 				org2->x = tx2;
 				org2->y = tz2;
 
-				if (tz1 < near_z) { if (i1->y > 0) { tx1 = i1->x; tz1 = i1->y; } else { tx1 = i2->x; tz1 = i2->y; }}
-				if (tz2 < near_z) { if (i1->y > 0) { tx2 = i1->x; tz2 = i1->y; } else { tx2 = i2->x; tz2 = i2->y; }}
+				if (tz1 < near_z)
+				{
+					if (i1->y > 0)
+					{
+						tx1 = i1->x;
+						tz1 = i1->y;
+					}
+					else
+					{
+						tx1 = i2->x;
+						tz1 = i2->y;
+					}
+				}
+				if (tz2 < near_z)
+				{
+					if (i1->y > 0)
+					{
+						tx2 = i1->x;
+						tz2 = i1->y;
+					}
+					else
+					{
+						tx2 = i2->x;
+						tz2 = i2->y;
+					}
+				}
 
 				if (fabs(tx2 - tx1) > fabs(tz2 - tz1))
 				{
@@ -193,12 +217,12 @@ void	ft_draw(t_mlx *mlx)
 					}
 				}
 				else
-					ft_draw_vline(mlx, x, ytop[x], (cya - 1), 0, CEILING_COLOR, 0);
+					ft_draw_vline(mlx, x, ytop[x], (cya - 1), LINE_COLOR, CEILING_COLOR, LINE_COLOR);
 				//	RENDER CEILING
 				// printf("%d\n", (cya - 1) * s);
-				// ft_draw_vline(mlx, x, ytop[x], (cya - 1), 0, CEILING_COLOR, 0);		//		0x757575
+				// ft_draw_vline(mlx, x, ytop[x], (cya - 1), LINE_COLOR, CEILING_COLOR, LINE_COLOR);		//		0x757575
 				//	RENDER FLOOR
-				ft_draw_vline(mlx, x, (cyb + 1), ybottom[x], 0, FLOOR_COLOR, 0);
+				ft_draw_vline(mlx, x, (cyb + 1), ybottom[x], LINE_COLOR, FLOOR_COLOR, LINE_COLOR);
 
 				// RENDER NEIGBORS
 				if (neighbor >= 0)
@@ -206,8 +230,8 @@ void	ft_draw(t_mlx *mlx)
 					int nya = ft_scaler_next(mlx->nya_int);
 					int nyb = ft_scaler_next(mlx->nyb_int);
 
-                    int cnya = ft_clamp(nya, ytop[x],ybottom[x]);
-                    int cnyb = ft_clamp(nyb, ytop[x],ybottom[x]);
+                    int cnya = ft_clamp(nya, ytop[x], ybottom[x]);
+                    int cnyb = ft_clamp(nyb, ytop[x], ybottom[x]);
 
 					if (sector->txt_count > 0)
 					{
@@ -223,12 +247,12 @@ void	ft_draw(t_mlx *mlx)
 							if (up >= 0 && up < TXT)
 								ft_upper_txt(mlx, x, cya, cnya, txtx, up, ya, yb, &ytop[x]);
 							else
-								ft_upper_solid(mlx, x, cya, cnya, 0, x == x1 || x == x2 ? 0 : UPPER_COLOR, 0, &ytop[x]);
+								ft_upper_solid(mlx, x, cya, cnya, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : UPPER_COLOR, LINE_COLOR, &ytop[x]);
 
 							if (low >= 0 && low < TXT)
 								ft_lower_txt(mlx, x, cnyb, cyb, txtx, low, ya, yb, &ybottom[x]);
 							else
-								ft_lower_solid(mlx, x, cnyb, cyb, 0, x == x1 || x == x2 ? 0 : LOWER_COLOR, 0, &ybottom[x]);
+								ft_lower_solid(mlx, x, cnyb, cyb, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : LOWER_COLOR, LINE_COLOR, &ybottom[x]);
 						}
 						else
 						{
@@ -240,8 +264,8 @@ void	ft_draw(t_mlx *mlx)
 							}
 							else
 							{
-								ft_upper_solid(mlx, x, cya, cnya, 0, x == x1 || x == x2 ? 0 : UPPER_COLOR, 0, &ytop[x]);
-								ft_lower_solid(mlx, x, cnyb, cyb, 0, x == x1 || x == x2 ? 0 : LOWER_COLOR, 0, &ybottom[x]);
+								ft_upper_solid(mlx, x, cya, cnya, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : UPPER_COLOR, LINE_COLOR, &ytop[x]);
+								ft_lower_solid(mlx, x, cnyb, cyb, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : LOWER_COLOR, LINE_COLOR, &ybottom[x]);
 							}
 							
 						}
@@ -250,14 +274,10 @@ void	ft_draw(t_mlx *mlx)
 					else
 					{
 						// RENDER UPPER WALL
-						ft_draw_vline(mlx, x, cya, cnya - 1, 0, x == x1 || x == x2 ? 0 : 0x330315, 0);
-						ytop[x] = ft_clamp(ft_max(cya, cnya), ytop[x], H - 1);
-						ft_upper_solid(mlx, x, cya, cnya, 0, x == x1 || x == x2 ? 0 : UPPER_COLOR, 0, &ytop[x]);
+						ft_upper_solid(mlx, x, cya, cnya, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : UPPER_COLOR, LINE_COLOR, &ytop[x]);
 
 						// RENDER LOWER WALL
-						ft_draw_vline(mlx, x, cnyb + 1, cyb, 0, x == x1 || x == x2 ? 0 : 0x1B0030, 0);
-						ybottom[x] = ft_clamp(ft_min(cyb, cnyb), 0, ybottom[x]);
-						ft_lower_solid(mlx, x, cnyb, cyb, 0, x == x1 || x == x2 ? 0 : LOWER_COLOR, 0, &ybottom[x]);
+						ft_lower_solid(mlx, x, cnyb, cyb, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : LOWER_COLOR, LINE_COLOR, &ybottom[x]);
 					}
 				}
 				else
@@ -271,10 +291,10 @@ void	ft_draw(t_mlx *mlx)
 							ft_draw_tvline(mlx, x, cya, cyb, mlx->scaler, txtx, mlx->txt_temp[txt_i]);
 						}
 						else
-							ft_draw_vline(mlx, x, cya, cyb, 0, x == x1 || x == x2 ? 0 : WALL_COLOR, 0);
+							ft_draw_vline(mlx, x, cya, cyb, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : WALL_COLOR, LINE_COLOR);
 					}
 					else
-						ft_draw_vline(mlx, x, cya, cyb, 0, x == x1 || x == x2 ? 0 : WALL_COLOR, 0);
+						ft_draw_vline(mlx, x, cya, cyb, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : WALL_COLOR, LINE_COLOR);
 				}
 			}
 			if (neighbor >= 0 && beginx <= endx && (mlx->head + MAX_QUEUE + 1 - mlx->tail) % MAX_QUEUE)

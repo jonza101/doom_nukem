@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/11 15:06:15 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/06 11:45:38 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/09 19:43:23 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,12 +82,14 @@ void	ft_collision(t_mlx *mlx)
 		int s = -1;
 		while (++s < sector->verts_count)
 		{
+			int temp = ft_is_inside(sector, px, py, dx, dy);
+			printf("%d\n", temp);
 			if (ft_intersect_box(px, py, px + dx, py + dy,
 					sector->verts[s + 0]->x, sector->verts[s + 0]->y,
 					sector->verts[s + 1]->x, sector->verts[s + 1]->y)
 				&& ft_point_side(px + dx, py + dy,
 					sector->verts[s + 0]->x, sector->verts[s + 0]->y,
-					sector->verts[s + 1]->x, sector->verts[s + 1]->y) < 0)		//	=
+					sector->verts[s + 1]->x, sector->verts[s + 1]->y) < 0)
 			{
 				int neighbor = ft_atoi(sector->neighbors[s]);
 				//	!!!
@@ -110,12 +112,6 @@ void	ft_collision(t_mlx *mlx)
 					}
 					if (n == -1 || nt == -1)
 					{
-						// if (nt == -1)
-						// {
-						// 	printf("s %d	i %d\n", s, i);
-						// 	printf("s0x %f	s1y %f\ns1x %f	s1y %f\n\n", sector->verts[i + 0]->x, sector->verts[i + 0]->y,
-						// 		sector->verts[s + 0]->x, sector->verts[s + 0]->y);
-						// }
 						if ((n == -1 &&
 								ft_intersect_box(px, py, px + dx, py + dy,
 								sector->verts[(s + 1) % sector->verts_count]->x, sector->verts[(s + 1) % sector->verts_count]->y,
@@ -131,15 +127,14 @@ void	ft_collision(t_mlx *mlx)
 								sector->verts[i + 0]->x, sector->verts[i + 0]->y,
 								sector->verts[s + 0]->x, sector->verts[s + 0]->y) < 0))
 							{
-								printf("stop\n");
+								// printf("stop\n");
 								stop = 1;
 							}
-					}
+						}
 				}
 				//	!!!
 				if (!stop)
 				{
-					// printf("calc\n");
 					double hole_low = 9e9;
 					double hole_high = -9e9;
 					if (neighbor >= 0)
@@ -152,8 +147,8 @@ void	ft_collision(t_mlx *mlx)
 					{
 						double xd = sector->verts[s + 1]->x - sector->verts[s + 0]->x;
 						double yd = sector->verts[s + 1]->y - sector->verts[s + 0]->y;
-						mlx->player->velocity->x = xd * (dx * xd + yd * dy) / (xd * xd + yd * yd);
-						mlx->player->velocity->y = yd * (dx * xd + yd * dy) / (xd * xd + yd * yd);
+						mlx->player->velocity->x = xd * (dx * xd + yd * dy) / (xd * xd + yd * yd);			//	mlx->player->velocity->x
+						mlx->player->velocity->y = yd * (dx * xd + yd * dy) / (xd * xd + yd * yd);			//	mlx->player->velocity->y
 						mlx->moving = 0;
 					}
 				}
@@ -163,7 +158,7 @@ void	ft_collision(t_mlx *mlx)
 		}
 		// printf("dx %f	dy %f	dz %f\n\n", mlx->player->velocity->x, mlx->player->velocity->y, mlx->player->velocity->z);
 		if (!stop)
-			ft_move_player(mlx, mlx->player->velocity->x, mlx->player->velocity->y);
+			ft_move_player(mlx, mlx->player->velocity->x, mlx->player->velocity->y);		//	mlx->player->velocity->x	//	mlx->player->velocity->y
 		mlx->falling = 1;
 	}
 }
