@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/11 15:06:15 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/09 19:43:23 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/10 20:08:38 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,8 +82,6 @@ void	ft_collision(t_mlx *mlx)
 		int s = -1;
 		while (++s < sector->verts_count)
 		{
-			int temp = ft_is_inside(sector, px, py, dx, dy);
-			printf("%d\n", temp);
 			if (ft_intersect_box(px, py, px + dx, py + dy,
 					sector->verts[s + 0]->x, sector->verts[s + 0]->y,
 					sector->verts[s + 1]->x, sector->verts[s + 1]->y)
@@ -126,12 +124,38 @@ void	ft_collision(t_mlx *mlx)
 							&& ft_point_side(px + dx, py + dy,
 								sector->verts[i + 0]->x, sector->verts[i + 0]->y,
 								sector->verts[s + 0]->x, sector->verts[s + 0]->y) < 0))
-							{
-								// printf("stop\n");
-								stop = 1;
-							}
+						{
+							// printf("stop\n");
+							stop = 1;
 						}
+					}
 				}
+				// else
+				// {
+				// 	printf("s %d\n", s);
+				// 	int j = -1;
+				// 	t_sector *n_sect = mlx->sect[neighbor];
+				// 	while (++j < n_sect->verts_count)
+				// 	{
+				// 		if (sector->verts[s]->x == n_sect->verts[j]->x && sector->verts[s]->y == n_sect->verts[j]->y)
+				// 		{
+				// 			int jj = (j + 1 == n_sect->verts_count - 1) ? 0 : j + 1;
+				// 			printf("j %d		jj %d\n", j, jj);
+				// 			printf("x %f		y %f\n", n_sect->verts[jj]->x, n_sect->verts[jj]->y);
+				// 			if (ft_intersect_box(px, py, px + dx, py + dy,
+				// 					n_sect->verts[j]->x, n_sect->verts[j]->y,
+				// 					n_sect->verts[jj]->x, n_sect->verts[jj]->y)
+				// 				&& ft_point_side(px + dx, py + dy,
+				// 					n_sect->verts[j]->x, n_sect->verts[j]->y,
+				// 					n_sect->verts[jj]->x, n_sect->verts[jj]->y) < 0)
+				// 			{
+				// 				printf("stop\n");
+				// 				stop = 1;
+				// 			}
+				// 		}
+				// 	}
+				// 	printf("\n");
+				// }
 				//	!!!
 				if (!stop)
 				{
@@ -152,11 +176,8 @@ void	ft_collision(t_mlx *mlx)
 						mlx->moving = 0;
 					}
 				}
-				
-				// printf("px %f	py %f\ndx %f	dy %f\ns0x %f	s0y %f\ns1x %f	s1y %f\n\n", px, py, dx, dy, sector->verts[s]->x, sector->verts[s]->y, sector->verts[s + 1]->x, sector->verts[s + 1]->y);
 			}
 		}
-		// printf("dx %f	dy %f	dz %f\n\n", mlx->player->velocity->x, mlx->player->velocity->y, mlx->player->velocity->z);
 		if (!stop)
 			ft_move_player(mlx, mlx->player->velocity->x, mlx->player->velocity->y);		//	mlx->player->velocity->x	//	mlx->player->velocity->y
 		mlx->falling = 1;

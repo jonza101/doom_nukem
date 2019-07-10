@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/09 19:53:16 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/10 20:03:22 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,7 +188,7 @@ int		ft_game_loop(t_mlx *mlx)
 	// printf("angle %f	sin %f	cos %f\n", mlx->player->angle, mlx->player->sin_angle, mlx->player->cos_angle);
 	// printf("dx %f	dy %f	dz %f\n\n", mlx->player->velocity->x, mlx->player->velocity->y, mlx->player->velocity->z);
 	// printf("g %d\nf %d\nm %d\nc %d\n\n", mlx->ground, mlx->falling, mlx->moving, mlx->crouching);
-	printf("\n");
+	// printf("\n");
 	return (0);
 }
 
@@ -237,7 +237,8 @@ int		main()
 	mlx->data = (int *)mlx_get_data_addr(mlx->img, &mlx->bpp, &mlx->size_line, &mlx->endian);
 
 	ft_init_textures(mlx);
-	ft_load_map(mlx, "map");
+	ft_init_sky(mlx);
+	ft_load_map(mlx, "maps/map");
 	ft_init(mlx);
 
 	// mlx_hook(mlx->win, 6, 1L<<6, ft_mouse_move, mlx);

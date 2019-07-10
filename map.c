@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/07 18:55:35 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/10 15:08:07 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	ft_strsplit_free(char **temp)
 	free(temp);
 }
 
-double	ft_datoi(char *str)
+double	ft_atof(char *str)
 {
 	int len, dot;
 	double res;
@@ -100,15 +100,15 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				}
 				free(tmp_v);
 				verts[v - 1] = (t_vec2*)malloc(sizeof(t_vec2));
-				verts[v - 1]->x = (double)ft_datoi(temp[2]);
-				verts[v - 1]->y = (double)ft_datoi(temp[1]);
+				verts[v - 1]->x = (double)ft_atof(temp[2]);
+				verts[v - 1]->y = (double)ft_atof(temp[1]);
 			}
 			else
 			{
 				verts = (t_vec2**)malloc(sizeof(t_vec2*) * 1);
 				verts[0] = (t_vec2*)malloc(sizeof(t_vec2));
-				verts[0]->x = (double)ft_datoi(temp[2]);
-				verts[0]->y = (double)ft_datoi(temp[1]);
+				verts[0]->x = (double)ft_atof(temp[2]);
+				verts[0]->y = (double)ft_atof(temp[1]);
 			}
 			ft_strsplit_free(temp);
 			v++;
@@ -144,8 +144,8 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 
 				char **t;
 				t = ft_strsplit(temp[1], ' ');
-				mlx->sect[s - 1]->floor = (double)ft_datoi(t[0]);
-				mlx->sect[s - 1]->ceiling = (double)ft_datoi(t[1]);
+				mlx->sect[s - 1]->floor = (double)ft_atof(t[0]);
+				mlx->sect[s - 1]->ceiling = (double)ft_atof(t[1]);
 
 				ft_strsplit_free(t);
 
@@ -195,8 +195,8 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 
 				char **t;
 				t = ft_strsplit(temp[1], ' ');
-				mlx->sect[0]->floor = (double)ft_datoi(t[0]);
-				mlx->sect[0]->ceiling = (double)ft_datoi(t[1]);
+				mlx->sect[0]->floor = (double)ft_atof(t[0]);
+				mlx->sect[0]->ceiling = (double)ft_atof(t[1]);
 
 				ft_strsplit_free(t);
 
@@ -271,13 +271,13 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 			mlx->player->velocity = (t_vec3*)malloc(sizeof(t_vec3));
 
 			mlx->player->eye_h = EYE_H;
-			mlx->player->angle = (double)ft_datoi(temp[2]);
+			mlx->player->angle = (double)ft_atof(temp[2]);
 			mlx->player->sector = ft_atoi(temp[3]);
 
 			char **t;
 			t = ft_strsplit(temp[1], ' ');
-			mlx->player->pos->x = (double)ft_datoi(t[0]);
-			mlx->player->pos->y = (double)ft_datoi(t[1]);
+			mlx->player->pos->x = (double)ft_atof(t[0]);
+			mlx->player->pos->y = (double)ft_atof(t[1]);
 			mlx->player->pos->z = (double)mlx->sect[mlx->player->sector]->floor + mlx->player->eye_h;
 
 			ft_strsplit_free(t);

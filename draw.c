@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/09 14:28:42 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/10 18:58:00 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,13 @@ void	ft_draw(t_mlx *mlx)
 {
 	int ytop[W] = {0};
 	int ybottom[W];	
-	int rendered_sect[mlx->num_sec];
+	// int rendered_sect[mlx->num_sec];
 	int i = -1;
 	while (++i < W)
 		ybottom[i] = H - 1;
 	i = -1;
-	while (++i < mlx->num_sec)
-		rendered_sect[i] = 0;
+	// while (++i < mlx->num_sec)
+		// rendered_sect[i] = 0;
 
 	mlx->head = mlx->queue;
 	mlx->tail = mlx->queue;
@@ -40,9 +40,9 @@ void	ft_draw(t_mlx *mlx)
 		if (++mlx->tail == mlx->queue + MAX_QUEUE)
 			mlx->tail = mlx->queue;
 
-		if ((rendered_sect[mlx->now->sector_n] & 0x21))
-			continue;
-		++rendered_sect[mlx->now->sector_n];
+		// if ((rendered_sect[mlx->now->sector_n] & 0x21))
+			// continue;
+		// ++rendered_sect[mlx->now->sector_n];
 
 		t_sector *sector = mlx->sect[mlx->now->sector_n];
 		int s = -1;
@@ -197,7 +197,10 @@ void	ft_draw(t_mlx *mlx)
 
 				int ceil_t = sector->ceil_txt;
 				int floor_t = sector->floor_txt;
-				if (ceil_t >= 0 && ceil_t < TXT)
+				int ceil_f = ceil_t >= 0 && ceil_t < TXT;
+				int floor_f = floor_t >= 0 && floor_t < TXT;
+
+				if (ceil_f || floor_f)
 				{
 					int y = ytop[x] - 1;
 					while (++y <= ybottom[x])
@@ -209,20 +212,21 @@ void	ft_draw(t_mlx *mlx)
 						}
 						double h = y < cya ? yceil : yfloor;
 						ft_screenpoint_to_mappoint(mlx, h, x, y);
-						unsigned txtx = (mlx->map_x * 64);
-						unsigned txtz = (mlx->map_z * 64);
+						unsigned txtx = (mlx->map_x * 32);
+						unsigned txtz = (mlx->map_z * 32);
 						//	RENDER CEILING
-						if (y < cya)
-							ft_image(mlx, x, y, mlx->txt_temp[ceil_t]->data[txtz % mlx->txt_temp[ceil_t]->h * mlx->txt_temp[ceil_t]->w + txtx % mlx->txt_temp[ceil_t]->w]);
+						if (y < cya && ceil_f)
+							ft_image(mlx, x, y, mlx->txt[ceil_t]->data[txtz % mlx->txt[ceil_t]->h * mlx->txt[ceil_t]->w + txtx % mlx->txt[ceil_t]->w]);
+						else if (y >= cya && floor_f)
+							ft_image(mlx, x, y, mlx->txt[floor_t]->data[txtz % mlx->txt[floor_t]->h * mlx->txt[floor_t]->w + txtx % mlx->txt[floor_t]->w]);
 					}
 				}
-				else
+				if (!ceil_f)
 					ft_draw_vline(mlx, x, ytop[x], (cya - 1), LINE_COLOR, CEILING_COLOR, LINE_COLOR);
-				//	RENDER CEILING
-				// printf("%d\n", (cya - 1) * s);
-				// ft_draw_vline(mlx, x, ytop[x], (cya - 1), LINE_COLOR, CEILING_COLOR, LINE_COLOR);		//		0x757575
-				//	RENDER FLOOR
-				ft_draw_vline(mlx, x, (cyb + 1), ybottom[x], LINE_COLOR, FLOOR_COLOR, LINE_COLOR);
+				// ft_scaler_init(mlx->scaler, ya, 0, cyb, 0, 64);
+				// ft_draw_tvline(mlx, x, 0, cya, txtx, mlx->sky[0]);
+				if (!floor_f)
+					ft_draw_vline(mlx, x, (cyb + 1), ybottom[x], LINE_COLOR, FLOOR_COLOR, LINE_COLOR);
 
 				// RENDER NEIGBORS
 				if (neighbor >= 0)
@@ -288,7 +292,7 @@ void	ft_draw(t_mlx *mlx)
 						if (txt_i >= 0 && txt_i < TXT)
 						{
 							ft_scaler_init(mlx->scaler, ya, cya, yb, mlx->u0, mlx->u1);
-							ft_draw_tvline(mlx, x, cya, cyb, mlx->scaler, txtx, mlx->txt_temp[txt_i]);
+							ft_draw_tvline(mlx, x, cya, cyb, txtx, mlx->txt[txt_i]);
 						}
 						else
 							ft_draw_vline(mlx, x, cya, cyb, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : WALL_COLOR, LINE_COLOR);
@@ -306,7 +310,7 @@ void	ft_draw(t_mlx *mlx)
 					mlx->head = mlx->queue;
 			}
 		}
-		++rendered_sect[mlx->now->sector_n];
+		// ++rendered_sect[mlx->now->sector_n];
 	}
 	// printf("\n__________________________________________________________\n\n");
 }
