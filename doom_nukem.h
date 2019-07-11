@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/10 20:03:15 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/11 20:00:38 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@
 #define THREAD 16
 
 #define TXT 3
-
+#define TRANSPARENT 1
 #define SKY 1
 
 typedef struct		s_vec2
@@ -96,6 +96,9 @@ typedef struct		s_sector
 
 	char			**neighbors;
 	int				neighbors_count;
+
+	char			**transparent;
+
 	int				verts_count;
 }					t_sector;
 
@@ -172,6 +175,7 @@ typedef	struct		s_mlx
 	int				r;
 
 	t_img			*txt[TXT];
+	t_img			*transparent[TRANSPARENT];
 	t_img			*sky[SKY];
 
 	int				u0;
@@ -197,15 +201,19 @@ void				ft_scaler_init(t_scaler *scaler, int a, int b, int c, int d, int f);
 int					ft_scaler_next(t_scaler *scaler);
 
 void				ft_draw_vline(t_mlx *mlx, int x, int y1,int y2, int top_color,int middle_color,int bottom_color);
-void				ft_draw_tvline(t_mlx *mlx, int x, int y1, int y2, unsigned txtx, t_img *texture);
+void				ft_draw_tvline(t_mlx *mlx, int x, int y1, int y2, unsigned txtx, t_img *texture, int is_glass);
 
 void				ft_draw(t_mlx *mlx);
+void	ft_glass(t_mlx *mlx);
+
+void	ft_thread(t_mlx *mlx);
 
 void				ft_move_player(t_mlx *mlx, double dx, double dy);
 void				ft_move_calc(t_mlx *mlx);
 void				ft_collision(t_mlx *mlx);
 
 void				ft_init_textures(t_mlx *mlx);
+void				ft_init_transparent(t_mlx *mlx);
 void				ft_init_sky(t_mlx *mlx);
 
 double				ft_datoi(char *str);

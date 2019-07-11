@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/10 15:08:07 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/11 19:58:47 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void	ft_strsplit_free(char **temp)
 	free(temp);
 }
 
+//		UNSTABLE
 double	ft_atof(char *str)
 {
 	int len, dot;

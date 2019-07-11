@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/11 15:06:15 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/10 20:08:38 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/11 19:09:30 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ void	ft_collision(t_mlx *mlx)
 		double dx = mlx->player->velocity->x;
 		double dy = mlx->player->velocity->y;
 		int stop = 0;
+		int neighbor;
 
 		t_sector *sector = mlx->sect[mlx->player->sector];
 		int s = -1;
@@ -89,7 +90,7 @@ void	ft_collision(t_mlx *mlx)
 					sector->verts[s + 0]->x, sector->verts[s + 0]->y,
 					sector->verts[s + 1]->x, sector->verts[s + 1]->y) < 0)
 			{
-				int neighbor = ft_atoi(sector->neighbors[s]);
+				neighbor = ft_atoi(sector->neighbors[s]);
 				//	!!!
 				if (neighbor == -1)
 				{

@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/10 20:03:22 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/11 20:06:34 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,6 +182,7 @@ int		ft_game_loop(t_mlx *mlx)
 	}
 	ft_reset_image(mlx);
 	ft_draw(mlx);
+	ft_glass(mlx);
 	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
 	// printf("p_sect %d\n", mlx->player->sector);
 	// printf("px %f	py %f	pz %f\n", mlx->player->pos->x, mlx->player->pos->y, mlx->player->pos->z);
@@ -237,8 +238,9 @@ int		main()
 	mlx->data = (int *)mlx_get_data_addr(mlx->img, &mlx->bpp, &mlx->size_line, &mlx->endian);
 
 	ft_init_textures(mlx);
+	ft_init_transparent(mlx);
 	ft_init_sky(mlx);
-	ft_load_map(mlx, "maps/map");
+	ft_load_map(mlx, "maps/map3");
 	ft_init(mlx);
 
 	// mlx_hook(mlx->win, 6, 1L<<6, ft_mouse_move, mlx);
