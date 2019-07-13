@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/28 21:24:48 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/11 19:54:28 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/13 18:08:57 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ void	ft_init_sky(t_mlx *mlx)
 		mlx->sky[i]->img = mlx_xpm_file_to_image(mlx->mlx, sky[i], &mlx->sky[i]->w, &mlx->sky[i]->h);
 		mlx->sky[i]->data = (int*)mlx_get_data_addr(mlx->sky[i]->img, &mlx->sky[i]->bpp, &mlx->sky[i]->size_line, &mlx->sky[i]->endian);
 		ft_strsplit_free(tmp);
-		// close(fd);
 	}
 }
 
@@ -54,7 +53,7 @@ void	ft_init_transparent(t_mlx *mlx)
 		mlx->transparent[i]->img = mlx_xpm_file_to_image(mlx->mlx, twall[i], &mlx->transparent[i]->w, &mlx->transparent[i]->h);
 		mlx->transparent[i]->data = (int*)mlx_get_data_addr(mlx->transparent[i]->img, &mlx->transparent[i]->bpp, &mlx->transparent[i]->size_line, &mlx->transparent[i]->endian);
 		ft_strsplit_free(tmp);
-		// close(fd);
+		close(fd);
 	}
 }
 
@@ -77,6 +76,6 @@ void	ft_init_textures(t_mlx *mlx)
 		mlx->txt[i]->img = mlx_xpm_file_to_image(mlx->mlx, txts[i], &mlx->txt[i]->w, &mlx->txt[i]->h);
 		mlx->txt[i]->data = (int*)mlx_get_data_addr(mlx->txt[i]->img, &mlx->txt[i]->bpp, &mlx->txt[i]->size_line, &mlx->txt[i]->endian);
 		ft_strsplit_free(tmp);
-		// close(fd);
+		close(fd);
 	}
 }

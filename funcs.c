@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:38 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/11 19:15:48 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/13 16:44:37 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ int		ft_scaler_next(t_scaler *scaler)
 	return (scaler->result);
 }
 
-void	ft_draw_vline(t_mlx *mlx, int x, int y1,int y2, int top_color,int middle_color,int bottom_color)
+void	ft_draw_vline(t_mlx *mlx, int x, int y1,int y2, int top_color,int middle_color, int bottom_color)
 {
 	if ((y1 < 0 || y1 > H - 1 || y2 < 0 || y2 > H - 1)
 			&& (x < 0 || x > W - 1))
@@ -193,26 +193,26 @@ void	ft_draw_tvline(t_mlx *mlx, int x, int y1, int y2, unsigned txtx, t_img *tex
 	}
 }
 
-void	ft_upper_solid(t_mlx *mlx, int x, int cya, int cnya, int top_c, int middle_c, int bottom_c, int *ar_top)
+void	ft_upper_solid(t_mlx *mlx, int x, int cya, int cnya, int top_c, int middle_c, int bottom_c, short *ar_top)
 {
 	ft_draw_vline(mlx, x, cya, cnya - 1, top_c, middle_c, bottom_c);
 	*ar_top = ft_clamp(ft_max(cya, cnya), *ar_top, H - 1);
 }
 
-void	ft_lower_solid(t_mlx *mlx, int x, int cnyb, int cyb, int bottom_c, int middle_c, int top_c, int *ar_bottom)
+void	ft_lower_solid(t_mlx *mlx, int x, int cnyb, int cyb, int bottom_c, int middle_c, int top_c, short *ar_bottom)
 {
 	ft_draw_vline(mlx, x, cnyb + 1, cyb, top_c, middle_c, bottom_c);
 	*ar_bottom = ft_clamp(ft_min(cyb, cnyb), 0, *ar_bottom);
 }
 
-void	ft_upper_txt(t_mlx *mlx, int x, int cya, int cnya, int txtx, int txt_i, int ya, int yb, int *ar_top)
+void	ft_upper_txt(t_mlx *mlx, int x, int cya, int cnya, int txtx, int txt_i, int ya, int yb, short *ar_top)
 {
 	ft_scaler_init(mlx->scaler, ya, cya, yb, mlx->u0, mlx->u1);
 	ft_draw_tvline(mlx, x, cya, cnya - 1, txtx, mlx->txt[txt_i], 0);
 	*ar_top = ft_clamp(ft_max(cya, cnya), *ar_top, H - 1);
 }
 
-void	ft_lower_txt(t_mlx *mlx, int x, int cnyb, int cyb, int txtx, int txt_i, int ya, int yb, int *ar_bottom)
+void	ft_lower_txt(t_mlx *mlx, int x, int cnyb, int cyb, int txtx, int txt_i, int ya, int yb, short *ar_bottom)
 {
 	ft_scaler_init(mlx->scaler, ya, cnyb + 1, yb, mlx->u0, mlx->u1);
 	ft_draw_tvline(mlx, x, cnyb + 1, cyb, txtx, mlx->txt[txt_i], 0);

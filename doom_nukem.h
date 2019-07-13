@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/11 20:00:38 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/13 17:48:14 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,15 +219,17 @@ void				ft_init_sky(t_mlx *mlx);
 double				ft_datoi(char *str);
 void				ft_strsplit_free(char **temp);
 
-void				ft_upper_solid(t_mlx *mlx, int x, int cya, int cnya, int top_c, int middle_c, int bottom_c, int *ar_top);
-void				ft_lower_solid(t_mlx *mlx, int x, int cnyb, int cyb, int bottom_c, int middle_c, int top_c, int *ar_bottom);
-void				ft_upper_txt(t_mlx *mlx, int x, int cya, int cnya, int txtx, int txt_i, int ya, int yb, int *ar_top);
-void				ft_lower_txt(t_mlx *mlx, int x, int cnyb, int cyb, int txtx, int txt_i, int ya, int yb, int *ar_bottom);
+void				ft_upper_solid(t_mlx *mlx, int x, int cya, int cnya, int top_c, int middle_c, int bottom_c, short *ar_top);
+void				ft_lower_solid(t_mlx *mlx, int x, int cnyb, int cyb, int bottom_c, int middle_c, int top_c, short *ar_bottom);
+void				ft_upper_txt(t_mlx *mlx, int x, int cya, int cnya, int txtx, int txt_i, int ya, int yb, short *ar_top);
+void				ft_lower_txt(t_mlx *mlx, int x, int cnyb, int cyb, int txtx, int txt_i, int ya, int yb, short *ar_bottom);
 
 void				ft_screenpoint_to_mappoint(t_mlx *mlx, double map_y, double screen_x, double screen_y);
 void				ft_relative_to_absolute(t_mlx *mlx);
 
 int					ft_line_intersect(t_vec2 *p0, t_vec2 *p1, t_vec2 *v0, t_vec2 *v1);
 int					ft_is_inside(t_sector *sector, double px, double py, double dx, double dy);
+
+void	ft_dr(t_mlx *mlx);
 
 #endif

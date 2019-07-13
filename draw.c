@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/11 20:06:25 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/13 17:57:05 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,9 +230,9 @@ void	ft_glass(t_mlx *mlx)
 
 void	ft_draw(t_mlx *mlx)
 {
-	int ytop[W] = {0};
-	int ybottom[W];	
-	int rendered_sect[mlx->num_sec];
+	short ytop[W] = {0};
+	short ybottom[W];	
+	short rendered_sect[mlx->num_sec];
 	int i = -1;
 	while (++i < W)
 		ybottom[i] = H - 1;
