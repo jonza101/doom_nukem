@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/13 17:48:14 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/15 20:44:17 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,14 @@
 #define FLOOR_COLOR 0x252525
 #define LINE_COLOR 0x0
 
+#define IGNORE_COLOR 0xFF000000
+
 #define MAX_DBL 1.7976931348623157E+308
 
 #define THREAD 16
 
 #define TXT 3
+#define OBJ 1
 #define TRANSPARENT 1
 #define SKY 1
 
@@ -82,6 +85,12 @@ typedef	struct		s_img
 	int				endian;
 }					t_img;
 
+typedef struct		s_obj
+{
+	t_vec2			*pos;
+	t_img			*img;
+}					t_obj;
+
 typedef struct		s_sector
 {
 	double			ceiling;
@@ -98,6 +107,8 @@ typedef struct		s_sector
 	int				neighbors_count;
 
 	char			**transparent;
+
+	t_vec2			**objects;
 
 	int				verts_count;
 }					t_sector;
@@ -125,6 +136,7 @@ typedef	struct		s_player
 
 	int				sector;
 
+	int				wsad[4];
 	int				left;
 	int				right;
 	int				up;
@@ -151,7 +163,6 @@ typedef	struct		s_mlx
 	int				mouse_pos_x;
 	int				mouse_pos_y;
 
-	int				wsad[4];
 	int				moving;
 	int				falling;
 	int				ground;
@@ -175,6 +186,7 @@ typedef	struct		s_mlx
 	int				r;
 
 	t_img			*txt[TXT];
+	t_img			*obj[OBJ];
 	t_img			*transparent[TRANSPARENT];
 	t_img			*sky[SKY];
 
@@ -204,15 +216,16 @@ void				ft_draw_vline(t_mlx *mlx, int x, int y1,int y2, int top_color,int middle
 void				ft_draw_tvline(t_mlx *mlx, int x, int y1, int y2, unsigned txtx, t_img *texture, int is_glass);
 
 void				ft_draw(t_mlx *mlx);
-void	ft_glass(t_mlx *mlx);
+void				ft_transparent(t_mlx *mlx);
 
-void	ft_thread(t_mlx *mlx);
+void				ft_obj(t_mlx *mlx);
 
 void				ft_move_player(t_mlx *mlx, double dx, double dy);
 void				ft_move_calc(t_mlx *mlx);
 void				ft_collision(t_mlx *mlx);
 
 void				ft_init_textures(t_mlx *mlx);
+void				ft_init_obj(t_mlx *mlx);
 void				ft_init_transparent(t_mlx *mlx);
 void				ft_init_sky(t_mlx *mlx);
 

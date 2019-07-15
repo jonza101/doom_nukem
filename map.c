@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/13 16:31:40 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/15 15:29:29 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -259,6 +259,19 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 			mlx->sect[tmp]->floor_txt = ft_atoi(tmp_t[0]);
 			mlx->sect[tmp]->ceil_txt = ft_atoi(tmp_t[1]);
 
+			ft_strsplit_free(temp);
+			ft_strsplit_free(tmp_t);
+		}
+		if (line[0] == 'o' && line[1] == '|')
+		{
+			temp = ft_strsplit(line, '|');
+			int tmp = ft_atoi(temp[1]);
+			mlx->sect[tmp]->objects = (t_vec2**)malloc(sizeof(t_vec2*));
+			mlx->sect[tmp]->objects[0] = (t_vec2*)malloc(sizeof(t_vec2));
+			char **tmp_t = ft_strsplit(temp[2], ' ');
+			mlx->sect[tmp]->objects[0]->x = ft_atof(tmp_t[0]);
+			mlx->sect[tmp]->objects[0]->y = ft_atof(tmp_t[1]);
+			
 			ft_strsplit_free(temp);
 			ft_strsplit_free(tmp_t);
 		}

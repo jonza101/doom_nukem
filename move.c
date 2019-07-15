@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/11 15:06:15 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/11 19:09:30 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/15 14:00:36 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,9 @@ void	ft_collision(t_mlx *mlx)
 		int neighbor;
 
 		t_sector *sector = mlx->sect[mlx->player->sector];
+
+		// printf("%d\n", ft_is_inside(sector, px, py, dx, dy));
+
 		int s = -1;
 		while (++s < sector->verts_count)
 		{
@@ -131,32 +134,6 @@ void	ft_collision(t_mlx *mlx)
 						}
 					}
 				}
-				// else
-				// {
-				// 	printf("s %d\n", s);
-				// 	int j = -1;
-				// 	t_sector *n_sect = mlx->sect[neighbor];
-				// 	while (++j < n_sect->verts_count)
-				// 	{
-				// 		if (sector->verts[s]->x == n_sect->verts[j]->x && sector->verts[s]->y == n_sect->verts[j]->y)
-				// 		{
-				// 			int jj = (j + 1 == n_sect->verts_count - 1) ? 0 : j + 1;
-				// 			printf("j %d		jj %d\n", j, jj);
-				// 			printf("x %f		y %f\n", n_sect->verts[jj]->x, n_sect->verts[jj]->y);
-				// 			if (ft_intersect_box(px, py, px + dx, py + dy,
-				// 					n_sect->verts[j]->x, n_sect->verts[j]->y,
-				// 					n_sect->verts[jj]->x, n_sect->verts[jj]->y)
-				// 				&& ft_point_side(px + dx, py + dy,
-				// 					n_sect->verts[j]->x, n_sect->verts[j]->y,
-				// 					n_sect->verts[jj]->x, n_sect->verts[jj]->y) < 0)
-				// 			{
-				// 				printf("stop\n");
-				// 				stop = 1;
-				// 			}
-				// 		}
-				// 	}
-				// 	printf("\n");
-				// }
 				//	!!!
 				if (!stop)
 				{
@@ -188,33 +165,32 @@ void	ft_collision(t_mlx *mlx)
 void	ft_move_calc(t_mlx *mlx)
 {
 	double move_vec[2] = { 0.0f, 0.0f };
-	if (mlx->wsad[0])
+	if (mlx->player->wsad[0])
 	{
 		move_vec[0] += mlx->player->cos_angle * 0.2f;
 		move_vec[1] += mlx->player->sin_angle * 0.2f;
 	}
-	if (mlx->wsad[1])
+	if (mlx->player->wsad[1])
 	{
 		move_vec[0] -= mlx->player->cos_angle * 0.2f;
 		move_vec[1] -= mlx->player->sin_angle * 0.2f;
 	}
-	if (mlx->wsad[2])
+	if (mlx->player->wsad[2])
 	{
 		move_vec[0] += mlx->player->sin_angle * 0.2f;
 		move_vec[1] -= mlx->player->cos_angle * 0.2f;
 	}
-	if (mlx->wsad[3])
+	if (mlx->player->wsad[3])
 	{
 		move_vec[0] -= mlx->player->sin_angle * 0.2f;
 		move_vec[1] += mlx->player->cos_angle * 0.2f;
 	}
 
-	int pushing = mlx->wsad[0] || mlx->wsad[1] || mlx->wsad[2] || mlx->wsad[3];
+	int pushing = mlx->player->wsad[0] || mlx->player->wsad[1] || mlx->player->wsad[2] || mlx->player->wsad[3];
 	// double acceleration = (pushing) ? 0.35f : 0.35f;
 
 	mlx->player->velocity->x = mlx->player->velocity->x * (1 - 0.35f) + move_vec[0] * 0.35f;
 	mlx->player->velocity->y = mlx->player->velocity->y * (1 - 0.35f) + move_vec[1] * 0.35f;
-	// printf("dx %f	dy %f	dz %f\n\n", mlx->player->velocity->x, mlx->player->velocity->y, mlx->player->velocity->z);
 
 	if (pushing)
 		mlx->moving = 1;

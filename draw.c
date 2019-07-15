@@ -6,14 +6,14 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/13 17:57:05 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/15 19:55:23 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doom_nukem.h"
 
 //		UNSTABLE
-void	ft_glass(t_mlx *mlx)
+void	ft_transparent(t_mlx *mlx)
 {
 	int ytop[W] = {0};
 	int ybottom[W];	
@@ -153,7 +153,7 @@ void	ft_glass(t_mlx *mlx)
 				continue;
 
 			//	ACQUIRE THE FLOOR AND CEILING HEIGHTS, RELATIVE TO WHERE THE PLAYER'S VIEW IS
-			double yceil = (sector->ceiling) - mlx->player->pos->z;
+			double yceil = sector->ceiling - mlx->player->pos->z;
 			double yfloor = sector->floor - mlx->player->pos->z;
 
 			//	CHECK NEIGHBORS
@@ -442,8 +442,8 @@ void	ft_draw(t_mlx *mlx)
 				if (!floor_f)
 					ft_draw_vline(mlx, x, (cyb + 1), ybottom[x], LINE_COLOR, FLOOR_COLOR, LINE_COLOR);
 
-				// ft_scaler_init(mlx->scaler, ya, 0, cyb, 0, 64);
-				// ft_draw_tvline(mlx, x, 0, cya, txtx, mlx->sky[0]);
+				// ft_scaler_init(mlx->scaler, cya, cya, cyb, 0, 64);
+				// ft_draw_tvline(mlx, x, 0, cya, txtx, mlx->sky[0], 0);
 
 				// RENDER NEIGBORS
 				if (neighbor >= 0)

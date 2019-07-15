@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/28 21:24:48 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/13 18:08:57 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/15 20:07:10 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 void	ft_init_sky(t_mlx *mlx)
 {
 	int fd;
-	char *line = NULL;
+	char *line;
 	char *sky[SKY] = { "textures/sky/skybox.xpm" };
 	int i = -1;
 	while (++i < SKY)
 	{
-		fd = open(sky[i], O_RDWR);
+		fd = open(sky[i], O_RDONLY);
 		int j = -1;
 		while (++j < 4)
 			get_next_line(fd, &line);
@@ -31,18 +31,20 @@ void	ft_init_sky(t_mlx *mlx)
 		mlx->sky[i]->img = mlx_xpm_file_to_image(mlx->mlx, sky[i], &mlx->sky[i]->w, &mlx->sky[i]->h);
 		mlx->sky[i]->data = (int*)mlx_get_data_addr(mlx->sky[i]->img, &mlx->sky[i]->bpp, &mlx->sky[i]->size_line, &mlx->sky[i]->endian);
 		ft_strsplit_free(tmp);
+		close(fd);
+		free(line);
 	}
 }
 
 void	ft_init_transparent(t_mlx *mlx)
 {
 	int fd;
-	char *line = NULL;
+	char *line;
 	char *twall[TRANSPARENT] = { "textures/transparent/glass.xpm" };
 	int i = -1;
 	while (++i < TRANSPARENT)
 	{
-		fd = open(twall[i], O_RDWR);
+		fd = open(twall[i], O_RDONLY);
 		int j = -1;
 		while (++j < 4)
 			get_next_line(fd, &line);
@@ -54,18 +56,44 @@ void	ft_init_transparent(t_mlx *mlx)
 		mlx->transparent[i]->data = (int*)mlx_get_data_addr(mlx->transparent[i]->img, &mlx->transparent[i]->bpp, &mlx->transparent[i]->size_line, &mlx->transparent[i]->endian);
 		ft_strsplit_free(tmp);
 		close(fd);
+		free(line);
+	}
+}
+
+void	ft_init_obj(t_mlx *mlx)
+{
+	int fd;
+	char *line;
+	char *objs[OBJ] = { "textures/obj/barrel.xpm" };
+	int i = -1;
+	while (++i < OBJ)
+	{
+		fd = open(objs[i], O_RDONLY);
+		int j = -1;
+		while (++j < 4)
+			get_next_line(fd, &line);
+		char **tmp = ft_strsplit(line, ' ');
+		mlx->obj[i] = (t_img*)malloc(sizeof(t_img));
+		mlx->obj[i]->w = ft_atoi(&tmp[0][1]);
+		mlx->obj[i]->h = ft_atoi(tmp[1]);
+		printf("h %d			w %d\n", mlx->obj[i]->h, mlx->obj[i]->w);
+		mlx->obj[i]->img = mlx_xpm_file_to_image(mlx->mlx, objs[i], &mlx->obj[i]->w, &mlx->obj[i]->h);
+		mlx->obj[i]->data = (int*)mlx_get_data_addr(mlx->obj[i]->img, &mlx->obj[i]->bpp, &mlx->obj[i]->size_line, &mlx->obj[i]->endian);
+		ft_strsplit_free(tmp);
+		close(fd);
+		free(line);
 	}
 }
 
 void	ft_init_textures(t_mlx *mlx)
 {
 	int fd;
-	char *line = NULL;
+	char *line;
 	char *txts[TXT] = { "textures/brick.xpm", "textures/wall.xpm", "textures/scifi_wall.xpm" };
 	int i = -1;
 	while (++i < TXT)
 	{
-		fd = open(txts[i], O_RDWR);
+		fd = open(txts[i], O_RDONLY);
 		int j = -1;
 		while (++j < 4)
 			get_next_line(fd, &line);
@@ -77,5 +105,6 @@ void	ft_init_textures(t_mlx *mlx)
 		mlx->txt[i]->data = (int*)mlx_get_data_addr(mlx->txt[i]->img, &mlx->txt[i]->bpp, &mlx->txt[i]->size_line, &mlx->txt[i]->endian);
 		ft_strsplit_free(tmp);
 		close(fd);
+		free(line);
 	}
 }

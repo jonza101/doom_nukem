@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/13 17:55:24 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/15 20:07:13 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,13 +92,13 @@ int		ft_key_realese(int keycode, t_mlx *mlx)
 		mlx->player->jump = 0;
 
 	if (keycode == MAC_W)
-		mlx->wsad[0] = 0;
+		mlx->player->wsad[0] = 0;
 	if (keycode == MAC_S)
-		mlx->wsad[1] = 0;
+		mlx->player->wsad[1] = 0;
 	if (keycode == MAC_A)
-		mlx->wsad[2] = 0;
+		mlx->player->wsad[2] = 0;
 	if (keycode == MAC_D)
-		mlx->wsad[3] = 0;
+		mlx->player->wsad[3] = 0;
 	return (0);
 }
 
@@ -106,15 +106,15 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 {
 	// printf("%d\n", keycode);
 	(keycode == MAC_ESC) ? exit(0) : 1;
-	if (keycode == MAC_LEFT)	//	LOOK LEFT
+	if (keycode == MAC_LEFT)
 		mlx->player->left = 1;
-	if (keycode == MAC_RIGHT)	//	LOOK RIGHT
+	if (keycode == MAC_RIGHT)
 		mlx->player->right = 1;
-	if (keycode == MAC_UP)	//	LOOK UP
+	if (keycode == MAC_UP)
 		mlx->player->up = 1;
-	if (keycode == MAC_DOWN)	//	LOOK DOWN
+	if (keycode == MAC_DOWN)
 		mlx->player->down = 1;
-	if (keycode == MAC_CTRL_L)	//	CROUCH
+	if (keycode == MAC_CTRL_L)
 	{
 		if (mlx->crouching)
 		{
@@ -127,21 +127,21 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 		else
 		{
 			mlx->crouching = 1;
-			// mlx->falling = 1;
+			mlx->falling = 1;
 		}
 		
 	}
-	if (keycode == MAC_SPACE && mlx->ground && !mlx->crouching)	//	JUMP
+	if (keycode == MAC_SPACE && mlx->ground && !mlx->crouching)
 		mlx->player->jump = 1;
 
-	if (keycode == MAC_W)	//	W
-		mlx->wsad[0] = 1;
-	if (keycode == MAC_S)	//	S
-		mlx->wsad[1] = 1;
-	if (keycode == MAC_A)	//	A
-		mlx->wsad[2] = 1;
-	if (keycode == MAC_D)	//	D
-		mlx->wsad[3] = 1;
+	if (keycode == MAC_W)
+		mlx->player->wsad[0] = 1;
+	if (keycode == MAC_S)
+		mlx->player->wsad[1] = 1;
+	if (keycode == MAC_A)
+		mlx->player->wsad[2] = 1;
+	if (keycode == MAC_D)
+		mlx->player->wsad[3] = 1;
 
 	if (keycode == MAC_NUM_PLUS)
 	{
@@ -182,7 +182,8 @@ int		ft_game_loop(t_mlx *mlx)
 	}
 	ft_reset_image(mlx);
 	ft_draw(mlx);
-	// ft_glass(mlx);
+	ft_obj(mlx);
+	// ft_transparent(mlx);
 	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
 	// printf("p_sect %d\n", mlx->player->sector);
 	// printf("px %f	py %f	pz %f\n", mlx->player->pos->x, mlx->player->pos->y, mlx->player->pos->z);
@@ -213,7 +214,7 @@ void	ft_init(t_mlx *mlx)
 	mlx->player->jump = 0;
 	int i = -1;
 	while (++i < 4)
-		mlx->wsad[i] = 0;
+		mlx->player->wsad[i] = 0;
 
 	mlx->scaler = (t_scaler*)malloc(sizeof(t_scaler));
 	mlx->ya_int = (t_scaler*)malloc(sizeof(t_scaler));
@@ -238,9 +239,10 @@ int		main()
 	mlx->data = (int *)mlx_get_data_addr(mlx->img, &mlx->bpp, &mlx->size_line, &mlx->endian);
 
 	ft_init_textures(mlx);
+	ft_init_obj(mlx);
 	ft_init_transparent(mlx);
 	ft_init_sky(mlx);
-	ft_load_map(mlx, "maps/map");
+	ft_load_map(mlx, "maps/map3");
 	ft_init(mlx);
 
 	// mlx_hook(mlx->win, 6, 1L<<6, ft_mouse_move, mlx);
