@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/15 20:44:17 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/17 17:09:25 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,9 +181,6 @@ typedef	struct		s_mlx
 
 	double			map_x;
 	double			map_z;
-
-	int				l;
-	int				r;
 
 	t_img			*txt[TXT];
 	t_img			*obj[OBJ];

@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/15 19:55:23 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/17 18:22:39 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -415,7 +415,6 @@ void	ft_draw(t_mlx *mlx)
 				int floor_t = sector->floor_txt;
 				int ceil_f = ceil_t >= 0 && ceil_t < TXT;
 				int floor_f = floor_t >= 0 && floor_t < TXT;
-
 				if (ceil_f || floor_f)
 				{
 					int y = ytop[x] - 1;

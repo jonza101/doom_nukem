@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:38 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/15 12:33:00 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/17 14:58:59 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,17 +176,17 @@ void	ft_draw_vline(t_mlx *mlx, int x, int y1,int y2, int top_color,int middle_co
 	}
 }
 
-void	ft_draw_tvline(t_mlx *mlx, int x, int y1, int y2, unsigned txtx, t_img *texture, int is_glass)
+void	ft_draw_tvline(t_mlx *mlx, int x, int y1, int y2, unsigned txtx, t_img *texture, int is_transparent)
 {
-	// if ((y1 < 0 || y1 > H - 1 || y2 < 0 || y2 > H - 1)
-	// 		&& (x < 0 || x > W - 1))
-	// 	return ;
+	if ((y1 < 0 || y1 > H - 1 || y2 < 0 || y2 > H - 1)
+			|| (x < 0 || x > W - 1))
+		return ;
 	int y = y1 - 1;
 	while (++y <= y2)
 	{
 		unsigned txty = ft_scaler_next(mlx->scaler);
 		int color = texture->data[txty % texture->h * texture->w + txtx % texture->w];
-		if (!is_glass)
+		if (!is_transparent)
 			ft_image(mlx, x, y, color);
 		else if (color != 0xff000000)
 			ft_image(mlx, x, y, color);
