@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/17 17:09:25 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/20 19:16:11 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@
 #define THREAD 16
 
 #define TXT 3
-#define OBJ 1
+#define OBJ 3
 #define TRANSPARENT 1
 #define SKY 1
 
@@ -83,12 +83,30 @@ typedef	struct		s_img
 	int				bpp;
 	int				size_line;
 	int				endian;
+
+	double			scaler;
+	double			offset;
 }					t_img;
 
-typedef struct		s_obj
+typedef struct		s_obj_specs
 {
-	t_vec2			*pos;
-	t_img			*img;
+	double			x;
+	double			y;
+	int				sect;
+	int				txt_index;
+}					t_obj_specs;
+
+typedef	struct		s_obj
+{
+	// double			x;
+	// double			y;
+	// int				sect;
+	// int				txt_index;
+
+	t_obj_specs		*specs;
+	double			dist;
+	struct s_obj	*next;
+	struct s_obj	*prev;
 }					t_obj;
 
 typedef struct		s_sector
@@ -107,8 +125,6 @@ typedef struct		s_sector
 	int				neighbors_count;
 
 	char			**transparent;
-
-	t_vec2			**objects;
 
 	int				verts_count;
 }					t_sector;
@@ -182,10 +198,15 @@ typedef	struct		s_mlx
 	double			map_x;
 	double			map_z;
 
+	int				s;
+
 	t_img			*txt[TXT];
 	t_img			*obj[OBJ];
 	t_img			*transparent[TRANSPARENT];
 	t_img			*sky[SKY];
+
+	t_obj			*obj_list;
+	int				obj_count;
 
 	int				u0;
 	int				u1;

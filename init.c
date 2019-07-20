@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/28 21:24:48 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/17 18:09:26 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/20 19:00:24 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,11 +60,22 @@ void	ft_init_transparent(t_mlx *mlx)
 	}
 }
 
+void	ft_init_scaler(t_mlx *mlx)
+{
+	mlx->obj[0]->scaler = 3.75f;
+	mlx->obj[1]->scaler = 4.25f;
+	mlx->obj[2]->scaler = 2.5f;
+
+	mlx->obj[0]->offset = 1.0f;
+	mlx->obj[1]->offset = 1.0f;
+	mlx->obj[2]->offset = 2.0f;
+}
+
 void	ft_init_obj(t_mlx *mlx)
 {
 	int fd;
 	char *line;
-	char *objs[OBJ] = { "textures/obj/barrel.xpm" };
+	char *objs[OBJ] = { "textures/obj/barrel.xpm", "textures/obj/backpack.xpm", "textures/obj/cacodemon.xpm" };
 	int i = -1;
 	while (++i < OBJ)
 	{
@@ -82,6 +93,7 @@ void	ft_init_obj(t_mlx *mlx)
 		close(fd);
 		free(line);
 	}
+	ft_init_scaler(mlx);
 }
 
 void	ft_init_textures(t_mlx *mlx)

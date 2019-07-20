@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/06 14:49:08 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/13 16:24:32 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/20 11:30:39 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int		get_next_line(const int fd, char **line)
 	char			*t;
 	int				len;
 
-	if (fd < 0 || line == NULL || !(buff = (char*)malloc(BUFF_SIZE + 1)))
+	if (fd < 0 || !(buff = (char*)malloc(BUFF_SIZE + 1)))
 		return (-1);
 	while ((len = read(fd, buff, BUFF_SIZE)) > 0)
 	{

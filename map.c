@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/15 15:29:29 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/20 19:16:20 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 	int v = 1;
 	int s = 1;
 	int t = 1;
+	int o = 1;
 	
 	char *line;
 	int fd = open(map_file, O_RDONLY);
@@ -72,6 +73,9 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 	t_sector **tmp_s;
 
 	t_img **tmp_t;
+
+	t_obj *temp_obj, *prev;
+	mlx->obj_count = 0;
 
 	while (get_next_line(fd, &line))
 	{
@@ -264,16 +268,44 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 		}
 		if (line[0] == 'o' && line[1] == '|')
 		{
-			temp = ft_strsplit(line, '|');
-			int tmp = ft_atoi(temp[1]);
-			mlx->sect[tmp]->objects = (t_vec2**)malloc(sizeof(t_vec2*));
-			mlx->sect[tmp]->objects[0] = (t_vec2*)malloc(sizeof(t_vec2));
-			char **tmp_t = ft_strsplit(temp[2], ' ');
-			mlx->sect[tmp]->objects[0]->x = ft_atof(tmp_t[0]);
-			mlx->sect[tmp]->objects[0]->y = ft_atof(tmp_t[1]);
-			
-			ft_strsplit_free(temp);
-			ft_strsplit_free(tmp_t);
+			if (o > 1)
+			{
+				mlx->obj_list->next = (t_obj*)malloc(sizeof(t_obj));
+				mlx->obj_list->next->specs = (t_obj_specs*)malloc(sizeof(t_obj_specs));
+				temp = ft_strsplit(line, '|');
+				char **tmp_t = ft_strsplit(temp[2], ' ');
+				mlx->obj_list->next->specs->sect = ft_atoi(temp[1]);
+				mlx->obj_list->next->specs->x = ft_atof(tmp_t[0]);
+				mlx->obj_list->next->specs->y = ft_atof(tmp_t[1]);
+				mlx->obj_list->next->specs->txt_index = ft_atoi(temp[3]);
+				mlx->obj_list = mlx->obj_list->next;
+				mlx->obj_list->next = NULL;
+				mlx->obj_list->prev = prev;
+				prev = mlx->obj_list;
+
+				ft_strsplit_free(temp);
+				ft_strsplit_free(tmp_t);
+			}
+			else
+			{
+				mlx->obj_list = (t_obj*)malloc(sizeof(t_obj));
+				mlx->obj_list->specs = (t_obj_specs*)malloc(sizeof(t_obj_specs));
+				temp = ft_strsplit(line, '|');
+				char **tmp_t = ft_strsplit(temp[2], ' ');
+				mlx->obj_list->specs->sect = ft_atoi(temp[1]);
+				mlx->obj_list->specs->x = ft_atof(tmp_t[0]);
+				mlx->obj_list->specs->y = ft_atof(tmp_t[1]);
+				mlx->obj_list->specs->txt_index = ft_atoi(temp[3]);
+				mlx->obj_list->next = NULL;
+				mlx->obj_list->prev = NULL;
+				temp_obj = mlx->obj_list;
+				prev = mlx->obj_list;
+
+				ft_strsplit_free(temp);
+				ft_strsplit_free(tmp_t);
+			}
+			o++;
+			mlx->obj_count++;
 		}
 		if (line[0] == 'p' && line[1] == '|')
 		{
@@ -296,9 +328,12 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 			ft_strsplit_free(t);
 			ft_strsplit_free(temp);
 		}
+		free(line);
 	}
 	close(fd);
 	mlx->num_sec = s - 1;
+
+	mlx->obj_list = temp_obj;
 
 	printf("px %f	py %f	sect %d\n\n", mlx->player->pos->x, mlx->player->pos->y, mlx->player->sector);
 	int j = -1;

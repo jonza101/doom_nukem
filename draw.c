@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/17 18:22:39 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/19 19:38:13 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -444,7 +444,7 @@ void	ft_draw(t_mlx *mlx)
 				// ft_scaler_init(mlx->scaler, cya, cya, cyb, 0, 64);
 				// ft_draw_tvline(mlx, x, 0, cya, txtx, mlx->sky[0], 0);
 
-				// RENDER NEIGBORS
+				// RENDER NEIGHBORS
 				if (neighbor >= 0)
 				{
 					int nya = ft_scaler_next(mlx->nya_int);
