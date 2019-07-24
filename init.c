@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/28 21:24:48 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/20 19:00:24 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/23 17:06:55 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,10 @@ void	ft_init_sky(t_mlx *mlx)
 		fd = open(sky[i], O_RDONLY);
 		int j = -1;
 		while (++j < 4)
+		{
 			get_next_line(fd, &line);
+			(j < 3) ? ft_strdel(&line) : 1;
+		}
 		char **tmp = ft_strsplit(line, ' ');
 		mlx->sky[i] = (t_img*)malloc(sizeof(t_img));
 		mlx->sky[i]->w = ft_atoi(&tmp[0][1]);
@@ -47,7 +50,10 @@ void	ft_init_transparent(t_mlx *mlx)
 		fd = open(twall[i], O_RDONLY);
 		int j = -1;
 		while (++j < 4)
+		{
 			get_next_line(fd, &line);
+			(j < 3) ? ft_strdel(&line) : 1;
+		}
 		char **tmp = ft_strsplit(line, ' ');
 		mlx->transparent[i] = (t_img*)malloc(sizeof(t_img));
 		mlx->transparent[i]->w = ft_atoi(&tmp[0][1]);
@@ -56,7 +62,7 @@ void	ft_init_transparent(t_mlx *mlx)
 		mlx->transparent[i]->data = (int*)mlx_get_data_addr(mlx->transparent[i]->img, &mlx->transparent[i]->bpp, &mlx->transparent[i]->size_line, &mlx->transparent[i]->endian);
 		ft_strsplit_free(tmp);
 		close(fd);
-		free(line);
+		ft_strdel(&line);
 	}
 }
 
@@ -65,10 +71,6 @@ void	ft_init_scaler(t_mlx *mlx)
 	mlx->obj[0]->scaler = 3.75f;
 	mlx->obj[1]->scaler = 4.25f;
 	mlx->obj[2]->scaler = 2.5f;
-
-	mlx->obj[0]->offset = 1.0f;
-	mlx->obj[1]->offset = 1.0f;
-	mlx->obj[2]->offset = 2.0f;
 }
 
 void	ft_init_obj(t_mlx *mlx)
@@ -82,7 +84,10 @@ void	ft_init_obj(t_mlx *mlx)
 		fd = open(objs[i], O_RDONLY);
 		int j = -1;
 		while (++j < 4)
+		{
 			get_next_line(fd, &line);
+			(j < 3) ? ft_strdel(&line) : 1;
+		}
 		char **tmp = ft_strsplit(line, ' ');
 		mlx->obj[i] = (t_img*)malloc(sizeof(t_img));
 		mlx->obj[i]->w = ft_atoi(&tmp[0][1]);
@@ -91,7 +96,7 @@ void	ft_init_obj(t_mlx *mlx)
 		mlx->obj[i]->data = (int*)mlx_get_data_addr(mlx->obj[i]->img, &mlx->obj[i]->bpp, &mlx->obj[i]->size_line, &mlx->obj[i]->endian);
 		ft_strsplit_free(tmp);
 		close(fd);
-		free(line);
+		ft_strdel(&line);
 	}
 	ft_init_scaler(mlx);
 }
@@ -107,7 +112,10 @@ void	ft_init_textures(t_mlx *mlx)
 		fd = open(txts[i], O_RDONLY);
 		int j = -1;
 		while (++j < 4)
+		{
 			get_next_line(fd, &line);
+			(j < 3) ? ft_strdel(&line) : 1;
+		}
 		char **tmp = ft_strsplit(line, ' ');
 		mlx->txt[i] = (t_img*)malloc(sizeof(t_img));
 		mlx->txt[i]->w = ft_atoi(&tmp[0][1]);
@@ -116,6 +124,6 @@ void	ft_init_textures(t_mlx *mlx)
 		mlx->txt[i]->data = (int*)mlx_get_data_addr(mlx->txt[i]->img, &mlx->txt[i]->bpp, &mlx->txt[i]->size_line, &mlx->txt[i]->endian);
 		ft_strsplit_free(tmp);
 		close(fd);
-		free(line);
+		ft_strdel(&line);
 	}
 }

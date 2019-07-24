@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/20 19:16:20 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/22 14:34:43 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,8 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				t = ft_strsplit(temp[1], ' ');
 				mlx->sect[s - 1]->floor = (double)ft_atof(t[0]);
 				mlx->sect[s - 1]->ceiling = (double)ft_atof(t[1]);
+				if (mlx->sect[s - 1]->ceiling > mlx->top_ceil)
+					mlx->top_ceil = mlx->sect[s - 1]->ceiling;
 
 				ft_strsplit_free(t);
 
@@ -202,6 +204,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				t = ft_strsplit(temp[1], ' ');
 				mlx->sect[0]->floor = (double)ft_atof(t[0]);
 				mlx->sect[0]->ceiling = (double)ft_atof(t[1]);
+				mlx->top_ceil = mlx->sect[0]->ceiling;
 
 				ft_strsplit_free(t);
 
@@ -328,12 +331,13 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 			ft_strsplit_free(t);
 			ft_strsplit_free(temp);
 		}
-		free(line);
+		ft_strdel(&line);
 	}
 	close(fd);
 	mlx->num_sec = s - 1;
 
-	mlx->obj_list = temp_obj;
+	if (mlx->obj_count > 0)
+		mlx->obj_list = temp_obj;
 
 	printf("px %f	py %f	sect %d\n\n", mlx->player->pos->x, mlx->player->pos->y, mlx->player->sector);
 	int j = -1;

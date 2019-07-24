@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/19 19:38:13 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/23 13:13:01 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -365,7 +365,7 @@ void	ft_draw(t_mlx *mlx)
 				continue;
 
 			//	ACQUIRE THE FLOOR AND CEILING HEIGHTS, RELATIVE TO WHERE THE PLAYER'S VIEW IS
-			double yceil = (sector->ceiling) - mlx->player->pos->z;
+			double yceil = sector->ceiling - mlx->player->pos->z;
 			double yfloor = sector->floor - mlx->player->pos->z;
 
 			//	CHECK NEIGHBORS
@@ -389,6 +389,17 @@ void	ft_draw(t_mlx *mlx)
 			int ny1b = H / 2 + (int)(-ft_yaw(nyfloor, tz1, mlx->player->yaw) * yscale1);
 			int ny2a = H / 2 + (int)(-ft_yaw(nyceil, tz2, mlx->player->yaw) * yscale2);
 			int ny2b = H / 2 + (int)(-ft_yaw(nyfloor, tz2, mlx->player->yaw) * yscale2);
+
+			// int y1a = H / 2 + (int)(yceil * yscale1);
+			// int y1b = H / 2 + (int)(yfloor * yscale1);
+			// int y2a = H / 2 + (int)(yceil * yscale2);
+			// int y2b = H / 2 + (int)(yfloor * yscale2);
+
+			// //	SAME FOR NEIGHBORS
+			// int ny1a = H / 2 + (int)(nyceil * yscale1);
+			// int ny1b = H / 2 + (int)(nyfloor * yscale1);
+			// int ny2a = H / 2 + (int)(nyceil * yscale2);
+			// int ny2b = H / 2 + (int)(nyfloor * yscale2);
 
 			//	RENDER THE WALL
 			int beginx = ft_max(x1, mlx->now->sx1);

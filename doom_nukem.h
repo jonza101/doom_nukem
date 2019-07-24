@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/20 19:16:11 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/23 18:00:11 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ typedef	struct		s_img
 	int				endian;
 
 	double			scaler;
-	double			offset;
+	// double			offset;
 }					t_img;
 
 typedef struct		s_obj_specs
@@ -98,11 +98,6 @@ typedef struct		s_obj_specs
 
 typedef	struct		s_obj
 {
-	// double			x;
-	// double			y;
-	// int				sect;
-	// int				txt_index;
-
 	t_obj_specs		*specs;
 	double			dist;
 	struct s_obj	*next;
@@ -204,6 +199,8 @@ typedef	struct		s_mlx
 	t_img			*obj[OBJ];
 	t_img			*transparent[TRANSPARENT];
 	t_img			*sky[SKY];
+
+	double			top_ceil;
 
 	t_obj			*obj_list;
 	int				obj_count;

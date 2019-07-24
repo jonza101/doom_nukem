@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/20 18:01:13 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/24 14:50:52 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,7 +169,10 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 	}
 
 	if (keycode == MAC_DOT)
+	{
 		mlx->s = !mlx->s;
+		printf("s %d\n", mlx->s);
+	}
 	return (0);
 }
 
@@ -231,7 +234,7 @@ void	ft_init(t_mlx *mlx)
 	mlx->c0 = 128;
 	mlx->c1 = 128;
 
-	mlx->s = 1;
+	mlx->s = 0;
 }
 
 int		main()
@@ -251,6 +254,7 @@ int		main()
 	ft_load_map(mlx, "maps/map3");
 	ft_init(mlx);
 
+	printf("\n------------------------------------------------\n\n");
 	t_obj *obj = mlx->obj_list;
 	while (obj)
 	{
