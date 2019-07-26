@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/28 21:24:48 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/23 17:06:55 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/26 18:45:36 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,9 @@ void	ft_init_transparent(t_mlx *mlx)
 
 void	ft_init_scaler(t_mlx *mlx)
 {
-	mlx->obj[0]->scaler = 3.75f;
-	mlx->obj[1]->scaler = 4.25f;
-	mlx->obj[2]->scaler = 2.5f;
+	mlx->obj[0]->scaler = 1.0f;
+	mlx->obj[1]->scaler = 3.0f;
+	mlx->obj[2]->scaler = -5.0f;
 }
 
 void	ft_init_obj(t_mlx *mlx)
@@ -105,7 +105,7 @@ void	ft_init_textures(t_mlx *mlx)
 {
 	int fd;
 	char *line;
-	char *txts[TXT] = { "textures/brick.xpm", "textures/wall.xpm", "textures/scifi_wall.xpm" };
+	char *txts[TXT] = { "textures/walls/brick.xpm", "textures/walls/wall.xpm", "textures/walls/scifi_wall.xpm" };
 	int i = -1;
 	while (++i < TXT)
 	{
