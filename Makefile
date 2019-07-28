@@ -6,11 +6,11 @@
 #    By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/06/08 15:22:17 by zjeyne-l          #+#    #+#              #
-#    Updated: 2019/07/26 16:08:56 by zjeyne-l         ###   ########.fr        #
+#    Updated: 2019/07/28 14:47:22 by zjeyne-l         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRC = main.c map.c funcs.c draw.c move.c init.c thread.c obj.c
+SRC = main.c map.c funcs.c render.c move.c init.c thread.c obj.c draw.c game.c keys.c
 SRC += gnl/get_next_line.c gnl/libft/libft.a
 
 all :

@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/26 15:09:28 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/27 18:21:21 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,6 +154,8 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->sect[s - 1]->ceiling = (double)ft_atof(t[1]);
 				if (mlx->sect[s - 1]->ceiling > mlx->top_ceil)
 					mlx->top_ceil = mlx->sect[s - 1]->ceiling;
+				if (mlx->sect[s - 1]->floor < mlx->lower_floor)
+					mlx->lower_floor = mlx->sect[s - 1]->floor;
 
 				ft_strsplit_free(t);
 
@@ -205,6 +207,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->sect[0]->floor = (double)ft_atof(t[0]);
 				mlx->sect[0]->ceiling = (double)ft_atof(t[1]);
 				mlx->top_ceil = mlx->sect[0]->ceiling;
+				mlx->lower_floor = mlx->sect[0]->floor;
 
 				ft_strsplit_free(t);
 
@@ -314,7 +317,6 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 		{
 			temp = ft_strsplit(line, '|');
 
-			mlx->player = (t_player*)malloc(sizeof(t_player));
 			mlx->player->pos = (t_vec3*)malloc(sizeof(t_vec3));
 			mlx->player->velocity = (t_vec3*)malloc(sizeof(t_vec3));
 

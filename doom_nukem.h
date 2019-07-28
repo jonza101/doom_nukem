@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/25 11:41:33 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/28 19:38:47 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,14 +45,17 @@
 
 #define IGNORE_COLOR 0xFF000000
 
-#define MAX_DBL 1.7976931348623157E+308
-
 #define THREAD 16
 
 #define TXT 3
 #define OBJ 3
 #define TRANSPARENT 1
 #define SKY 1
+
+#define WEAPONS 1
+
+#define REV_IDLE 1
+#define REV_FIRE 6
 
 typedef struct		s_vec2
 {
@@ -85,7 +88,7 @@ typedef	struct		s_img
 	int				endian;
 
 	double			scaler;
-	// double			offset;
+	double			aspect_scaler;
 }					t_img;
 
 typedef struct		s_obj_specs
@@ -133,6 +136,17 @@ typedef struct		s_scaler
 	int				cache;
 }					t_scaler;
 
+typedef	struct		s_weapon
+{
+	t_img			**fire;
+	t_img			**idle;
+	t_img			**altfire;
+	// t_img			**reloading;
+
+	int				fire_delay;
+	int				afte_fire_delay;
+}					t_weapon;
+
 typedef	struct		s_player
 {
 	t_vec3			*pos;
@@ -153,6 +167,13 @@ typedef	struct		s_player
 	int				up;
 	int				down;
 	int				jump;
+
+	int				weapon_state;		//		IDLE - 0	|	FIRE - 1	|	ALTFIRE - 2
+
+	t_img			*frame;
+	t_weapon		*weapon;
+
+	t_weapon		*revolver;
 }					t_player;
 
 typedef	struct		s_mlx
@@ -201,6 +222,7 @@ typedef	struct		s_mlx
 	t_img			*sky[SKY];
 
 	double			top_ceil;
+	double			lower_floor;
 
 	t_obj			*obj_list;
 	int				obj_count;
@@ -209,9 +231,14 @@ typedef	struct		s_mlx
 	int				u1;
 	int				c0;
 	int				c1;
+
+	int 			gun_fire_i;
+	int				gun_delay;
+	int				del;
 }					t_mlx;
 
 void				ft_image(t_mlx *mlx, int x, int y, int color);
+void				ft_reset_image(t_mlx *mlx);
 
 void				ft_load_map(t_mlx *mlx, char *map_file);
 
@@ -238,11 +265,18 @@ void				ft_obj(t_mlx *mlx);
 void				ft_move_player(t_mlx *mlx, double dx, double dy);
 void				ft_move_calc(t_mlx *mlx);
 void				ft_collision(t_mlx *mlx);
+void				ft_player_view(t_mlx *mlx);
 
 void				ft_init_textures(t_mlx *mlx);
 void				ft_init_obj(t_mlx *mlx);
 void				ft_init_transparent(t_mlx *mlx);
 void				ft_init_sky(t_mlx *mlx);
+
+void				ft_init_revolver(t_mlx *mlx);
+
+void				ft_draw_player(t_mlx *mlx);
+void				ft_weapon_state(t_mlx *mlx);
+void				ft_gun_anim(t_mlx *mlx, t_weapon *gun, int delay);
 
 double				ft_datoi(char *str);
 void				ft_strsplit_free(char **temp);
@@ -255,9 +289,17 @@ void				ft_lower_txt(t_mlx *mlx, int x, int cnyb, int cyb, int txtx, int txt_i, 
 void				ft_screenpoint_to_mappoint(t_mlx *mlx, double map_y, double screen_x, double screen_y);
 void				ft_relative_to_absolute(t_mlx *mlx);
 
+int					ft_texture_sampling(t_img *img, double sample_x, double sample_y);
+
 int					ft_line_intersect(t_vec2 *p0, t_vec2 *p1, t_vec2 *v0, t_vec2 *v1);
 int					ft_is_inside(t_sector *sector, double px, double py, double dx, double dy);
 
-void	ft_dr(t_mlx *mlx);
+int					ft_game_loop(t_mlx *mlx);
+void				ft_game_mechanics(t_mlx *mlx);
+
+int					ft_key_press(int keycode, t_mlx *mlx);
+int					ft_key_realese(int keycode, t_mlx *mlx);
+
+void				ft_thread(t_mlx *mlx);
 
 #endif

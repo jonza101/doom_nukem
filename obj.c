@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 15:17:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/26 18:53:39 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/27 18:32:24 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,20 +116,20 @@ void	ft_obj(t_mlx *mlx)
 		double xscale1 = (W * FOV_H) / tz1;
 		double yscale1 = (H * FOV_V) / tz1;
 		int x1 = W / 2 + (int)(-tx1 * xscale1);
-		double xscale2 = (W * FOV_H) / tz2;
+		// double xscale2 = (W * FOV_H) / tz2;
 		double yscale2 = (H * FOV_V) / tz2;
-		int x2 = W / 2 + (int)(-tx2 * xscale2);
+		// int x2 = W / 2 + (int)(-tx2 * xscale2);
 
-		double yceil = mlx->sect[obj->specs->sect]->ceiling - mlx->player->pos->z;		//	TODO: FIX IT
+		double yceil = mlx->sect[obj->specs->sect]->ceiling - (mlx->player->pos->z);		//	TODO: FIX IT
 		double yfloor = mlx->sect[obj->specs->sect]->floor - mlx->player->pos->z;
 
-		int add_y1 = mlx->player->pos->z * (yscale1 - 41 / dist_from_player);
-		int add_y2 = mlx->player->pos->z * (yscale2 - 41 / dist_from_player);
-		int	offset_y1 = yscale1 * mlx->obj[obj->specs->txt_index]->scaler;
-		int offset_y2 = yscale2 * mlx->obj[obj->specs->txt_index]->scaler;
-		int ya1 = H / 2 + (int)(-ft_yaw(yceil, tz1, mlx->player->yaw * 4) * yscale1) / 4 + add_y1 + offset_y1;
+		int add_yb1 = mlx->player->pos->z * (yscale1 - 40.5f / dist_from_player);
+		int add_yb2 = mlx->player->pos->z * (yscale2 - 40.5f / dist_from_player);
+		int	offset_yb1 = yscale1 * mlx->obj[obj->specs->txt_index]->scaler;
+		int offset_yb2 = yscale2 * mlx->obj[obj->specs->txt_index]->scaler;
+		int ya1 = H / 2 + (int)(-ft_yaw(yceil, tz1, mlx->player->yaw * 4) * yscale1) / 4 + add_yb1 + offset_yb1;
 		int yb1 = H / 2 + (int)(-ft_yaw(yfloor, tz1, mlx->player->yaw) * yscale1);
-		int ya2 = H / 2 + (int)(-ft_yaw(yceil, tz2, mlx->player->yaw * 4) * yscale2) / 4 + add_y2 + offset_y2;
+		int ya2 = H / 2 + (int)(-ft_yaw(yceil, tz2, mlx->player->yaw * 4) * yscale2) / 4 + add_yb2 + offset_yb2;
 		int yb2 = H / 2 + (int)(-ft_yaw(yfloor, tz2, mlx->player->yaw) * yscale2);
 		// printf("dist		%f\n", dist_from_player);
 		// printf("x1 %d		x2 %d\n", x1, x2);
@@ -146,14 +146,14 @@ void	ft_obj(t_mlx *mlx)
 		else
 			yb = yb2;
 		int obj_h = (yb - ya);
-		int obj_w = obj_h / (double)obj_aspect_ratio;
+		int obj_w = obj_h / ((double)obj_aspect_ratio * mlx->obj[obj->specs->txt_index]->aspect_scaler);
 		int obj_middle = (obj_w / 2) + x1;
 		x1 = x1 - (obj_w / 2);
 		obj_middle = (obj_w / 2) + x1;
 
 		// printf("ya %d		yb %d\n\n", ya, yb);
 
-		if (x1 >= (-W * 1) && x1 < (W * 2) && x2 >= (-W * 1) && x2 < (W * 2)
+		if (x1 >= (-W * 1) && x1 < (W * 2) && x1 >= (-W * 1) && x1 < (W * 2)
 				&& ya >= (-H * 3) && ya < (H * 3) && yb >= (-H * 3) && yb < (H * 3)
 				&& dist_from_player >= 1.0f)
 		{
