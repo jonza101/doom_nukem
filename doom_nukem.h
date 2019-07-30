@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/28 19:38:47 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/30 17:43:07 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,16 @@
 #define TRANSPARENT 1
 #define SKY 1
 
-#define WEAPONS 1
-
 #define REV_IDLE 1
 #define REV_FIRE 6
+#define REV_ALTFIRE 9
+#define REV_ALTFIRE_CONTINUE 6
+
+#define SHOTGUN_IDLE 1
+#define SHOTGUN_FIRE 13
+
+#define ARIFLE_IDLE 1
+#define ARIFLE_FIRE 4
 
 typedef struct		s_vec2
 {
@@ -141,10 +147,20 @@ typedef	struct		s_weapon
 	t_img			**fire;
 	t_img			**idle;
 	t_img			**altfire;
+	t_img			**altfire_cont;
 	// t_img			**reloading;
 
+	int				fire_n;
+	int				altfire_n;
+	int				altfire_cont_n;
+
 	int				fire_delay;
-	int				afte_fire_delay;
+	int				altfire_delay;
+	int				altfire_cont_delay;
+	int				after_fire_delay;
+
+	double			scaler;
+	int				x_offset;
 }					t_weapon;
 
 typedef	struct		s_player
@@ -174,6 +190,8 @@ typedef	struct		s_player
 	t_weapon		*weapon;
 
 	t_weapon		*revolver;
+	t_weapon		*shotgun;
+	t_weapon		*a_rifle;
 }					t_player;
 
 typedef	struct		s_mlx
@@ -234,6 +252,7 @@ typedef	struct		s_mlx
 
 	int 			gun_fire_i;
 	int				gun_delay;
+	int				altfire;
 	int				del;
 }					t_mlx;
 
@@ -273,10 +292,12 @@ void				ft_init_transparent(t_mlx *mlx);
 void				ft_init_sky(t_mlx *mlx);
 
 void				ft_init_revolver(t_mlx *mlx);
+void				ft_init_shotgun(t_mlx *mlx);
+void				ft_init_arifle(t_mlx *mlx);
 
 void				ft_draw_player(t_mlx *mlx);
 void				ft_weapon_state(t_mlx *mlx);
-void				ft_gun_anim(t_mlx *mlx, t_weapon *gun, int delay);
+void				ft_gun_anim(t_mlx *mlx, t_weapon *gun, int delay, int cont_delay);
 
 double				ft_datoi(char *str);
 void				ft_strsplit_free(char **temp);

@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/28 19:11:18 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/30 20:19:48 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,8 @@ void	ft_init_graphics(t_mlx *mlx)
 	ft_init_sky(mlx);
 
 	ft_init_revolver(mlx);
+	ft_init_shotgun(mlx);
+	ft_init_arifle(mlx);
 }
 
 void	ft_init(t_mlx *mlx)
@@ -113,7 +115,7 @@ void	ft_init(t_mlx *mlx)
 	mlx->player->weapon_state = 0;
 	mlx->gun_fire_i = 0;
 	mlx->gun_delay = 0;
-	// mlx->del = 0;
+	mlx->altfire = 0;
 
 	mlx->scaler = (t_scaler*)malloc(sizeof(t_scaler));
 	mlx->ya_int = (t_scaler*)malloc(sizeof(t_scaler));

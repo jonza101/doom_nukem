@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/25 13:33:20 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/05/16 19:35:13 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/30 14:17:03 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@
 #define MAC_NINE 25
 #define MAC_ZERO 29
 #define MAC_MINUS 27
-#define MAC_EQUAL 24
+#define MAC_PLUS 24
 #define MAC_BACKSPACE 51
 
 #define MAC_TAB 48
@@ -78,7 +78,7 @@
 #define MAC_QUOTES 39
 #define MAC_ENTER 36
 
-#define MAC_SHIFT 257
+#define MAC_SHIFT_L 257
 #define MAC_Z 6
 #define MAC_X 7
 #define MAC_C 8
@@ -89,6 +89,7 @@
 #define MAC_COMMA 43
 #define MAC_DOT 47
 #define MAC_QSTN_MARK 44
+#define MAC_SHIFT_R 258
 
 #define MAC_CTRL_L 256
 #define MAC_OPTION_L 261

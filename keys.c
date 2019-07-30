@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:41:19 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/28 19:04:37 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/30 17:17:52 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,20 @@ int		ft_key_realese(int keycode, t_mlx *mlx)
 		mlx->player->wsad[2] = 0;
 	if (keycode == MAC_D)
 		mlx->player->wsad[3] = 0;
+
+	if (keycode == MAC_CTRL_R && mlx->player->weapon == mlx->player->a_rifle)
+	{
+		mlx->player->weapon_state = 0;
+		mlx->gun_fire_i = 0;
+		mlx->gun_delay = 0;
+	}
+	if (keycode == MAC_SHIFT_R && mlx->player->weapon == mlx->player->revolver)
+	{
+		mlx->player->weapon_state = 0;
+		mlx->altfire = 0;
+		mlx->gun_fire_i = 0;
+		mlx->gun_delay = 0;
+	}
 	return (0);
 }
 
@@ -90,18 +104,18 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 		mlx->c1 -= 32;
 		printf("u1 %d\n", mlx->u1);
 	}
-	if (keycode == MAC_EQUAL)
-	{
-		mlx->u0 += 32;
-		mlx->c0 += 32;
-		printf("u0 %d\n", mlx->u0);
-	}
-	if (keycode == MAC_MINUS)
-	{
-		mlx->u0 -= 32;
-		mlx->c0 -= 32;
-		printf("u0 %d\n", mlx->u0);
-	}
+	// if (keycode == MAC_PLUS)
+	// {
+	// 	mlx->u0 += 32;
+	// 	mlx->c0 += 32;
+	// 	printf("u0 %d\n", mlx->u0);
+	// }
+	// if (keycode == MAC_MINUS)
+	// {
+	// 	mlx->u0 -= 32;
+	// 	mlx->c0 -= 32;
+	// 	printf("u0 %d\n", mlx->u0);
+	// }
 
 	if (keycode == MAC_DOT)
 	{
@@ -120,23 +134,44 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 		printf("%d\n", mlx->del);
 	}
 
-	if (keycode == MAC_TWO)
-	{
-		extern char **environ;
-        int i;
-        char *av[] = {"/bin/bash", "-c", "afplay click.mp3", NULL};
-        i = fork();
-        if (i == 0)
-		{
-			extern char **environ;
-			char *av[] = {"/bin/bash", "-c", "afplay click.mp3", NULL};
-            execve("/bin/bash", av, environ);
-			exit(0);
-		}
-	}
+	// if (keycode == MAC_FIVE)
+	// {
+	// 	extern char **environ;
+    //     int i;
+    //     char *av[] = {"/bin/bash", "-c", "afplay click.mp3", NULL};
+    //     i = fork();
+    //     if (i == 0)
+	// 	{
+	// 		extern char **environ;
+	// 		char *av[] = {"/bin/bash", "-c", "afplay click.mp3", NULL};
+    //         execve("/bin/bash", av, environ);
+	// 		exit(0);
+	// 	}
+	// }
 
 	if (keycode == MAC_CTRL_R)
 		mlx->player->weapon_state = 1;
+	if (keycode == MAC_SHIFT_R && mlx->player->weapon == mlx->player->revolver)
+		mlx->player->weapon_state = 2;
+
+	if (keycode == MAC_ONE && mlx->player->weapon_state == 0)
+	{
+		mlx->player->weapon = mlx->player->revolver;
+		mlx->gun_fire_i = 0;
+		mlx->gun_delay = 0;
+	}
+	if (keycode == MAC_TWO && mlx->player->weapon_state == 0)
+	{
+		mlx->player->weapon = mlx->player->shotgun;
+		mlx->gun_fire_i = 0;
+		mlx->gun_delay = 0;
+	}
+	if (keycode == MAC_THREE && mlx->player->weapon_state == 0)
+	{
+		mlx->player->weapon = mlx->player->a_rifle;
+		mlx->gun_fire_i = 0;
+		mlx->gun_delay = 0;
+	}
 
 	if (keycode == MAC_O)
 	{

@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 15:17:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/27 18:32:24 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/30 18:40:49 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,13 +81,13 @@ void	ft_obj(t_mlx *mlx)
 
 		double eye_y = mlx->player->sin_angle;
 		double eye_x = mlx->player->cos_angle;
-		double obj_angle = atan2f(dy, dx) - atan2f(eye_y, eye_x);
-		if (obj_angle < -3.14159f)
-			obj_angle += (2 * 3.14159f);
-		if (obj_angle > 3.14159f)
-			obj_angle -= (2 * 3.14159f);
-		obj_angle *= ((double)H / (double)W);
-		int inf_fov = (fabs(obj_angle) <= 0.83f) ? 1 : 0;
+		// double obj_angle = atan2f(dy, dx) - atan2f(eye_y, eye_x);
+		// if (obj_angle < -3.14159f)
+		// 	obj_angle += (2 * 3.14159f);
+		// if (obj_angle > 3.14159f)
+		// 	obj_angle -= (2 * 3.14159f);
+		// obj_angle *= ((double)H / (double)W);
+		// int inf_fov = (fabs(obj_angle) <= 0.83f) ? 1 : 0;
 
 		double obj_aspect_ratio = (double)mlx->obj[obj->specs->txt_index]->h / (double)mlx->obj[obj->specs->txt_index]->w;
 
@@ -120,8 +120,8 @@ void	ft_obj(t_mlx *mlx)
 		double yscale2 = (H * FOV_V) / tz2;
 		// int x2 = W / 2 + (int)(-tx2 * xscale2);
 
-		double yceil = mlx->sect[obj->specs->sect]->ceiling - (mlx->player->pos->z);		//	TODO: FIX IT
 		double yfloor = mlx->sect[obj->specs->sect]->floor - mlx->player->pos->z;
+		double yceil = mlx->sect[obj->specs->sect]->ceiling - mlx->player->pos->z;		//	TODO: FIX IT					|		EYE_H * 3 - yfloor
 
 		int add_yb1 = mlx->player->pos->z * (yscale1 - 40.5f / dist_from_player);
 		int add_yb2 = mlx->player->pos->z * (yscale2 - 40.5f / dist_from_player);
@@ -132,9 +132,11 @@ void	ft_obj(t_mlx *mlx)
 		int ya2 = H / 2 + (int)(-ft_yaw(yceil, tz2, mlx->player->yaw * 4) * yscale2) / 4 + add_yb2 + offset_yb2;
 		int yb2 = H / 2 + (int)(-ft_yaw(yfloor, tz2, mlx->player->yaw) * yscale2);
 		// printf("dist		%f\n", dist_from_player);
+		// printf("yceil %f		yfloor %f\n", yceil, yfloor);
 		// printf("x1 %d		x2 %d\n", x1, x2);
 		// printf("ya %d	yb %d\n\n", ya1, yb1);
-		// printf("ya1 %d	yb1 %d\n\n", ya2, yb2);
+		// printf("ya1 %d	yb1 %d\n", ya2, yb2);
+		// printf("\n");
 
 		int ojb_h, yb, ya;
 		if (ya1 < ya2)
@@ -151,7 +153,8 @@ void	ft_obj(t_mlx *mlx)
 		x1 = x1 - (obj_w / 2);
 		obj_middle = (obj_w / 2) + x1;
 
-		// printf("ya %d		yb %d\n\n", ya, yb);
+		// printf("ya %d		yb %d\n", ya, yb);
+		// printf("\n");
 
 		if (x1 >= (-W * 1) && x1 < (W * 2) && x1 >= (-W * 1) && x1 < (W * 2)
 				&& ya >= (-H * 3) && ya < (H * 3) && yb >= (-H * 3) && yb < (H * 3)
