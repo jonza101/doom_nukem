@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/30 20:19:48 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/31 18:15:56 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,22 +147,22 @@ int		main()
 	ft_load_map(mlx, "maps/map3");
 	ft_init(mlx);
 
-	printf("\n------------------------------------------------\n\n");
-	t_obj *obj = mlx->obj_list;
-	while (obj)
-	{
-		printf("sect %d				index %d\n", obj->specs->sect, obj->specs->txt_index);
-		printf("x %f			y %f\n", obj->specs->x, obj->specs->y);
-		if (obj->prev)
-		{
-			printf("prev_sect %d			prev_index %d\n", obj->prev->specs->sect, obj->prev->specs->txt_index);
-			printf("prev_x %f		prev_y %f\n", obj->prev->specs->x, obj->prev->specs->y);
-		}
-		else
-			printf("prev -\n");
-		printf("\n------------------------------------------------\n");
-		obj = obj->next;
-	}
+	// printf("\n------------------------------------------------\n\n");
+	// t_obj *obj = mlx->obj_list;
+	// while (obj)
+	// {
+	// 	printf("sect %d				index %d\n", obj->specs->sect, obj->specs->txt_index);
+	// 	printf("x %f			y %f\n", obj->specs->x, obj->specs->y);
+	// 	if (obj->prev)
+	// 	{
+	// 		printf("prev_sect %d			prev_index %d\n", obj->prev->specs->sect, obj->prev->specs->txt_index);
+	// 		printf("prev_x %f		prev_y %f\n", obj->prev->specs->x, obj->prev->specs->y);
+	// 	}
+	// 	else
+	// 		printf("prev -\n");
+	// 	printf("\n------------------------------------------------\n");
+	// 	obj = obj->next;
+	// }
 
 	// mlx_hook(mlx->win, 6, 1L<<6, ft_mouse_move, mlx);
 	mlx_loop_hook(mlx->mlx, ft_game_loop, mlx);

@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/28 21:24:48 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/30 14:24:22 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/31 16:01:16 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,9 @@ void	ft_init_transparent(t_mlx *mlx)
 
 void	ft_init_scaler(t_mlx *mlx)
 {
-	mlx->obj[0]->scaler = 1.0f;
-	mlx->obj[1]->scaler = 3.5f;
-	mlx->obj[2]->scaler = -5.0f;
+	mlx->obj[0]->scaler = 2.5f;
+	mlx->obj[1]->scaler = 4.5f;
+	mlx->obj[2]->scaler = -4.5f;
 
 	mlx->obj[0]->aspect_scaler = 1.0f;
 	mlx->obj[1]->aspect_scaler = 0.95f;

@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:41:19 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/30 17:17:52 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/07/31 18:57:15 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,13 @@ int		ft_key_realese(int keycode, t_mlx *mlx)
 	if (keycode == MAC_D)
 		mlx->player->wsad[3] = 0;
 
-	if (keycode == MAC_CTRL_R && mlx->player->weapon == mlx->player->a_rifle)
+	if (keycode == MAC_CTRL_R && mlx->player->weapon_state == 1 && mlx->player->weapon == mlx->player->a_rifle)
 	{
 		mlx->player->weapon_state = 0;
 		mlx->gun_fire_i = 0;
 		mlx->gun_delay = 0;
 	}
-	if (keycode == MAC_SHIFT_R && mlx->player->weapon == mlx->player->revolver)
+	if (keycode == MAC_SHIFT_R && mlx->player->weapon_state == 2 && mlx->player->weapon == mlx->player->revolver)
 	{
 		mlx->player->weapon_state = 0;
 		mlx->altfire = 0;
@@ -123,17 +123,6 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 		printf("s %d\n", mlx->s);
 	}
 
-	if (keycode == MAC_NUM_ONE)
-	{
-		mlx->del--;
-		printf("%d\n", mlx->del);
-	}
-	if (keycode == MAC_NUM_TWO)
-	{
-		mlx->del++;
-		printf("%d\n", mlx->del);
-	}
-
 	// if (keycode == MAC_FIVE)
 	// {
 	// 	extern char **environ;
@@ -149,11 +138,11 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 	// 	}
 	// }
 
-	if (keycode == MAC_CTRL_R)
+	if (keycode == MAC_CTRL_R && mlx->player->weapon_state == 0)
 		mlx->player->weapon_state = 1;
-	if (keycode == MAC_SHIFT_R && mlx->player->weapon == mlx->player->revolver)
-		mlx->player->weapon_state = 2;
 
+	if (keycode == MAC_SHIFT_R && mlx->player->weapon_state == 0 && mlx->player->weapon == mlx->player->revolver)
+		mlx->player->weapon_state = 2;
 	if (keycode == MAC_ONE && mlx->player->weapon_state == 0)
 	{
 		mlx->player->weapon = mlx->player->revolver;
