@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/31 17:23:16 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/02 17:14:24 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@
 #define FOV_V (1.0 * 0.2f)
 
 #define MAX_QUEUE 32
+
+#define DBL_MAX 1.7976931348623158e+308
 
 #define UPPER_COLOR 0x330315
 #define LOWER_COLOR 0x1B0030
@@ -113,12 +115,22 @@ typedef	struct		s_obj
 	struct s_obj	*prev;
 }					t_obj;
 
+typedef struct		s_drawseg
+{
+	int				x1;
+	int				x2;
+
+	double			dist;
+}					t_drawseg;
+
 typedef struct		s_sector
 {
 	double			ceiling;
 	double			floor;
 
 	t_vec2			**verts;
+
+	t_drawseg		**seg;
 
 	int				ceil_txt;
 	int				floor_txt;
@@ -149,6 +161,8 @@ typedef	struct		s_weapon
 	t_img			**altfire;
 	t_img			**altfire_cont;
 	// t_img			**reloading;
+
+	int				has_altfire;
 
 	int				fire_n;
 	int				altfire_n;
@@ -244,6 +258,10 @@ typedef	struct		s_mlx
 
 	t_obj			*obj_list;
 	int				obj_count;
+
+	t_drawseg		**drawseg;
+	int				drawseg_count;
+	int				seg;
 
 	int				u0;
 	int				u1;

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   draw.c                                             :+:      :+:    :+:   */
+/*   render.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/23 13:13:01 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/02 19:11:56 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -249,7 +249,7 @@ void	ft_draw(t_mlx *mlx)
 	if (++mlx->head == mlx->queue + MAX_QUEUE)
 		mlx->head = mlx->queue;
 
-	// int i = 0;
+	int f = 0;
 	while (mlx->head != mlx->tail)
 	{
 		mlx->now = mlx->tail;
@@ -261,6 +261,7 @@ void	ft_draw(t_mlx *mlx)
 		++rendered_sect[mlx->now->sector_n];
 
 		t_sector *sector = mlx->sect[mlx->now->sector_n];
+		mlx->seg = sector->verts_count;
 		int s = -1;
 		while (++s < sector->verts_count)
 		{
@@ -269,6 +270,9 @@ void	ft_draw(t_mlx *mlx)
 			double vy1 = sector->verts[s + 0]->y - mlx->player->pos->y;
 			double vx2 = sector->verts[s + 1]->x - mlx->player->pos->x;
 			double vy2 = sector->verts[s + 1]->y - mlx->player->pos->y;
+
+			// double dist = floorf(sqrtf(powf(sector->verts[s + 0]->x - sector->verts[s + 1]->x, 2) + powf(sector->verts[s + 0]->y - sector->verts[s + 1]->y, 2)));
+			// printf("%f\n", dist);
 
 			//	ROTATE THEM AROUND THE PLAYER
 			double p_cos = mlx->player->cos_angle;
@@ -410,9 +414,19 @@ void	ft_draw(t_mlx *mlx)
             ft_scaler_init(mlx->nya_int, x1, beginx, x2, ny1a, ny2a);
             ft_scaler_init(mlx->nyb_int, x1, beginx, x2, ny1b, ny2b);
 
+			// double temp = dist / (endx -  beginx + 1);
+
 			int x = beginx - 1;
 			while (++x <= endx)
 			{
+				// double n = temp;
+				// double nx = sector->verts[s + 0]->x + n * dist * (sector->verts[s + 1]->x - sector->verts[s + 0]->x);
+				// double ny = sector->verts[s + 0]->y + n * dist * (sector->verts[s + 1]->y - sector->verts[s + 0]->y);
+				// double interpolate_dist = sqrtf(powf(nx - mlx->player->pos->x, 2) + powf(ny - mlx->player->pos->y, 2));
+				// printf("%f\n", interpolate_dist)
+				// printf("nx %f			ny %f\n\n", nx, ny);
+				// n += temp;
+
 				int txtx = (u0 * ((x2 - x) * tz2) + u1 * ((x - x1) * tz1)) / ((x2 - x) * tz2 + (x - x1) * tz1);
 
 				//	ACQUIRE THE Y COORDINATES FOR OUR CEILING & FLOOR FOR THIS X COORDINATE. CLAMP THEM
@@ -424,8 +438,8 @@ void	ft_draw(t_mlx *mlx)
 
 				int ceil_t = sector->ceil_txt;
 				int floor_t = sector->floor_txt;
-				int ceil_f = ceil_t >= 0 && ceil_t < TXT;
-				int floor_f = floor_t >= 0 && floor_t < TXT;
+				int ceil_f = (ceil_t >= 0) && (ceil_t < TXT);
+				int floor_f = (floor_t >= 0) && (floor_t < TXT);
 				if (ceil_f || floor_f)
 				{
 					int y = ytop[x] - 1;
@@ -524,10 +538,36 @@ void	ft_draw(t_mlx *mlx)
 						else
 							ft_draw_vline(mlx, x, cya, cyb, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : WALL_COLOR, LINE_COLOR);
 					}
+					// else if (s == 0)
+					// 	ft_draw_vline(mlx, x, cya, cyb, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : 0xFFFFF, LINE_COLOR);
+					// else if (s == 1)
+					// 	ft_draw_vline(mlx, x, cya, cyb, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : 0xFF0000, LINE_COLOR);
+					// else if (s == 2)
+					// 	ft_draw_vline(mlx, x, cya, cyb, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : 0x00FF00, LINE_COLOR);
 					else
 						ft_draw_vline(mlx, x, cya, cyb, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : WALL_COLOR, LINE_COLOR);
 				}
 			}
+			if (neighbor < 0)
+			{
+				mlx->drawseg[f * mlx->seg + s]->x1 = beginx;
+				mlx->drawseg[f * mlx->seg + s]->x2 = endx;
+
+				t_vec2 *v1 = sector->verts[s + 0];
+				t_vec2 *v2 = sector->verts[s + 1];
+				t_vec3 *p = mlx->player->pos;
+				double v1_dist = sqrtf(powf(v1->x - p->x, 2) + powf(v1->y - p->y, 2));
+				double v2_dist = sqrtf(powf(v2->x - p->x, 2) + powf(v2->y - p->y, 2));
+				mlx->drawseg[f * mlx->seg + s]->dist = (v1_dist > v2_dist) ? v1_dist : v2_dist;
+				// // mlx->drawseg[f * mlx->seg + s]->dist = fabs((v2->y - v1->y) * p->x - (v2->x - v1->x) * p->y + v2->x * v1->y - v2->y * v1->x) / sqrtf(powf(v2->y - v1->y, 2) + powf(v2->x - v1->x, 2));
+			}
+			else
+			{
+				mlx->drawseg[f * mlx->seg + s]->x1 = -1;
+				mlx->drawseg[f * mlx->seg + s]->x2 = -1;
+				mlx->drawseg[f * mlx->seg + s]->dist = DBL_MAX;
+			}
+			// printf("sector %d\n", mlx->now->sector_n);
 			if (neighbor >= 0 && beginx <= endx && (mlx->head + MAX_QUEUE + 1 - mlx->tail) % MAX_QUEUE)
 			{
 				mlx->head->sector_n = neighbor;
@@ -537,6 +577,7 @@ void	ft_draw(t_mlx *mlx)
 					mlx->head = mlx->queue;
 			}
 		}
+		f++;
 		++rendered_sect[mlx->now->sector_n];
 	}
 	// printf("\n__________________________________________________________\n\n");

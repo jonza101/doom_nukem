@@ -6,11 +6,13 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:40:26 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/30 15:14:01 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/02 19:14:24 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doom_nukem.h"
+
+#define LOCK_FPS 1000 / 60
 
 int		ft_game_loop(t_mlx *mlx)
 {
@@ -42,7 +44,5 @@ int		ft_game_loop(t_mlx *mlx)
 	// printf("dx %f	dy %f	dz %f\n\n", mlx->player->velocity->x, mlx->player->velocity->y, mlx->player->velocity->z);
 	// printf("g %d\nf %d\nm %d\nc %d\n\n", mlx->ground, mlx->falling, mlx->moving, mlx->crouching);
 	// printf("\n");
-
-	// mlx->player->weapon_state = 0;
 	return (0);
 }

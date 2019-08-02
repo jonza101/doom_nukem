@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/30 12:49:39 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/30 17:53:38 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/02 11:33:11 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ void	ft_init_arifle(t_mlx *mlx)
 {
 	mlx->player->a_rifle = (t_weapon*)malloc(sizeof(t_weapon));
 	mlx->player->a_rifle->fire_delay = 2;
+	mlx->player->a_rifle->has_altfire = 0;
 	mlx->player->a_rifle->scaler = -0.62f;
 	mlx->player->a_rifle->x_offset = 0;
 	ft_init_arifle_idle(mlx);
@@ -139,6 +140,7 @@ void	ft_init_shotgun(t_mlx *mlx)
 {
 	mlx->player->shotgun = (t_weapon*)malloc(sizeof(t_weapon));
 	mlx->player->shotgun->fire_delay = 4;
+	mlx->player->shotgun->has_altfire = 0;
 	mlx->player->shotgun->scaler = 0.80f;
 	mlx->player->shotgun->x_offset = 18;
 	ft_init_shotgun_idle(mlx);
@@ -268,6 +270,7 @@ void	ft_init_revolver(t_mlx *mlx)
 	mlx->player->revolver->fire_delay = 3;
 	mlx->player->revolver->altfire_delay = 3;
 	mlx->player->revolver->altfire_cont_delay = 3;
+	mlx->player->revolver->has_altfire = 1;
 	mlx->player->revolver->scaler = 0.0f;
 	mlx->player->revolver->x_offset = 0;
 	ft_init_revolver_idle(mlx);

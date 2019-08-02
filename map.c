@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/30 17:43:15 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/02 19:09:31 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 	int s = 1;
 	int t = 1;
 	int o = 1;
+	int seg = 1;
 	
 	char *line;
 	int fd = open(map_file, O_RDONLY);
@@ -176,6 +177,16 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->sect[s - 1]->verts[0]->x = (double)verts[ft_atoi(t[j - 1])]->x;
 				mlx->sect[s - 1]->verts[0]->y = (double)verts[ft_atoi(t[j - 1])]->y;
 
+				j = -1;
+				while (++j < seg)
+					free(mlx->drawseg[j]);
+				free(mlx->drawseg);
+				seg += v_count;
+				mlx->drawseg = (t_drawseg**)malloc(sizeof(t_drawseg*) * seg);
+				j = -1;
+				while (++j < seg)
+					mlx->drawseg[j] = (t_drawseg*)malloc(sizeof(t_drawseg));
+
 				ft_strsplit_free(t);
 
 				t = ft_strsplit(temp[3], ' ');
@@ -228,6 +239,12 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->sect[0]->verts[0] = (t_vec2*)malloc(sizeof(t_vec2));
 				mlx->sect[0]->verts[0]->x = (double)verts[ft_atoi(t[j - 1])]->x;
 				mlx->sect[0]->verts[0]->y = (double)verts[ft_atoi(t[j - 1])]->y;
+
+				mlx->drawseg = (t_drawseg**)malloc(sizeof(t_drawseg*) * v_count);
+				seg = v_count;
+				j = -1;
+				while (++j < v_count)
+					mlx->drawseg[j] = (t_drawseg*)malloc(sizeof(t_drawseg));
 
 				ft_strsplit_free(t);
 
@@ -343,14 +360,18 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 
 	printf("px %f	py %f	sect %d\n\n", mlx->player->pos->x, mlx->player->pos->y, mlx->player->sector);
 	int j = -1;
-	// // // printf("verts %d\n", v - 1);
 	while (++j < v - 1)
-	{
 		free(verts[j]);
-		// printf("x %f	y %f	%d\n", verts[j]->x, verts[j]->y, j);
-		// printf("y %f	x %f\n", verts[j]->y, verts[j]->x);
-	}
 	free(verts);
+	mlx->drawseg_count = seg;
+	printf("seg %d\n\n", seg);
+	int i = -1;
+	while (++i < mlx->drawseg_count)
+	{
+		mlx->drawseg[i]->x1 = -1;
+		mlx->drawseg[i]->x2 = -1;
+		mlx->drawseg[i]->dist = DBL_MAX;
+	}
 	// printf("sect %d\n", mlx->num_sec);
 	// int j = 0;
 	// while (j < s - 1)

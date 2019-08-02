@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:38 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/23 15:38:03 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/02 18:36:39 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,53 +40,6 @@ int		ft_sign(double val)
 	return (0);
 }
 
-// int		ft_line_intersect(t_vec2 *p0, t_vec2 *p1, t_vec2 *v0, t_vec2 *v1)
-// {
-// 	double s1_x, s1_y;
-// 	double s2_x, s2_y;
-// 	s1_x = p1->x - p0->x;
-// 	s1_y = p1->y - p0->y;
-// 	s2_x = v1->x - v0->x;
-// 	s2_y = v1->y - v0->y;
-
-// 	float s, t;
-// 	s = (-s1_y * (p0->x - v0->x) + s1_x * (p0->y - v0->y)) / (-s2_x * s1_y + s1_x * s2_y);
-// 	t = (s2_x * (p0->y - v0->y) - s2_y * (p0->x - v0->x)) / (-s2_x * s1_y + s1_x * s2_y);
-
-// 	if (s >= 0 && s <= 1 && t >= 0 && t <= 1)
-// 		return (1);
-// 	return (0);
-// }
-
-// int		ft_is_inside(t_sector *sector, double px, double py, double dx, double dy)
-// {
-// 	int count = 0;
-// 	int s = -1;
-// 	t_vec2 *ray = (t_vec2*)malloc(sizeof(t_vec2));
-// 	ray->x = px + dx;
-// 	ray->y = py + dy;
-
-// 	t_vec2 *p = (t_vec2*)malloc(sizeof(t_vec2));
-// 	p->x = px;
-// 	p->y = py;
-// 	t_vec2 *v0 = (t_vec2*)malloc(sizeof(t_vec2));
-// 	t_vec2 *v1 = (t_vec2*)malloc(sizeof(t_vec2));
-// 	while (++s < sector->verts_count)
-// 	{
-// 		v0->x = sector->verts[s]->x;
-// 		v0->y = sector->verts[s]->y;
-// 		v1->x = sector->verts[s + 1]->x;
-// 		v1->y = sector->verts[s + 1]->y;
-// 		if (ft_line_intersect(p, ray, v0, v1))
-// 			count++;
-// 	}
-// 	free(ray);
-// 	free(p);
-// 	free(v0);
-// 	free(v1);
-// 	return (count);
-// }
-
 int		ft_overlap(int a0, int a1, int b0, int b1)
 {
 	return(ft_min(a0, a1) <= ft_max(b0, b1) && ft_min(b0, b1) <= ft_max(a0, a1));
@@ -109,10 +62,10 @@ int		ft_point_side(double px, double py, double x0, double y0, double x1, double
 
 void	ft_intersect(t_vec2 *p, double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
 {
-	p->x = ft_vec_cross_prod(ft_vec_cross_prod(x1, y1, x2, y2), x1 - x2, ft_vec_cross_prod(x3, y3, x4, y4), x3 - x4) /
-		ft_vec_cross_prod(x1 - x2, y1 - y2, x3 - x4, y3 - y4);
-	p->y = ft_vec_cross_prod(ft_vec_cross_prod(x1, y1, x2, y2), y1 - y2, ft_vec_cross_prod(x3, y3, x4, y4), y3 - y4) /
-		ft_vec_cross_prod(x1 - x2, y1 - y2, x3 - x4, y3 - y4);
+	p->x = ft_vec_cross_prod(ft_vec_cross_prod(x1, y1, x2, y2), (x1) - (x2), ft_vec_cross_prod(x3, y3, x4, y4), (x3) - (x4)) /
+		ft_vec_cross_prod((x1) - (x2), (y1) - (y2), (x3) - (x4), (y3) - (y4));
+	p->y = ft_vec_cross_prod(ft_vec_cross_prod(x1, y1, x2, y2), (y1) - (y2), ft_vec_cross_prod(x3, y3, x4, y4), (y3) - (y4)) /
+		ft_vec_cross_prod((x1) - (x2), (y1) - (y2), (x3) - (x4), (y3) - (y4));
 }
 
 double	ft_yaw(double y, double z, double p_yaw)

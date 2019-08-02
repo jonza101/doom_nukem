@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/27 13:56:20 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/31 17:26:36 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/02 11:38:59 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	ft_gun_anim(t_mlx *mlx, t_weapon *gun, int delay, int cont_delay)
 			mlx->gun_fire_i = 0;
 		}
 	}
-	if (mlx->player->weapon_state == 2)
+	else if (mlx->player->weapon_state == 2)
 	{
 		mlx->gun_delay++;
 		int altfire_n = (!mlx->altfire) ? gun->altfire_n : gun->altfire_cont_n;
@@ -76,9 +76,6 @@ void	ft_draw_player(t_mlx *mlx)
 	double w_h = w_yb - w_ya;
 	double w_w = w_h / (double)w_aspect_ratio;
 	double w_mid = W / 2 - mlx->player->weapon->x_offset;
-	// ft_image(mlx, W / 2, w_ya, 0xFFFFF);
-	// ft_image(mlx, W / 2 - (w_w / 2), w_ya, 0xFFFFF);
-	// ft_image(mlx, W / 2 + (w_w / 2), w_ya, 0xFFFFF);
 	int x = -1;
 	while (++x < w_w)
 	{

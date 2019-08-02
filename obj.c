@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 15:17:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/31 18:44:54 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/02 19:21:12 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,14 +59,39 @@ void	ft_obj_sort(t_mlx *mlx)
 	mlx->obj_list = obj;
 }
 
-double	ft_dot_prod(double x0, double y0, double x1, double y1)
+void	ft_drawseg_sort(t_mlx *mlx)
 {
-	return (x0 * x1 + y0 * y1);
+	int i = -1;
+	while (++i < mlx->drawseg_count - 1)
+	{
+		int j = i - 1;
+		while (++j < mlx->drawseg_count)
+		{
+			if (mlx->drawseg[i]->dist > mlx->drawseg[j]->dist)
+			{
+				t_drawseg *temp = mlx->drawseg[i];
+				mlx->drawseg[i] = mlx->drawseg[j];
+				mlx->drawseg[j] = temp;
+			}
+		}
+	}
+}
+
+void	ft_drawseg_clear(t_mlx *mlx)
+{
+	int i = -1;
+	while (++i < mlx->drawseg_count)
+	{
+		mlx->drawseg[i]->x1 = -1;
+		mlx->drawseg[i]->x2 = -1;
+		mlx->drawseg[i]->dist = DBL_MAX;
+	}
 }
 
 void	ft_obj(t_mlx *mlx)
 {
 	ft_obj_sort(mlx);
+	ft_drawseg_sort(mlx);
 	t_obj *obj = mlx->obj_list;
 	
 	while (obj)
@@ -74,10 +99,10 @@ void	ft_obj(t_mlx *mlx)
 		double px = mlx->player->pos->x;
 		double py = mlx->player->pos->y;
 
-		double dx = obj->specs->x -px;
+		double dx = obj->specs->x - px;
 		double dy = obj->specs->y - py;
 
-		double dist_from_player = sqrtf(dx * dx + dy * dy);
+		double obj_dist = sqrtf(dx * dx + dy * dy);
 
 		double eye_y = mlx->player->sin_angle;
 		double eye_x = mlx->player->cos_angle;
@@ -91,8 +116,8 @@ void	ft_obj(t_mlx *mlx)
 
 		double obj_aspect_ratio = (double)mlx->obj[obj->specs->txt_index]->h / (double)mlx->obj[obj->specs->txt_index]->w;
 
-		double vx1_l = (obj->specs->x - px) / dist_from_player;
-		double vy1_l = (obj->specs->y - py) / dist_from_player;
+		double vx1_l = (obj->specs->x - px) / obj_dist;
+		double vy1_l = (obj->specs->y - py) / obj_dist;
 		double vx2_l = vy1_l;
 		double vy2_l = vx1_l;
 		double vx1 = (obj->specs->x - px);
@@ -122,13 +147,10 @@ void	ft_obj(t_mlx *mlx)
 
 		double yfloor = mlx->sect[obj->specs->sect]->floor - mlx->player->pos->z;
 		double yceil = mlx->sect[obj->specs->sect]->ceiling - mlx->player->pos->z;
-		if (fabs(yceil) != 30.1f)
-		{
-			if (yfloor < 0)
-				yceil = 30.0f - fabs(yfloor * 4.025f);
-			else
-				yceil = 30.0f + yfloor * 4.025f;
-		}
+		if (yfloor < 0)
+			yceil = 30.0f - fabs(yfloor * 4.025f);
+		else
+			yceil = 30.0f + yfloor * 4.025f;
 
 		int	fix_obj_h1 = yscale1 * mlx->obj[obj->specs->txt_index]->scaler;
 		int fix_obj_h2 = yscale2 * mlx->obj[obj->specs->txt_index]->scaler;
@@ -136,9 +158,8 @@ void	ft_obj(t_mlx *mlx)
 		int yb1 = H / 2 + (int)(-ft_yaw(yfloor, tz1, mlx->player->yaw) * yscale1);
 		int ya2 = H / 2 + (int)(-ft_yaw(yceil, tz2, mlx->player->yaw * 4) * yscale2) / 4 + fix_obj_h2;
 		int yb2 = H / 2 + (int)(-ft_yaw(yfloor, tz2, mlx->player->yaw) * yscale2);
-		// printf("dist		%f\n", dist_from_player);
+		// printf("dist		%f\n", obj_dist);
 		// printf("yceil %f		yfloor %f\n\n", yceil, yfloor);
-		// printf("x1 %d		x2 %d\n", x1, x2);
 		// printf("ya %d	yb %d\n\n", ya1, yb1);
 		// printf("ya1 %d	yb1 %d\n", ya2, yb2);
 		// printf("\n");
@@ -154,33 +175,64 @@ void	ft_obj(t_mlx *mlx)
 			yb = yb2;
 		int obj_h = (yb - ya);
 		int obj_w = obj_h / ((double)obj_aspect_ratio * mlx->obj[obj->specs->txt_index]->aspect_scaler);
-		int obj_middle = (obj_w / 2.0f) + x1;
 		x1 = x1 - (obj_w / 2.0f);
-		obj_middle = (obj_w / 2.0f) + x1;
+		int obj_middle = (obj_w / 2.0f) + x1;
+		int x2 = x1 + obj_w;
+		ft_image(mlx, x1, H / 6, 0xFFFFF);
+		ft_image(mlx, x2, H / 6, 0xFFFFF);
 
 		// printf("ya %d		yb %d\n", ya, yb);
 		// printf("\n");
 
 		if (x1 >= (-W * 1) && x1 < (W * 2) && x1 >= (-W * 1) && x1 < (W * 2)
 				&& ya >= (-H * 3) && ya < (H * 3) && yb >= (-H * 3) && yb < (H * 3)
-				&& dist_from_player >= 1.0f)
+				&& obj_dist >= 1.0f)
 		{
+			int f = -1;
+			int overlap = 0;
+			while (++f < mlx->drawseg_count)
+			{
+				if (mlx->drawseg[f]->x1 != -1 && mlx->drawseg[f]->x2 != -1 && ft_overlap(x1, x2, mlx->drawseg[f]->x1, mlx->drawseg[f]->x2) && mlx->drawseg[f]->dist < obj_dist)
+				{
+					overlap = 1;
+					// ft_draw_vline(mlx, mlx->drawseg[f]->x1, H / 6, H - H / 6, 0xFFFF00, 0xFFFF00, 0xFFFF00);
+					// ft_draw_vline(mlx, mlx->drawseg[f]->x2, H / 6, H - H / 6, 0xFFFF00, 0xFFFF00, 0xFFFF00);
+					// ft_image(mlx, mlx->drawseg[f]->x1, H / 6, 0xFFFF00);
+					// ft_image(mlx, mlx->drawseg[f]->x2, H / 6, 0xFFFF00);
+					printf("%d\n", f);
+					printf("x1 %d	x2 %d\n", mlx->drawseg[f]->x1, mlx->drawseg[f]->x2);
+					printf("wall dist %f\n", mlx->drawseg[f]->dist);
+					printf("obj dist %f\n", obj_dist);
+					printf("\n");
+					break;
+				}
+			}
 			int ox = -1;
 			while (++ox < obj_w)
 			{
+				int xc = (int)(obj_middle - (obj_w / 2.0f) + ox);
 				int oy = -1;
 				while (++oy < obj_h)
 				{
 					double sample_ox = (double)ox / (double)obj_w;
 					double sample_oy = (double)oy / (double)obj_h;
 					int color = ft_texture_sampling(mlx->obj[obj->specs->txt_index], sample_ox, sample_oy);
-					int xc = (int)(obj_middle - (obj_w / 2.0f) + ox);
 					int yc = (int)ya + (int)oy;
-					if (color != IGNORE_COLOR)
-						ft_image(mlx, xc, yc, color);
+					if (overlap)
+					{
+						if (xc > mlx->drawseg[f]->x2 && color != IGNORE_COLOR)
+							ft_image(mlx, xc, yc, color);
+					}
+					else
+					{
+						if (color != IGNORE_COLOR)
+							ft_image(mlx, xc, yc, color);
+					}
 				}
 			}
 		}
 		obj = obj->next;
+		// printf("\n");
 	}
+	ft_drawseg_clear(mlx);
 }
