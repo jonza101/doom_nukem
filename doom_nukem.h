@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/02 17:14:24 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/03 19:34:59 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -262,6 +262,7 @@ typedef	struct		s_mlx
 	t_drawseg		**drawseg;
 	int				drawseg_count;
 	int				seg;
+	int				opening[W];
 
 	int				u0;
 	int				u1;

@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 15:17:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/02 19:21:12 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/03 19:34:48 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,13 @@ void	ft_drawseg_clear(t_mlx *mlx)
 		mlx->drawseg[i]->x2 = -1;
 		mlx->drawseg[i]->dist = DBL_MAX;
 	}
+}
+
+void	ft_opening_clear(t_mlx *mlx)
+{
+	int i = -1;
+	while (++i < W)
+		mlx->opening[i] = 1;
 }
 
 void	ft_obj(t_mlx *mlx)
@@ -178,35 +185,29 @@ void	ft_obj(t_mlx *mlx)
 		x1 = x1 - (obj_w / 2.0f);
 		int obj_middle = (obj_w / 2.0f) + x1;
 		int x2 = x1 + obj_w;
-		ft_image(mlx, x1, H / 6, 0xFFFFF);
-		ft_image(mlx, x2, H / 6, 0xFFFFF);
+		// ft_image(mlx, x1, H / 6, 0xFFFFF);
+		// ft_image(mlx, x2, H / 6, 0xFFFFF);
 
 		// printf("ya %d		yb %d\n", ya, yb);
 		// printf("\n");
+
+		int overlap = 0;
+		int f = -1;
+		while (++f < mlx->drawseg_count)
+		{
+			if (mlx->drawseg[f]->x1 != -1 && mlx->drawseg[f]->x2 != -1 && ft_overlap(x1, x2, mlx->drawseg[f]->x1, mlx->drawseg[f]->x2) && mlx->drawseg[f]->dist < obj_dist)
+			{
+				overlap = 1;
+				int j = mlx->drawseg[f]->x1 - 1;
+				while (++j <= mlx->drawseg[f]->x2)
+					mlx->opening[j] = 0;
+			}
+		}
 
 		if (x1 >= (-W * 1) && x1 < (W * 2) && x1 >= (-W * 1) && x1 < (W * 2)
 				&& ya >= (-H * 3) && ya < (H * 3) && yb >= (-H * 3) && yb < (H * 3)
 				&& obj_dist >= 1.0f)
 		{
-			int f = -1;
-			int overlap = 0;
-			while (++f < mlx->drawseg_count)
-			{
-				if (mlx->drawseg[f]->x1 != -1 && mlx->drawseg[f]->x2 != -1 && ft_overlap(x1, x2, mlx->drawseg[f]->x1, mlx->drawseg[f]->x2) && mlx->drawseg[f]->dist < obj_dist)
-				{
-					overlap = 1;
-					// ft_draw_vline(mlx, mlx->drawseg[f]->x1, H / 6, H - H / 6, 0xFFFF00, 0xFFFF00, 0xFFFF00);
-					// ft_draw_vline(mlx, mlx->drawseg[f]->x2, H / 6, H - H / 6, 0xFFFF00, 0xFFFF00, 0xFFFF00);
-					// ft_image(mlx, mlx->drawseg[f]->x1, H / 6, 0xFFFF00);
-					// ft_image(mlx, mlx->drawseg[f]->x2, H / 6, 0xFFFF00);
-					printf("%d\n", f);
-					printf("x1 %d	x2 %d\n", mlx->drawseg[f]->x1, mlx->drawseg[f]->x2);
-					printf("wall dist %f\n", mlx->drawseg[f]->dist);
-					printf("obj dist %f\n", obj_dist);
-					printf("\n");
-					break;
-				}
-			}
 			int ox = -1;
 			while (++ox < obj_w)
 			{
@@ -218,9 +219,10 @@ void	ft_obj(t_mlx *mlx)
 					double sample_oy = (double)oy / (double)obj_h;
 					int color = ft_texture_sampling(mlx->obj[obj->specs->txt_index], sample_ox, sample_oy);
 					int yc = (int)ya + (int)oy;
+
 					if (overlap)
 					{
-						if (xc > mlx->drawseg[f]->x2 && color != IGNORE_COLOR)
+						if (mlx->opening[xc] == 1 && color != IGNORE_COLOR)
 							ft_image(mlx, xc, yc, color);
 					}
 					else
@@ -233,6 +235,7 @@ void	ft_obj(t_mlx *mlx)
 		}
 		obj = obj->next;
 		// printf("\n");
+		ft_opening_clear(mlx);
 	}
 	ft_drawseg_clear(mlx);
 }

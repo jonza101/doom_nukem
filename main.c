@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/02 19:11:58 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/03 19:34:53 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,9 +128,12 @@ void	ft_init(t_mlx *mlx)
 	mlx->c0 = 128;
 	mlx->c1 = 128;
 
-	mlx->s = 1;
+	mlx->s = 0;
 
 	mlx->seg = 0;
+	i = -1;
+	while (++i < W)
+		mlx->opening[i] = 1;
 }
 
 int		main()
@@ -146,9 +149,8 @@ int		main()
 	mlx->player = (t_player*)malloc(sizeof(t_player));
 
 	ft_init_graphics(mlx);
-	ft_load_map(mlx, "maps/map3");
+	ft_load_map(mlx, "maps/map4");
 	ft_init(mlx);
-	printf("asd1\n");
 
 	// printf("\n------------------------------------------------\n\n");
 	// t_obj *obj = mlx->obj_list;
