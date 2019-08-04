@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/03 19:34:53 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/04 17:59:02 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,9 +131,7 @@ void	ft_init(t_mlx *mlx)
 	mlx->s = 0;
 
 	mlx->seg = 0;
-	i = -1;
-	while (++i < W)
-		mlx->opening[i] = 1;
+	ft_opening_clear(mlx);
 }
 
 int		main()

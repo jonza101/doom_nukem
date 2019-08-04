@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/03 15:12:32 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/04 18:36:46 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -419,6 +419,11 @@ void	ft_draw(t_mlx *mlx)
 			int x = beginx - 1;
 			while (++x <= endx)
 			{
+				mlx->cya = -1;
+				mlx->cyb = -1;
+				mlx->cnya = -1;
+				mlx->cnyb = -1;
+
 				// double n = temp;
 				// double nx = sector->verts[s + 0]->x + n * dist * (sector->verts[s + 1]->x - sector->verts[s + 0]->x);
 				// double ny = sector->verts[s + 0]->y + n * dist * (sector->verts[s + 1]->y - sector->verts[s + 0]->y);
@@ -433,8 +438,8 @@ void	ft_draw(t_mlx *mlx)
 				int ya = ft_scaler_next(mlx->ya_int);
 				int yb = ft_scaler_next(mlx->yb_int);
 				
-                int cya = ft_clamp(ya, ytop[x],ybottom[x]);
-                int cyb = ft_clamp(yb, ytop[x],ybottom[x]);
+                mlx->cya = ft_clamp(ya, ytop[x],ybottom[x]);
+                mlx->cyb = ft_clamp(yb, ytop[x],ybottom[x]);
 
 				int ceil_t = sector->ceil_txt;
 				int floor_t = sector->floor_txt;
@@ -445,26 +450,26 @@ void	ft_draw(t_mlx *mlx)
 					int y = ytop[x] - 1;
 					while (++y <= ybottom[x])
 					{
-						if (y >= cya && y <= cyb)
+						if (y >= mlx->cya && y <= mlx->cyb)
 						{
-							y = cyb;
+							y = mlx->cyb;
 							continue ;
 						}
-						double h = y < cya ? yceil : yfloor;
+						double h = y < mlx->cya ? yceil : yfloor;
 						ft_screenpoint_to_mappoint(mlx, h, x, y);
 						unsigned txtx = (mlx->map_x * 32);
 						unsigned txtz = (mlx->map_z * 32);
 						//	RENDER CEILING
-						if (y < cya && ceil_f)
+						if (y < mlx->cya && ceil_f)
 							ft_image(mlx, x, y, mlx->txt[ceil_t]->data[txtz % mlx->txt[ceil_t]->h * mlx->txt[ceil_t]->w + txtx % mlx->txt[ceil_t]->w]);
-						else if (y >= cya && floor_f)
+						else if (y >= mlx->cya && floor_f)
 							ft_image(mlx, x, y, mlx->txt[floor_t]->data[txtz % mlx->txt[floor_t]->h * mlx->txt[floor_t]->w + txtx % mlx->txt[floor_t]->w]);
 					}
 				}
 				if (!ceil_f)
-					ft_draw_vline(mlx, x, ytop[x], (cya - 1), LINE_COLOR, CEILING_COLOR, LINE_COLOR);
+					ft_draw_vline(mlx, x, ytop[x], (mlx->cya - 1), LINE_COLOR, CEILING_COLOR, LINE_COLOR);
 				if (!floor_f)
-					ft_draw_vline(mlx, x, (cyb + 1), ybottom[x], LINE_COLOR, FLOOR_COLOR, LINE_COLOR);
+					ft_draw_vline(mlx, x, (mlx->cyb + 1), ybottom[x], LINE_COLOR, FLOOR_COLOR, LINE_COLOR);
 
 				// ft_scaler_init(mlx->scaler, cya, cya, cyb, 0, 64);
 				// ft_draw_tvline(mlx, x, 0, cya, txtx, mlx->sky[0], 0);
@@ -475,8 +480,8 @@ void	ft_draw(t_mlx *mlx)
 					int nya = ft_scaler_next(mlx->nya_int);
 					int nyb = ft_scaler_next(mlx->nyb_int);
 
-                    int cnya = ft_clamp(nya, ytop[x], ybottom[x]);
-                    int cnyb = ft_clamp(nyb, ytop[x], ybottom[x]);
+                    mlx->cnya = ft_clamp(nya, ytop[x], ybottom[x]);
+                    mlx->cnyb = ft_clamp(nyb, ytop[x], ybottom[x]);
 
 					if (sector->txt_count > 0)
 					{
@@ -490,27 +495,27 @@ void	ft_draw(t_mlx *mlx)
 							int low = ft_atoi(asd[0]);
 							
 							if (up >= 0 && up < TXT)
-								ft_upper_txt(mlx, x, cya, cnya, txtx, up, ya, yb, &ytop[x]);
+								ft_upper_txt(mlx, x, mlx->cya, mlx->cnya, txtx, up, ya, yb, &ytop[x]);
 							else
-								ft_upper_solid(mlx, x, cya, cnya, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : UPPER_COLOR, LINE_COLOR, &ytop[x]);
+								ft_upper_solid(mlx, x, mlx->cya, mlx->cnya, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : UPPER_COLOR, LINE_COLOR, &ytop[x]);
 
 							if (low >= 0 && low < TXT)
-								ft_lower_txt(mlx, x, cnyb, cyb, txtx, low, ya, yb, &ybottom[x]);
+								ft_lower_txt(mlx, x, mlx->cnyb, mlx->cyb, txtx, low, ya, yb, &ybottom[x]);
 							else
-								ft_lower_solid(mlx, x, cnyb, cyb, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : LOWER_COLOR, LINE_COLOR, &ybottom[x]);
+								ft_lower_solid(mlx, x, mlx->cnyb, mlx->cyb, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : LOWER_COLOR, LINE_COLOR, &ybottom[x]);
 						}
 						else
 						{
 							int txt_i = ft_atoi(sector->texts[s]);
 							if (txt_i >= 0 && txt_i < TXT)
 							{
-								ft_upper_txt(mlx, x, cya, cnya, txtx, txt_i, ya, yb, &ytop[x]);
-								ft_lower_txt(mlx, x, cnyb, cyb, txtx, txt_i, ya, yb, &ybottom[x]);
+								ft_upper_txt(mlx, x, mlx->cya, mlx->cnya, txtx, txt_i, ya, yb, &ytop[x]);
+								ft_lower_txt(mlx, x, mlx->cnyb, mlx->cyb, txtx, txt_i, ya, yb, &ybottom[x]);
 							}
 							else
 							{
-								ft_upper_solid(mlx, x, cya, cnya, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : UPPER_COLOR, LINE_COLOR, &ytop[x]);
-								ft_lower_solid(mlx, x, cnyb, cyb, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : LOWER_COLOR, LINE_COLOR, &ybottom[x]);
+								ft_upper_solid(mlx, x, mlx->cya, mlx->cnya, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : UPPER_COLOR, LINE_COLOR, &ytop[x]);
+								ft_lower_solid(mlx, x, mlx->cnyb, mlx->cyb, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : LOWER_COLOR, LINE_COLOR, &ybottom[x]);
 							}
 							
 						}
@@ -519,10 +524,14 @@ void	ft_draw(t_mlx *mlx)
 					else
 					{
 						// RENDER UPPER WALL
-						ft_upper_solid(mlx, x, cya, cnya, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : UPPER_COLOR, LINE_COLOR, &ytop[x]);
+						ft_upper_solid(mlx, x, mlx->cya, mlx->cnya, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : UPPER_COLOR, LINE_COLOR, &ytop[x]);
+						// ft_image(mlx, x, mlx->cya, 0xFFFFF);
+						// ft_image(mlx, x, mlx->cnya, 0xFFFF00);
 
 						// RENDER LOWER WALL
-						ft_lower_solid(mlx, x, cnyb, cyb, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : LOWER_COLOR, LINE_COLOR, &ybottom[x]);
+						ft_lower_solid(mlx, x, mlx->cnyb, mlx->cyb, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : LOWER_COLOR, LINE_COLOR, &ybottom[x]);
+						// ft_image(mlx, x, mlx->cnyb + 1, 0xFFFFF);
+						// ft_image(mlx, x, mlx->cyb, 0xFFFF00);
 					}
 				}
 				else
@@ -532,11 +541,11 @@ void	ft_draw(t_mlx *mlx)
 						int txt_i = ft_atoi(sector->texts[s]);
 						if (txt_i >= 0 && txt_i < TXT)
 						{
-							ft_scaler_init(mlx->scaler, ya, cya, yb, mlx->u0, mlx->u1);
-							ft_draw_tvline(mlx, x, cya, cyb, txtx, mlx->txt[txt_i], 0);
+							ft_scaler_init(mlx->scaler, ya, mlx->cya, yb, mlx->u0, mlx->u1);
+							ft_draw_tvline(mlx, x, mlx->cya, mlx->cyb, txtx, mlx->txt[txt_i], 0);
 						}
 						else
-							ft_draw_vline(mlx, x, cya, cyb, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : WALL_COLOR, LINE_COLOR);
+							ft_draw_vline(mlx, x, mlx->cya, mlx->cyb, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : WALL_COLOR, LINE_COLOR);
 					}
 					// else if (s == 0)
 					// 	ft_draw_vline(mlx, x, cya, cyb, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : 0xFFFFF, LINE_COLOR);
@@ -545,11 +554,18 @@ void	ft_draw(t_mlx *mlx)
 					// else if (s == 2)
 					// 	ft_draw_vline(mlx, x, cya, cyb, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : 0x00FF00, LINE_COLOR);
 					else
-						ft_draw_vline(mlx, x, cya, cyb, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : WALL_COLOR, LINE_COLOR);
+						ft_draw_vline(mlx, x, mlx->cya, mlx->cyb, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : WALL_COLOR, LINE_COLOR);
 				}
 			}
-			if (neighbor < 0)
+			// if (f * mlx->seg + s >= mlx->drawseg_count)
+			// {
+			// 	printf("f %d\nseg %d\ns %d\n", f, mlx->seg, s);
+			// 	printf("%d\n\n", f * mlx->seg + s);
+			// }
+			int index = f * mlx->seg + s;
+			if (neighbor < 0 && index < mlx->drawseg_count)
 			{
+				mlx->drawseg[f * mlx->seg + s]->seg_type = 0;
 				mlx->drawseg[f * mlx->seg + s]->x1 = beginx;
 				mlx->drawseg[f * mlx->seg + s]->x2 = endx;
 
@@ -561,11 +577,39 @@ void	ft_draw(t_mlx *mlx)
 				mlx->drawseg[f * mlx->seg + s]->dist = (v1_dist > v2_dist) ? v1_dist : v2_dist;
 				// // mlx->drawseg[f * mlx->seg + s]->dist = fabs((v2->y - v1->y) * p->x - (v2->x - v1->x) * p->y + v2->x * v1->y - v2->y * v1->x) / sqrtf(powf(v2->y - v1->y, 2) + powf(v2->x - v1->x, 2));
 			}
-			else
+			else if (neighbor >= 0 && index < mlx->drawseg_count)
 			{
-				mlx->drawseg[f * mlx->seg + s]->x1 = -1;
-				mlx->drawseg[f * mlx->seg + s]->x2 = -1;
-				mlx->drawseg[f * mlx->seg + s]->dist = DBL_MAX;
+				if (mlx->cyb != mlx->cnyb && mlx->cya == mlx->cnya)
+				{
+					mlx->drawseg[f * mlx->seg + s]->seg_type = 1;
+					mlx->drawseg[f * mlx->seg + s]->bottom_h = mlx->cnyb;
+					mlx->drawseg[f * mlx->seg + s]->top_h = mlx->cya;
+					mlx->drawseg[f * mlx->seg + s]->x1 = beginx;
+					mlx->drawseg[f * mlx->seg + s]->x2 = endx;
+				}
+				else if (mlx->cyb == mlx->cnyb && mlx->cya != mlx->cnya)
+				{
+					mlx->drawseg[f * mlx->seg + s]->seg_type = 1;
+					mlx->drawseg[f * mlx->seg + s]->bottom_h = mlx->cyb;
+					mlx->drawseg[f * mlx->seg + s]->top_h = mlx->cnya;
+					mlx->drawseg[f * mlx->seg + s]->x1 = beginx;
+					mlx->drawseg[f * mlx->seg + s]->x2 = endx;
+				}
+				else if (mlx->cyb != mlx->cnyb && mlx->cya != mlx->cnya)
+				{
+					mlx->drawseg[f * mlx->seg + s]->seg_type = 1;
+					mlx->drawseg[f * mlx->seg + s]->bottom_h = mlx->cnyb;
+					mlx->drawseg[f * mlx->seg + s]->top_h = mlx->cnya;
+					mlx->drawseg[f * mlx->seg + s]->x1 = beginx;
+					mlx->drawseg[f * mlx->seg + s]->x2 = endx;
+				}
+
+				t_vec2 *v1 = sector->verts[s + 0];
+				t_vec2 *v2 = sector->verts[s + 1];
+				t_vec3 *p = mlx->player->pos;
+				double v1_dist = sqrtf(powf(v1->x - p->x, 2) + powf(v1->y - p->y, 2));
+				double v2_dist = sqrtf(powf(v2->x - p->x, 2) + powf(v2->y - p->y, 2));
+				mlx->drawseg[f * mlx->seg + s]->dist = (v1_dist > v2_dist) ? v1_dist : v2_dist;
 			}
 			// printf("sector %d\n", mlx->now->sector_n);
 			if (neighbor >= 0 && beginx <= endx && (mlx->head + MAX_QUEUE + 1 - mlx->tail) % MAX_QUEUE)

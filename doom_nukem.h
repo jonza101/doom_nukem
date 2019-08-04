@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/03 19:34:59 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/04 18:41:16 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,10 @@ typedef	struct		s_obj
 
 typedef struct		s_drawseg
 {
+	short			seg_type;		//	0 - SOLID	|	1 - BOTTOM	|	2 - TOP	|	3 - BOTH
+	int				bottom_h;		//	DONT CLIP ABOVE THIS
+	int				top_h;			//	DONT CLIP BELOW THIS
+
 	int				x1;
 	int				x2;
 
@@ -227,10 +231,10 @@ typedef	struct		s_mlx
 	int				mouse_pos_x;
 	int				mouse_pos_y;
 
-	int				moving;
-	int				falling;
-	int				ground;
-	int				crouching;
+	short			moving;
+	short			falling;
+	short			ground;
+	short			crouching;
 
 	t_item			queue[MAX_QUEUE];
 	t_item			*head;
@@ -246,7 +250,7 @@ typedef	struct		s_mlx
 	double			map_x;
 	double			map_z;
 
-	int				s;
+	short			s;
 
 	t_img			*txt[TXT];
 	t_img			*obj[OBJ];
@@ -262,17 +266,22 @@ typedef	struct		s_mlx
 	t_drawseg		**drawseg;
 	int				drawseg_count;
 	int				seg;
-	int				opening[W];
+	short			opening[W * H];
+
+	int				cya;
+	int				cyb;
+	int				cnya;
+	int				cnyb;
 
 	int				u0;
 	int				u1;
 	int				c0;
 	int				c1;
 
-	int 			gun_fire_i;
-	int				gun_delay;
-	int				altfire;
-	int				del;
+	short 			gun_fire_i;
+	short			gun_delay;
+	short			altfire;
+	short			del;
 }					t_mlx;
 
 void				ft_image(t_mlx *mlx, int x, int y, int color);
@@ -339,6 +348,8 @@ void				ft_game_mechanics(t_mlx *mlx);
 
 int					ft_key_press(int keycode, t_mlx *mlx);
 int					ft_key_realese(int keycode, t_mlx *mlx);
+
+void				ft_opening_clear(t_mlx *mlx);
 
 void				ft_thread(t_mlx *mlx);
 

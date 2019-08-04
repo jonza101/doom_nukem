@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:41:19 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/02 11:38:40 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/04 12:27:58 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,23 +164,23 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 
 	if (keycode == MAC_O)
 	{
-		mlx->sect[1]->ceiling -= 0.5f;
-		printf("ceil %f\n", mlx->sect[1]->ceiling);
+		mlx->sect[mlx->player->sector]->ceiling -= 0.5f;
+		printf("ceil %f\n", mlx->sect[mlx->player->sector]->ceiling);
 	}
 	if (keycode == MAC_P)
 	{
-		mlx->sect[1]->ceiling += 0.5f;
-		printf("ceil %f\n", mlx->sect[1]->ceiling);
+		mlx->sect[mlx->player->sector]->ceiling += 0.5f;
+		printf("ceil %f\n", mlx->sect[mlx->player->sector]->ceiling);
 	}
 	if (keycode == MAC_L)
 	{
-		mlx->sect[1]->floor -= 0.5f;
-		printf("floor %f\n", mlx->sect[1]->floor);
+		mlx->sect[mlx->player->sector]->floor -= 0.5f;
+		printf("floor %f\n", mlx->sect[mlx->player->sector]->floor);
 	}
 	if (keycode == MAC_SEMICOLON)
 	{
-		mlx->sect[1]->floor += 0.5f;
-		printf("floor %f\n", mlx->sect[1]->floor);
+		mlx->sect[mlx->player->sector]->floor += 0.5f;
+		printf("floor %f\n", mlx->sect[mlx->player->sector]->floor);
 	}
 	return (0);
 }
