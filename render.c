@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/06 20:23:40 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/06 20:32:38 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -618,9 +618,6 @@ void	ft_draw(t_mlx *mlx)
 					mlx->drawseg[index]->curline = 0;
 					mlx->drawseg[index]->top_h = (p_max_cnyb < w_max_cnyb) ? p_max_cnyb : w_max_cnyb;
 					mlx->drawseg[index]->bottom_h = H - 1;
-
-					// printf("max %d\n", p_max_cnyb);
-					// printf("min %d\n", p_min_cnyb);
 					if (curline)
 					{
 						mlx->drawseg[index]->curline = 1;
@@ -671,7 +668,6 @@ void	ft_draw(t_mlx *mlx)
 							}
 							
 						}
-						// ft_triangle_rast(mlx, mlx->drawseg[index]->b_v0, mlx->drawseg[index]->b_v1, mlx->drawseg[index]->b_v2);
 					}
 				}
 				if (mlx->cyb == mlx->cnyb && mlx->cya != mlx->cnya)			//		TOP
@@ -680,21 +676,11 @@ void	ft_draw(t_mlx *mlx)
 					mlx->drawseg[index]->x1 = beginx;
 					mlx->drawseg[index]->x2 = endx;
 
-					int x = -1;
-					while (++x < 10)
-					{
-						ft_image(mlx, W / 2 - 5 + x, p_min_cnya, 0xFFFF00);
-						ft_image(mlx, W / 2 - 5 + x, w_min_cnya, 0xFF0000);
-					}
-					// printf("p %d\n", p_min_cnya);
-					// printf("w %d\n\n", w_min_cnya);
-
 					mlx->drawseg[index]->curline = 0;
 					mlx->drawseg[index]->top_h = 0;
 					mlx->drawseg[index]->bottom_h = (p_min_cnya > w_min_cnya) ? p_min_cnya : w_min_cnya;
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-					if (curline)				//	UNSTABLE
+					if (curline)
 					{
 						mlx->drawseg[index]->curline = 1;
 						mlx->drawseg[index]->t_v0 = (t_vec2*)malloc(sizeof(t_vec2));
@@ -703,23 +689,22 @@ void	ft_draw(t_mlx *mlx)
 
 						if (mlx->drawseg[index]->bottom_h == p_min_cnya)
 						{
-							printf("y1 %d		y2 %d\n", tp_y1, tp_y2);
 							if (tp_y1 > tp_y2)
 							{
 								mlx->drawseg[index]->t_v0->x = beginx;
 								mlx->drawseg[index]->t_v0->y = tp_y1;
-								mlx->drawseg[index]->t_v1->x = endx;
+								mlx->drawseg[index]->t_v1->x = beginx;
 								mlx->drawseg[index]->t_v1->y = tp_y2;
 								mlx->drawseg[index]->t_v2->x = endx;
-								mlx->drawseg[index]->t_v2->y = tp_y1;
+								mlx->drawseg[index]->t_v2->y = tp_y2;
 							}
 							else
 							{
 								mlx->drawseg[index]->t_v0->x = beginx;
 								mlx->drawseg[index]->t_v0->y = tp_y1;
 								mlx->drawseg[index]->t_v1->x = endx;
-								mlx->drawseg[index]->t_v1->y = tp_y2;
-								mlx->drawseg[index]->t_v2->x = beginx;
+								mlx->drawseg[index]->t_v1->y = tp_y1;
+								mlx->drawseg[index]->t_v2->x = endx;
 								mlx->drawseg[index]->t_v2->y = tp_y2;
 							}
 						}
@@ -729,25 +714,23 @@ void	ft_draw(t_mlx *mlx)
 							{
 								mlx->drawseg[index]->t_v0->x = beginx;
 								mlx->drawseg[index]->t_v0->y = tw_y1;
-								mlx->drawseg[index]->t_v2->x = endx;
-								mlx->drawseg[index]->t_v2->y = tw_y2;
 								mlx->drawseg[index]->t_v1->x = endx;
-								mlx->drawseg[index]->t_v1->y = tw_y1;
+								mlx->drawseg[index]->t_v1->y = tw_y2;
+								mlx->drawseg[index]->t_v2->x = endx;
+								mlx->drawseg[index]->t_v2->y = tw_y1;
 							}
 							else
 							{
 								mlx->drawseg[index]->t_v0->x = beginx;
 								mlx->drawseg[index]->t_v0->y = tw_y1;
-								mlx->drawseg[index]->t_v2->x = endx;
-								mlx->drawseg[index]->t_v2->y = tw_y2;
-								mlx->drawseg[index]->t_v1->x = beginx;
+								mlx->drawseg[index]->t_v1->x = endx;
 								mlx->drawseg[index]->t_v1->y = tw_y2;
+								mlx->drawseg[index]->t_v2->x = beginx;
+								mlx->drawseg[index]->t_v2->y = tw_y2;
 							}
 							
 						}
-						ft_triangle_rast(mlx, mlx->drawseg[index]->t_v0, mlx->drawseg[index]->t_v1, mlx->drawseg[index]->t_v2);
 					}
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 				}
 				if (mlx->cyb != mlx->cnyb && mlx->cya != mlx->cnya)			//		BOTH
 				{
