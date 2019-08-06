@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/04 18:41:16 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/06 19:24:47 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@
 
 #define UPPER_COLOR 0x330315
 #define LOWER_COLOR 0x1B0030
-#define WALL_COLOR 0x454545
+#define WALL_COLOR 0x454548
 #define CEILING_COLOR 0x252525
 #define FLOOR_COLOR 0x252525
 #define LINE_COLOR 0x0
@@ -118,8 +118,18 @@ typedef	struct		s_obj
 typedef struct		s_drawseg
 {
 	short			seg_type;		//	0 - SOLID	|	1 - BOTTOM	|	2 - TOP	|	3 - BOTH
-	int				bottom_h;		//	DONT CLIP ABOVE THIS
-	int				top_h;			//	DONT CLIP BELOW THIS
+	int				bottom_h;
+	int				top_h;
+	int				ceil_h;
+	int				floor_h;
+
+	short			curline;
+	t_vec2			*t_v0;
+	t_vec2			*t_v1;
+	t_vec2			*t_v2;
+	t_vec2			*b_v0;
+	t_vec2			*b_v1;
+	t_vec2			*b_v2;
 
 	int				x1;
 	int				x2;
@@ -266,7 +276,7 @@ typedef	struct		s_mlx
 	t_drawseg		**drawseg;
 	int				drawseg_count;
 	int				seg;
-	short			opening[W * H];
+	short			**opening;
 
 	int				cya;
 	int				cyb;
@@ -352,5 +362,10 @@ int					ft_key_realese(int keycode, t_mlx *mlx);
 void				ft_opening_clear(t_mlx *mlx);
 
 void				ft_thread(t_mlx *mlx);
+
+void				ft_flat_bottom_triangle(t_mlx *mlx, t_vec2 *v1, t_vec2 *v2, t_vec2 *v3);
+void				ft_flat_top_triangle(t_mlx *mlx, t_vec2 *v1, t_vec2 *v2, t_vec2 *v3);
+
+void				ft_triangle_rast(t_mlx *mlx, t_vec2 *v0, t_vec2 *v1, t_vec2 *v2);
 
 #endif

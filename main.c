@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/04 17:59:02 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/06 19:25:40 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,16 @@ void	ft_init(t_mlx *mlx)
 	mlx->s = 0;
 
 	mlx->seg = 0;
-	ft_opening_clear(mlx);
+	mlx->opening = (short**)malloc(sizeof(short*) * H);
+	int y = -1;
+	while (++y < H)
+	{
+		mlx->opening[y] = (short*)malloc(sizeof(short) * W);
+		int x = -1;
+		while (++x < W)
+			mlx->opening[y][x] = 1;
+	}
+	// ft_opening_clear(mlx);
 }
 
 int		main()
@@ -166,6 +175,21 @@ int		main()
 	// 	printf("\n------------------------------------------------\n");
 	// 	obj = obj->next;
 	// }
+
+	// ft_draw(mlx);
+
+	// t_vec2 *v1 = (t_vec2*)malloc(sizeof(t_vec2));
+	// t_vec2 *v2 = (t_vec2*)malloc(sizeof(t_vec2));
+	// t_vec2 *v3 = (t_vec2*)malloc(sizeof(t_vec2));
+
+	// v1->x = 400;
+	// v1->y = 250;
+	// v2->x = 750;
+	// v2->y = 122;
+	// v3->x = 720;
+	// v3->y = 500;
+	// ft_triangle_rast(mlx, v1, v2, v3);
+	// mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
 
 	// mlx_hook(mlx->win, 6, 1L<<6, ft_mouse_move, mlx);
 	mlx_loop_hook(mlx->mlx, ft_game_loop, mlx);
