@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 15:17:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/06 20:31:00 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/07 13:29:33 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -255,34 +255,34 @@ void	ft_obj(t_mlx *mlx)
 					if (mlx->drawseg[f]->curline)
 						ft_triangle_rast(mlx, mlx->drawseg[f]->t_v0, mlx->drawseg[f]->t_v1, mlx->drawseg[f]->t_v2);
 				}
-				// if (mlx->drawseg[f]->seg_type == 3)										//			BOTH
-				// {
-				// 	int y = mlx->drawseg[f]->ceil_h - 1;
-				// 	while (++y <= mlx->drawseg[f]->top_h)
-				// 	{
-				// 		int x = mlx->drawseg[f]->x1 - 1;
-				// 		while (++x <= mlx->drawseg[f]->x2)
-				// 		{
-				// 			if (x >= 0 && x < W && y >= 0 && y < H)
-				// 				mlx->opening[y][x] = 0;
-				// 		}
-				// 	}
-				// 	y = mlx->drawseg[f]->bottom_h - 1;
-				// 	while (++y <= mlx->drawseg[f]->floor_h)
-				// 	{
-				// 		int x = mlx->drawseg[f]->x1 - 1;
-				// 		while (++x <= mlx->drawseg[f]->x2)
-				// 		{
-				// 			if (x >= 0 && x < W && y >= 0 && y < H)
-				// 				mlx->opening[y][x] = 0;
-				// 		}
-				// 	}
-				// 	if (mlx->drawseg[f]->curline)
-				// 	{
-				// 		ft_flat_bottom_triangle(mlx, mlx->drawseg[f]->t_v0, mlx->drawseg[f]->t_v1, mlx->drawseg[f]->t_v2);
-				// 		ft_flat_top_triangle(mlx, mlx->drawseg[f]->b_v0, mlx->drawseg[f]->b_v1, mlx->drawseg[f]->b_v2);
-				// 	}
-				// }
+				if (mlx->drawseg[f]->seg_type == 3)										//			BOTH
+				{
+					int y = mlx->drawseg[f]->ceil_h - 1;
+					while (++y <= mlx->drawseg[f]->top_h)
+					{
+						int x = mlx->drawseg[f]->x1 - 1;
+						while (++x <= mlx->drawseg[f]->x2)
+						{
+							if (x >= 0 && x < W && y >= 0 && y < H)
+								mlx->opening[y][x] = 0;
+						}
+					}
+					y = mlx->drawseg[f]->bottom_h - 1;
+					while (++y <= mlx->drawseg[f]->floor_h)
+					{
+						int x = mlx->drawseg[f]->x1 - 1;
+						while (++x <= mlx->drawseg[f]->x2)
+						{
+							if (x >= 0 && x < W && y >= 0 && y < H)
+								mlx->opening[y][x] = 0;
+						}
+					}
+					if (mlx->drawseg[f]->curline)
+					{
+						ft_triangle_rast(mlx, mlx->drawseg[f]->t_v0, mlx->drawseg[f]->t_v1, mlx->drawseg[f]->t_v2);
+						ft_triangle_rast(mlx, mlx->drawseg[f]->b_v0, mlx->drawseg[f]->b_v1, mlx->drawseg[f]->b_v2);
+					}
+				}
 			}
 		}
 

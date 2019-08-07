@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/06 19:25:40 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/07 12:58:13 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,12 +182,12 @@ int		main()
 	// t_vec2 *v2 = (t_vec2*)malloc(sizeof(t_vec2));
 	// t_vec2 *v3 = (t_vec2*)malloc(sizeof(t_vec2));
 
-	// v1->x = 400;
-	// v1->y = 250;
-	// v2->x = 750;
-	// v2->y = 122;
-	// v3->x = 720;
-	// v3->y = 500;
+	// v1->x = 539;
+	// v1->y = 365;
+	// v2->x = 812;
+	// v2->y = 444;
+	// v3->x = 812;
+	// v3->y = 365;
 	// ft_triangle_rast(mlx, v1, v2, v3);
 	// mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
 

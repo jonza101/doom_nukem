@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/06 19:24:47 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/07 12:01:52 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -362,9 +362,6 @@ int					ft_key_realese(int keycode, t_mlx *mlx);
 void				ft_opening_clear(t_mlx *mlx);
 
 void				ft_thread(t_mlx *mlx);
-
-void				ft_flat_bottom_triangle(t_mlx *mlx, t_vec2 *v1, t_vec2 *v2, t_vec2 *v3);
-void				ft_flat_top_triangle(t_mlx *mlx, t_vec2 *v1, t_vec2 *v2, t_vec2 *v3);
 
 void				ft_triangle_rast(t_mlx *mlx, t_vec2 *v0, t_vec2 *v1, t_vec2 *v2);
 
