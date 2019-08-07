@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/07 15:09:03 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/07 18:36:35 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@
 #define FOV_V (1.0 * 0.2f)
 
 #define MAX_QUEUE 32
+
+#define MAX_DRAWSEG 128
 
 #define DBL_MAX 1.7976931348623158e+308
 
@@ -267,13 +269,12 @@ typedef	struct		s_mlx
 	t_img			*transparent[TRANSPARENT];
 	t_img			*sky[SKY];
 
-	double			top_ceil;
-	double			lower_floor;
-
 	t_obj			*obj_list;
 	int				obj_count;
 
-	t_drawseg		**drawseg;
+	// t_drawseg		*drawsegs[MAX_DRAWSEG];
+	int				seg_i;
+	t_drawseg		drawseg[MAX_DRAWSEG];
 	int				drawseg_count;
 	int				seg;
 	short			**opening;
@@ -365,5 +366,7 @@ void				ft_thread(t_mlx *mlx);
 
 void				ft_triangle_rast(t_mlx *mlx, t_vec2 *v0, t_vec2 *v1, t_vec2 *v2);
 void				ft_triangle_clear(t_vec2 *v0, t_vec2 *v1, t_vec2 *v2);
+
+void				ft_drawseg_error();
 
 #endif

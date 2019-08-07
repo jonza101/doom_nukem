@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 15:17:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/07 15:10:37 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/07 19:07:45 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,14 +62,14 @@ void	ft_obj_sort(t_mlx *mlx)
 void	ft_drawseg_sort(t_mlx *mlx)
 {
 	int i = -1;
-	while (++i < mlx->drawseg_count - 1)
+	while (++i <= mlx->seg_i - 1)// mlx->drawseg_count - 1)
 	{
 		int j = i - 1;
-		while (++j < mlx->drawseg_count)
+		while (++j <= mlx->seg_i)//mlx->drawseg_count)
 		{
-			if (mlx->drawseg[i]->dist > mlx->drawseg[j]->dist)
+			if (mlx->drawseg[i].dist > mlx->drawseg[j].dist)
 			{
-				t_drawseg *temp = mlx->drawseg[i];
+				t_drawseg temp = mlx->drawseg[i];
 				mlx->drawseg[i] = mlx->drawseg[j];
 				mlx->drawseg[j] = temp;
 			}
@@ -80,14 +80,36 @@ void	ft_drawseg_sort(t_mlx *mlx)
 void	ft_drawseg_clear(t_mlx *mlx)
 {
 	int i = -1;
-	while (++i < mlx->drawseg_count)
+	while (++i <= mlx->seg_i)// mlx->drawseg_count)
 	{
-		mlx->drawseg[i]->seg_type = -1;
-		mlx->drawseg[i]->x1 = -1;
-		mlx->drawseg[i]->x2 = -1;
-		mlx->drawseg[i]->top_h = -1;
-		mlx->drawseg[i]->bottom_h = -1;
-		mlx->drawseg[i]->dist = DBL_MAX;
+		if (mlx->drawseg[i].seg_type == 1 && mlx->drawseg[i].curline)
+		{
+			free(mlx->drawseg[i].b_v0);
+			free(mlx->drawseg[i].b_v1);
+			free(mlx->drawseg[i].b_v2);
+		}
+		if (mlx->drawseg[i].seg_type == 2 && mlx->drawseg[i].curline)
+		{
+			free(mlx->drawseg[i].t_v0);
+			free(mlx->drawseg[i].t_v1);
+			free(mlx->drawseg[i].t_v2);
+		}
+		if (mlx->drawseg[i].seg_type == 3 && mlx->drawseg[i].curline)
+		{
+			free(mlx->drawseg[i].t_v0);
+			free(mlx->drawseg[i].t_v1);
+			free(mlx->drawseg[i].t_v2);
+			free(mlx->drawseg[i].b_v0);
+			free(mlx->drawseg[i].b_v1);
+			free(mlx->drawseg[i].b_v2);
+		}
+
+		mlx->drawseg[i].seg_type = -1;
+		mlx->drawseg[i].x1 = -1;
+		mlx->drawseg[i].x2 = -1;
+		mlx->drawseg[i].top_h = -1;
+		mlx->drawseg[i].bottom_h = -1;
+		mlx->drawseg[i].dist = DBL_MAX;
 	}
 }
 
@@ -148,6 +170,7 @@ void	ft_obj(t_mlx *mlx)
 
 		if (tz1 <= 0 && tz2 <= 0)
 		{
+			// printf("next\n\n");
 			obj = obj->next;
 			continue;
 		}
@@ -200,81 +223,81 @@ void	ft_obj(t_mlx *mlx)
 
 		int overlap = 0;
 		int f = -1;
-		while (++f < mlx->drawseg_count)
+		while (++f < mlx->seg_i)//mlx->drawseg_count)
 		{
-			if (mlx->drawseg[f]->seg_type == 0 && ft_overlap(x1, x2, mlx->drawseg[f]->x1, mlx->drawseg[f]->x2) && mlx->drawseg[f]->dist < obj_dist)					//	TOO SLOW, I THINK
+			if (mlx->drawseg[f].seg_type == 0 && ft_overlap(x1, x2, mlx->drawseg[f].x1, mlx->drawseg[f].x2) && mlx->drawseg[f].dist < obj_dist)					//	TOO SLOW, I THINK
 			{
 				overlap = 1;
 				int y =  -1;																	//			SOLID
 				while (++y < H)
 				{
-					int x = mlx->drawseg[f]->x1 - 1;
-					while (++x <= mlx->drawseg[f]->x2)
+					int x = mlx->drawseg[f].x1 - 1;
+					while (++x <= mlx->drawseg[f].x2)
 					{
 						if (x >= 0 && x < W && y >= 0 && y < H)
 							mlx->opening[y][x] = 0;
 					}
 				}
 			}
-			else if (mlx->drawseg[f]->dist < obj_dist)																												//	TOO SLOW, I THINK
+			else if (mlx->drawseg[f].seg_type > 0 && mlx->drawseg[f].dist < obj_dist)																			//	TOO SLOW, I THINK
 			{
 				overlap = 1;
-				if (mlx->drawseg[f]->seg_type == 1)												//			BOTTOM
+				if (mlx->drawseg[f].seg_type == 1)												//			BOTTOM
 				{
-					int y = mlx->drawseg[f]->top_h - 1;
-					while (++y <= mlx->drawseg[f]->bottom_h)
+					int y = mlx->drawseg[f].top_h - 1;
+					while (++y <= mlx->drawseg[f].bottom_h)
 					{
-						int x = mlx->drawseg[f]->x1 - 1;
-						while (++x <= mlx->drawseg[f]->x2)
+						int x = mlx->drawseg[f].x1 - 1;
+						while (++x <= mlx->drawseg[f].x2)
 						{
 							if (x >= 0 && x < W && y >= 0 && y < H)
 								mlx->opening[y][x] = 0;
 						}
 					}
-					if (mlx->drawseg[f]->curline)
-						ft_triangle_rast(mlx, mlx->drawseg[f]->b_v0, mlx->drawseg[f]->b_v1, mlx->drawseg[f]->b_v2);
+					if (mlx->drawseg[f].curline)
+						ft_triangle_rast(mlx, mlx->drawseg[f].b_v0, mlx->drawseg[f].b_v1, mlx->drawseg[f].b_v2);
 				}
-				else if (mlx->drawseg[f]->seg_type == 2)										//			TOP
+				else if (mlx->drawseg[f].seg_type == 2)										//			TOP
 				{
-					int y = mlx->drawseg[f]->top_h - 1;
-					while (++y <= mlx->drawseg[f]->bottom_h)
+					int y = mlx->drawseg[f].top_h - 1;
+					while (++y <= mlx->drawseg[f].bottom_h)
 					{
-						int x = mlx->drawseg[f]->x1 - 1;
-						while (++x <= mlx->drawseg[f]->x2)
+						int x = mlx->drawseg[f].x1 - 1;
+						while (++x <= mlx->drawseg[f].x2)
 						{
 							if (x >= 0 && x < W && y >= 0 && y < H)
 								mlx->opening[y][x] = 0;
 						}
 					}
-					if (mlx->drawseg[f]->curline)
-						ft_triangle_rast(mlx, mlx->drawseg[f]->t_v0, mlx->drawseg[f]->t_v1, mlx->drawseg[f]->t_v2);
+					if (mlx->drawseg[f].curline)
+						ft_triangle_rast(mlx, mlx->drawseg[f].t_v0, mlx->drawseg[f].t_v1, mlx->drawseg[f].t_v2);
 				}
-				else if (mlx->drawseg[f]->seg_type == 3)										//			BOTH
+				else if (mlx->drawseg[f].seg_type == 3)										//			BOTH
 				{
-					int y = mlx->drawseg[f]->ceil_h - 1;
-					while (++y <= mlx->drawseg[f]->top_h)
+					int y = mlx->drawseg[f].ceil_h - 1;
+					while (++y <= mlx->drawseg[f].top_h)
 					{
-						int x = mlx->drawseg[f]->x1 - 1;
-						while (++x <= mlx->drawseg[f]->x2)
+						int x = mlx->drawseg[f].x1 - 1;
+						while (++x <= mlx->drawseg[f].x2)
 						{
 							if (x >= 0 && x < W && y >= 0 && y < H)
 								mlx->opening[y][x] = 0;
 						}
 					}
-					y = mlx->drawseg[f]->bottom_h - 1;
-					while (++y <= mlx->drawseg[f]->floor_h)
+					y = mlx->drawseg[f].bottom_h - 1;
+					while (++y <= mlx->drawseg[f].floor_h)
 					{
-						int x = mlx->drawseg[f]->x1 - 1;
-						while (++x <= mlx->drawseg[f]->x2)
+						int x = mlx->drawseg[f].x1 - 1;
+						while (++x <= mlx->drawseg[f].x2)
 						{
 							if (x >= 0 && x < W && y >= 0 && y < H)
 								mlx->opening[y][x] = 0;
 						}
 					}
-					if (mlx->drawseg[f]->curline)
+					if (mlx->drawseg[f].curline)
 					{
-						ft_triangle_rast(mlx, mlx->drawseg[f]->t_v0, mlx->drawseg[f]->t_v1, mlx->drawseg[f]->t_v2);
-						ft_triangle_rast(mlx, mlx->drawseg[f]->b_v0, mlx->drawseg[f]->b_v1, mlx->drawseg[f]->b_v2);
+						ft_triangle_rast(mlx, mlx->drawseg[f].t_v0, mlx->drawseg[f].t_v1, mlx->drawseg[f].t_v2);
+						ft_triangle_rast(mlx, mlx->drawseg[f].b_v0, mlx->drawseg[f].b_v1, mlx->drawseg[f].b_v2);
 					}
 				}
 			}
@@ -308,16 +331,6 @@ void	ft_obj(t_mlx *mlx)
 				}
 			}
 		}
-		// int y = -1;
-		// while (++y < H)
-		// {
-		// 	int x = -1;
-		// 	while (++x < W)
-		// 	{
-		// 		if (mlx->opening[y * W + x] == 0)
-		// 			ft_image(mlx, x, y, 0x0);
-		// 	}
-		// }
 		obj = obj->next;
 		// printf("\n");
 		ft_opening_clear(mlx);

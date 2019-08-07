@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/07 15:09:25 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/07 18:58:35 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,6 +131,7 @@ void	ft_init(t_mlx *mlx)
 	mlx->s = 0;
 
 	mlx->seg = 0;
+	mlx->seg_i = 0;
 	mlx->opening = (short**)malloc(sizeof(short*) * H);
 	int y = -1;
 	while (++y < H)
@@ -175,8 +176,6 @@ int		main()
 	// 	printf("\n------------------------------------------------\n");
 	// 	obj = obj->next;
 	// }
-
-	// ft_draw(mlx);
 
 	// t_vec2 *v1 = (t_vec2*)malloc(sizeof(t_vec2));
 	// t_vec2 *v2 = (t_vec2*)malloc(sizeof(t_vec2));
