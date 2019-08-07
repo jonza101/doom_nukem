@@ -6,11 +6,21 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/06 13:54:07 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/07 12:58:37 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/07 15:09:07 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doom_nukem.h"
+
+void	ft_triangle_clear(t_vec2 *v0, t_vec2 *v1, t_vec2 *v2)
+{
+	v0->x = -1;
+	v0->y = -1;
+	v1->x = -1;
+	v1->y = -1;
+	v2->x = -1;
+	v2->y = -1;
+}
 
 int		ft_orient2d(t_vec2 *a, t_vec2 *b, t_vec2 *c)
 {

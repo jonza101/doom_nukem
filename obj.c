@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 15:17:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/07 13:29:33 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/07 15:10:37 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,12 +93,6 @@ void	ft_drawseg_clear(t_mlx *mlx)
 
 void	ft_opening_clear(t_mlx *mlx)
 {
-	// int i = -1;
-	// while (++i < W)
-	// 	mlx->x_opening[i] = 1;
-	// i = -1;
-	// while (++i < H)
-	// 	mlx->y_opening[i] = 0;
 	int y = -1;
 	while (++y < H)
 	{
@@ -211,7 +205,7 @@ void	ft_obj(t_mlx *mlx)
 			if (mlx->drawseg[f]->seg_type == 0 && ft_overlap(x1, x2, mlx->drawseg[f]->x1, mlx->drawseg[f]->x2) && mlx->drawseg[f]->dist < obj_dist)					//	TOO SLOW, I THINK
 			{
 				overlap = 1;
-				int y =  -1;
+				int y =  -1;																	//			SOLID
 				while (++y < H)
 				{
 					int x = mlx->drawseg[f]->x1 - 1;
@@ -222,13 +216,13 @@ void	ft_obj(t_mlx *mlx)
 					}
 				}
 			}
-			if (ft_overlap(ya, yb, mlx->drawseg[f]->top_h, mlx->drawseg[f]->bottom_h) && mlx->drawseg[f]->dist < obj_dist)		//	TOO SLOW, I THINK
+			else if (mlx->drawseg[f]->dist < obj_dist)																												//	TOO SLOW, I THINK
 			{
 				overlap = 1;
-				if (mlx->drawseg[f]->seg_type == 1)										//			BOTTOM
+				if (mlx->drawseg[f]->seg_type == 1)												//			BOTTOM
 				{
 					int y = mlx->drawseg[f]->top_h - 1;
-					while (++y <= H - 1)
+					while (++y <= mlx->drawseg[f]->bottom_h)
 					{
 						int x = mlx->drawseg[f]->x1 - 1;
 						while (++x <= mlx->drawseg[f]->x2)
@@ -240,7 +234,7 @@ void	ft_obj(t_mlx *mlx)
 					if (mlx->drawseg[f]->curline)
 						ft_triangle_rast(mlx, mlx->drawseg[f]->b_v0, mlx->drawseg[f]->b_v1, mlx->drawseg[f]->b_v2);
 				}
-				if (mlx->drawseg[f]->seg_type == 2)										//			TOP
+				else if (mlx->drawseg[f]->seg_type == 2)										//			TOP
 				{
 					int y = mlx->drawseg[f]->top_h - 1;
 					while (++y <= mlx->drawseg[f]->bottom_h)
@@ -255,7 +249,7 @@ void	ft_obj(t_mlx *mlx)
 					if (mlx->drawseg[f]->curline)
 						ft_triangle_rast(mlx, mlx->drawseg[f]->t_v0, mlx->drawseg[f]->t_v1, mlx->drawseg[f]->t_v2);
 				}
-				if (mlx->drawseg[f]->seg_type == 3)										//			BOTH
+				else if (mlx->drawseg[f]->seg_type == 3)										//			BOTH
 				{
 					int y = mlx->drawseg[f]->ceil_h - 1;
 					while (++y <= mlx->drawseg[f]->top_h)
