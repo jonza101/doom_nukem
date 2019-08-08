@@ -386,20 +386,21 @@ void	ft_draw(t_mlx *mlx)
 			}
 
 			//	PROJECT OUR CEILING & FLOOR HEIGHTS INTO SCREEN COORDINATES (Y COORDINATE)
-			int y1a = H / 2 + (int)(-ft_yaw(yceil, tz1, mlx->player->yaw) * yscale1);
-			int y1b = H / 2 + (int)(-ft_yaw(yfloor, tz1, mlx->player->yaw) * yscale1);
-			int y2a = H / 2 + (int)(-ft_yaw(yceil, tz2, mlx->player->yaw) * yscale2);
-			int y2b = H / 2 + (int)(-ft_yaw(yfloor, tz2, mlx->player->yaw) * yscale2);
+			int y1a = H / 2 + (int)(-(yceil + tz1 * mlx->player->yaw) * yscale1);
+			int y1b = H / 2 + (int)(-(yfloor + tz1 * mlx->player->yaw) * yscale1);
+			int y2a = H / 2 + (int)(-(yceil + tz2 * mlx->player->yaw) * yscale2);
+			int y2b = H / 2 + (int)(-(yfloor + tz2 * mlx->player->yaw) * yscale2);
 
 			//	SAME FOR NEIGHBORS
-			int ny1a = H / 2 + (int)(-ft_yaw(nyceil, tz1, mlx->player->yaw) * yscale1);
-			int ny1b = H / 2 + (int)(-ft_yaw(nyfloor, tz1, mlx->player->yaw) * yscale1);
-			int ny2a = H / 2 + (int)(-ft_yaw(nyceil, tz2, mlx->player->yaw) * yscale2);
-			int ny2b = H / 2 + (int)(-ft_yaw(nyfloor, tz2, mlx->player->yaw) * yscale2);
+			int ny1a = H / 2 + (int)(-(nyceil + tz1 * mlx->player->yaw) * yscale1);
+			int ny1b = H / 2 + (int)(-(nyfloor + tz1 * mlx->player->yaw) * yscale1);
+			int ny2a = H / 2 + (int)(-(nyceil + tz2 * mlx->player->yaw) * yscale2);
+			int ny2b = H / 2 + (int)(-(nyfloor + tz2 * mlx->player->yaw) * yscale2);
 
 			//	RENDER THE WALL
-			int beginx = ft_max(x1, mlx->now->sx1);
-			int endx = ft_min(x2, mlx->now->sx2);
+			
+			int beginx = x1 > mlx->now->sx1 ? x1 : mlx->now->sx1;
+			int endx = x2 < mlx->now->sx2 ? x2 : mlx->now->sx2;
 
 			ft_scaler_init(mlx->ya_int, x1, beginx, x2, y1a, y2a);
             ft_scaler_init(mlx->yb_int, x1, beginx, x2, y1b, y2b);

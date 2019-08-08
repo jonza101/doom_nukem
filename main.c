@@ -14,16 +14,21 @@
 
 void	ft_image(t_mlx *mlx, int x, int y, int color)
 {
-	if (x >= 0 && x < W && y >= 0 && y < H)
-		mlx->data[y * W + x] = mlx_get_color_value(mlx->mlx, color);
+	// nahooy this check
+	//if (x >= 0 && x < W && y >= 0 && y < H)
+	//TODO вынести это нахуй из функции? Можно получить прирост в производительности
+	mlx->data[y * W + x] = mlx_get_color_value(mlx->mlx, color);
 }
 
 void	ft_reset_image(t_mlx *mlx)
 {
-	mlx_destroy_image(mlx->mlx, mlx->img);
-	mlx->img = mlx_new_image(mlx->mlx, W, H);
-	mlx->data = (int *)mlx_get_data_addr(mlx->img, &mlx->bpp, &mlx->size_line, &mlx->endian);
-	mlx_clear_window(mlx->mlx, mlx->win);
+	// with this bzero thing it works 2 times faster
+	// you can check it with fps counter below
+	ft_bzero(mlx->data, W * H * 3);
+	// mlx_destroy_image(mlx->mlx, mlx->img);
+	// mlx->img = mlx_new_image(mlx->mlx, W, H);
+	// mlx->data = (int *)mlx_get_data_addr(mlx->img, &mlx->bpp, &mlx->size_line, &mlx->endian);
+	// mlx_clear_window(mlx->mlx, mlx->win);
 }
 
 int		ft_close(int i)

@@ -384,4 +384,6 @@ void				ft_drawseg_error();
 void				ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector);
 void				ft_find_obj_sect(t_mlx *mlx, int sector);
 
+void				ft_bzero(void *s, size_t n);
+
 #endif

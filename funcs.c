@@ -246,3 +246,14 @@ void	ft_screenpoint_to_mappoint(t_mlx *mlx, double map_y, double screen_x, doubl
 	mlx->map_x = mlx->map_z * (W / 2 - (screen_x)) / (W * FOV_H);
 	ft_relative_to_absolute(mlx);
 }
+
+void	ft_bzero(void *s, size_t n)
+{
+	size_t i;
+	char *t;
+
+	i = 0;
+	t = (char *)s;
+	while (n > i)
+		t[i++] = '\0';
+}
