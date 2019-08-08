@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:38 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/07 15:07:54 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/08 19:07:53 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,52 +97,112 @@ int		ft_scaler_next(t_scaler *scaler)
 
 void	ft_draw_vline(t_mlx *mlx, int x, int y1,int y2, int top_color,int middle_color, int bottom_color)
 {
-	if ((y1 < 0 || y1 > H - 1 || y2 < 0 || y2 > H - 1)
-			&& (x < 0 || x > W - 1))
-		return ;
-	// y1 = ft_clamp(y1, 0, H - 1);
-	// y2 = ft_clamp(y2, 0, H - 1);
+	y1 = ft_clamp(y1, 0, H - 1);
+	y2 = ft_clamp(y2, 0, H - 1);
+
 	if (y1 == y2)
 	{
 		if (y1 != H - 1 && y1 != 0)
-			ft_image(mlx, x, y1, bottom_color);
+		{
+			if (mlx->now->sector_n != mlx->player->sector)
+			{
+				if (mlx->opening[y1][x] == 1)
+					ft_image(mlx, x, y1, bottom_color);
+			}
+			else
+				ft_image(mlx, x, y1, bottom_color);
+		}
 		else
-			ft_image(mlx, x, y1, middle_color);
+		{
+			if (mlx->now->sector_n != mlx->player->sector)
+			{
+				if (mlx->opening[y1][x] == 1)
+					ft_image(mlx, x, y1, middle_color);
+			}
+			else
+				ft_image(mlx, x, y1, middle_color);
+		}
 		return ;
 	}
 	else if (y2 > y1)
 	{
 		if (y1 != H - 1 && y1 != 0)
-			ft_image(mlx, x, y1, top_color);
+		{
+			if (mlx->now->sector_n != mlx->player->sector)
+			{
+				if (mlx->opening[y1][x] == 1)
+					ft_image(mlx, x, y1, top_color);
+			}
+			else
+				ft_image(mlx, x, y1, top_color);
+		}
 		else
-			ft_image(mlx, x, y1, middle_color);
+		{
+			if (mlx->now->sector_n != mlx->player->sector)
+			{
+				if (mlx->opening[y1][x] == 1)
+					ft_image(mlx, x, y1, middle_color);
+			}
+			else
+				ft_image(mlx, x, y1, middle_color);
+		}
 		int y = y1 + 1;
 		while (y < y2)
 		{
-			ft_image(mlx, x, y, middle_color);
+			if (mlx->now->sector_n != mlx->player->sector)
+			{
+				if (mlx->opening[y][x] == 1)
+					ft_image(mlx, x, y, middle_color);
+			}
+			else
+				ft_image(mlx, x, y, middle_color);
 			y++;
 		}
 		if (y2 != H - 1 && y2 != 0)
-			ft_image(mlx, x, y2, bottom_color);
+		{
+			if (mlx->now->sector_n != mlx->player->sector)
+			{
+				if (mlx->opening[y][x] == 1)
+					ft_image(mlx, x, y, bottom_color);
+			}
+			else
+				ft_image(mlx, x, y1, bottom_color);
+		}
 		else
-			ft_image(mlx, x, y2, middle_color);
+		{
+			if (mlx->now->sector_n != mlx->player->sector)
+			{
+				if (mlx->opening[y][x] == 1)
+					ft_image(mlx, x, y, middle_color);
+			}
+			else
+				ft_image(mlx, x, y1, middle_color);
+		}
 	}
 }
 
 void	ft_draw_tvline(t_mlx *mlx, int x, int y1, int y2, unsigned txtx, t_img *texture, int is_transparent)
 {
-	if ((y1 < 0 || y1 > H - 1 || y2 < 0 || y2 > H - 1)
-			|| (x < 0 || x > W - 1))
-		return ;
+	y1 = ft_clamp(y1, 0, H - 1);
+	y2 = ft_clamp(y2, 0, H - 1);
+
 	int y = y1 - 1;
 	while (++y <= y2)
 	{
 		unsigned txty = ft_scaler_next(mlx->scaler);
 		int color = texture->data[txty % texture->h * texture->w + txtx % texture->w];
 		if (!is_transparent)
-			ft_image(mlx, x, y, color);
-		else if (color != 0xff000000)
-			ft_image(mlx, x, y, color);
+		{
+			if (mlx->now->sector_n != mlx->player->sector)
+			{
+				if (mlx->opening[y][x] == 1)
+					ft_image(mlx, x, y, color);
+			}
+			else
+				ft_image(mlx, x, y, color);
+		}
+		// else if (color != 0xff000000)
+		// 	ft_image(mlx, x, y, color);
 	}
 }
 

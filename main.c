@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/07 18:58:35 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/08 17:50:21 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,6 +159,8 @@ int		main()
 	ft_init_graphics(mlx);
 	ft_load_map(mlx, "maps/map4");
 	ft_init(mlx);
+
+	// printf("%d\n", (int)2.75f);
 
 	// printf("\n------------------------------------------------\n\n");
 	// t_obj *obj = mlx->obj_list;

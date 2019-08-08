@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/07 18:36:35 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/08 19:43:14 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@
 #define MAX_QUEUE 32
 
 #define MAX_DRAWSEG 128
+#define MAX_VISSPRITES 64
 
 #define DBL_MAX 1.7976931348623158e+308
 
@@ -106,6 +107,10 @@ typedef struct		s_obj_specs
 	double			x;
 	double			y;
 	int				sect;
+
+	int				x1;
+	int				x2;
+
 	int				txt_index;
 }					t_obj_specs;
 
@@ -137,6 +142,9 @@ typedef struct		s_drawseg
 	int				x2;
 
 	double			dist;
+
+	double			min_dist;
+	double			max_dist;
 }					t_drawseg;
 
 typedef struct		s_sector
@@ -146,7 +154,7 @@ typedef struct		s_sector
 
 	t_vec2			**verts;
 
-	t_drawseg		**seg;
+	// t_obj			**obj;
 
 	int				ceil_txt;
 	int				floor_txt;
@@ -271,8 +279,8 @@ typedef	struct		s_mlx
 
 	t_obj			*obj_list;
 	int				obj_count;
+	int				obj_i;
 
-	// t_drawseg		*drawsegs[MAX_DRAWSEG];
 	int				seg_i;
 	t_drawseg		drawseg[MAX_DRAWSEG];
 	int				drawseg_count;
@@ -361,6 +369,10 @@ int					ft_key_press(int keycode, t_mlx *mlx);
 int					ft_key_realese(int keycode, t_mlx *mlx);
 
 void				ft_opening_clear(t_mlx *mlx);
+void				ft_drawseg_clear(t_mlx *mlx);
+
+void				ft_obj_sort(t_mlx *mlx);
+void				ft_drawseg_sort(t_mlx *mlx);
 
 void				ft_thread(t_mlx *mlx);
 
@@ -368,5 +380,8 @@ void				ft_triangle_rast(t_mlx *mlx, t_vec2 *v0, t_vec2 *v1, t_vec2 *v2);
 void				ft_triangle_clear(t_vec2 *v0, t_vec2 *v1, t_vec2 *v2);
 
 void				ft_drawseg_error();
+
+void				ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector);
+void				ft_find_obj_sect(t_mlx *mlx, int sector);
 
 #endif

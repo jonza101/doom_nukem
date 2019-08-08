@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/07 18:58:42 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/08 19:49:24 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -250,6 +250,7 @@ void	ft_draw(t_mlx *mlx)
 		mlx->head = mlx->queue;
 
 	mlx->seg_i = 0;
+	mlx->obj_i = 0;
 	int f = 0;
 	while (mlx->head != mlx->tail)
 	{
@@ -455,9 +456,25 @@ void	ft_draw(t_mlx *mlx)
 						unsigned txtz = (mlx->map_z * 32);
 						//	RENDER CEILING
 						if (y < mlx->cya && ceil_f)
-							ft_image(mlx, x, y, mlx->txt[ceil_t]->data[txtz % mlx->txt[ceil_t]->h * mlx->txt[ceil_t]->w + txtx % mlx->txt[ceil_t]->w]);
+						{
+							if (mlx->now->sector_n != mlx->player->sector)
+							{
+								if (mlx->opening[y][x] == 1)
+									ft_image(mlx, x, y, mlx->txt[ceil_t]->data[txtz % mlx->txt[ceil_t]->h * mlx->txt[ceil_t]->w + txtx % mlx->txt[ceil_t]->w]);
+							}
+							else
+								ft_image(mlx, x, y, mlx->txt[ceil_t]->data[txtz % mlx->txt[ceil_t]->h * mlx->txt[ceil_t]->w + txtx % mlx->txt[ceil_t]->w]);
+						}
 						else if (y >= mlx->cya && floor_f)
-							ft_image(mlx, x, y, mlx->txt[floor_t]->data[txtz % mlx->txt[floor_t]->h * mlx->txt[floor_t]->w + txtx % mlx->txt[floor_t]->w]);
+						{
+							if (mlx->now->sector_n != mlx->player->sector)
+							{
+								if (mlx->opening[y][x] == 1)
+									ft_image(mlx, x, y, mlx->txt[floor_t]->data[txtz % mlx->txt[floor_t]->h * mlx->txt[floor_t]->w + txtx % mlx->txt[floor_t]->w]);
+							}
+							else
+								ft_image(mlx, x, y, mlx->txt[floor_t]->data[txtz % mlx->txt[floor_t]->h * mlx->txt[floor_t]->w + txtx % mlx->txt[floor_t]->w]);
+						}
 					}
 				}
 				if (!ceil_f)
@@ -598,6 +615,10 @@ void	ft_draw(t_mlx *mlx)
 			if (index >= MAX_DRAWSEG)
 				ft_drawseg_error();
 
+			t_vec2 *v1 = sector->verts[s + 0];
+			t_vec2 *v2 = sector->verts[s + 1];
+			t_vec3 *p = mlx->player->pos;
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			//	SPRITE CLIPPING
 			if (neighbor < 0)// && index < mlx->drawseg_count)				//		SOLID
@@ -608,15 +629,41 @@ void	ft_draw(t_mlx *mlx)
 				mlx->drawseg[index].top_h = mlx->cya;
 				mlx->drawseg[index].bottom_h = mlx->cyb;
 
-				t_vec2 *v1 = sector->verts[s + 0];
-				t_vec2 *v2 = sector->verts[s + 1];
-				t_vec3 *p = mlx->player->pos;
 				double v1_dist = sqrtf(powf(v1->x - p->x, 2) + powf(v1->y - p->y, 2));
 				double v2_dist = sqrtf(powf(v2->x - p->x, 2) + powf(v2->y - p->y, 2));
 				mlx->drawseg[index].dist = (v1_dist > v2_dist) ? v1_dist : v2_dist;
 			}
 			else if (neighbor >= 0)// && index < mlx->drawseg_count)
 			{
+				double dx1 = v1->x - p->x;
+				double dy1 = v1->y - p->y;
+				double dx2 = v2->x - p->x;
+				double dy2 = v2->y - p->y;
+				double v1_dist = sqrtf(dx1 * dx1 + dy1 * dy1);
+				double v2_dist = sqrtf(dx2 * dx2 + dy2 * dy2);
+				// printf("dist 1 			%f\n", v1_dist);
+				// printf("dist 2 			%f\n", v2_dist);
+				// printf("px %f		py %f\n", p->x, p->y);
+				// printf("v1 x %f		v1 y %f\n", v1->x, v1->y);
+				// printf("v2 x %f		v2 y %f\n\n", v2->x, v2->y);
+				// mlx->drawseg[index].dist = (v1_dist < v2_dist) ? v1_dist : v2_dist;
+				// double dist = fabs((v2->y - v1->y) * p->x - (v2->x - v1->x) * p->y + v2->x * v1->y - v2->y * v1->x) / sqrtf(powf(v2->y - v1->y, 2) + powf(v2->x - v1->x, 2));
+
+				double mx = (v1->x + v2->x) / 2.0f;
+				double my = (v1->y + v2->y) / 2.0f;
+
+				double dx = mx - p->x;
+				double dy = my - p->y;
+				double mid_dist = sqrtf(dx * dx + dy * dy);
+
+				double min_dist = ft_min(mid_dist, ft_min(v1_dist, v2_dist));
+				double max_dist = ft_max(mid_dist, ft_max(v1_dist, v2_dist));
+
+				mlx->drawseg[index].dist = min_dist;
+
+				mlx->drawseg[index].min_dist = min_dist;
+				mlx->drawseg[index].max_dist = max_dist;
+
 				if (mlx->cyb != mlx->cnyb && mlx->cya == mlx->cnya)		//		BOTTOM
 				{
 					mlx->drawseg[index].seg_type = 1;
@@ -626,6 +673,7 @@ void	ft_draw(t_mlx *mlx)
 					mlx->drawseg[index].curline = 0;
 					mlx->drawseg[index].top_h = (p_max_cnyb < w_max_cnyb) ? p_max_cnyb : w_max_cnyb;
 					mlx->drawseg[index].bottom_h = H - 1;
+
 					if (curline)
 					{
 						mlx->drawseg[index].curline = 1;
@@ -841,28 +889,11 @@ void	ft_draw(t_mlx *mlx)
 						}
 					}
 				}
-
-				t_vec2 *v1 = sector->verts[s + 0];
-				t_vec2 *v2 = sector->verts[s + 1];
-				t_vec3 *p = mlx->player->pos;
-				double dx1 = v1->x - p->x;
-				double dy1 = v1->y - p->y;
-				double dx2 = v2->x - p->x;
-				double dy2 = v2->y - p->y;
-				double v1_dist = sqrtf(dx1 * dx1 + dy1 * dy1);
-				double v2_dist = sqrtf(dx2 * dx2 + dy2 * dy2);
-				// printf("dist 1 			%f\n", v1_dist);
-				// printf("dist 2 			%f\n", v2_dist);
-				// printf("px %f		py %f\n", p->x, p->y);
-				// printf("v1 x %f		v1 y %f\n", v1->x, v1->y);
-				// printf("v2 x %f		v2 y %f\n\n", v2->x, v2->y);
-				mlx->drawseg[index].dist = (v1_dist < v2_dist) ? v1_dist : v2_dist;
-
-				// if (mlx->cyb == mlx->cnyb && mlx->cya == mlx->cnya)
-				// {
-				// 	mlx->drawseg[index]->seg_type = -1;
-				// 	mlx->drawseg[index]->dist = DBL_MAX;
-				// }
+				else if (mlx->cyb == mlx->cnyb && mlx->cya == mlx->cnya)
+				{
+					mlx->drawseg[index].seg_type = -1;
+					mlx->drawseg[index].dist = DBL_MAX;
+				}
 			}
 			mlx->seg_i++;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -878,7 +909,8 @@ void	ft_draw(t_mlx *mlx)
 		}
 		f++;
 		++rendered_sect[mlx->now->sector_n];
+		ft_find_obj_sect(mlx, mlx->now->sector_n);
 	}
-	printf("drawsegs %d\n", mlx->seg_i);
+	// printf("drawsegs %d\n", mlx->seg_i);
 	// printf("\n__________________________________________________________\n\n");
 }
