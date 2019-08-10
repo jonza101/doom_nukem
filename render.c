@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/08 19:49:24 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/10 18:29:44 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -268,6 +268,8 @@ void	ft_draw(t_mlx *mlx)
 		// printf("sect %d\n\n", mlx->now->sector_n);
 		while (++s < sector->verts_count)
 		{
+			mlx->open_f = 0;
+
 			//	ACQUIRE THE X,Y COORDINATES OF THE TWO ENDPOINTS (VERTICES) OF THIS EDGE OF THE SECTOR
 			double vx1 = sector->verts[s + 0]->x - mlx->player->pos->x;
 			double vy1 = sector->verts[s + 0]->y - mlx->player->pos->y;
@@ -437,6 +439,24 @@ void	ft_draw(t_mlx *mlx)
                 mlx->cya = ft_clamp(ya, ytop[x],ybottom[x]);
                 mlx->cyb = ft_clamp(yb, ytop[x],ybottom[x]);
 
+				//	SAME FOR NEIGHBORS
+				int nya = ft_scaler_next(mlx->nya_int);
+				int nyb = ft_scaler_next(mlx->nyb_int);
+
+				mlx->cnya = ft_clamp(nya, ytop[x], ybottom[x]);
+				mlx->cnyb = ft_clamp(nyb, ytop[x], ybottom[x]);
+
+				// if (mlx->now->sector_n == 7)
+				// {
+				// 	printf("sect %d		s %d\n", mlx->now->sector_n, s);
+				// 	printf("cya %d		cnya %d\n\n", mlx->cya, mlx->cnya);
+				// 	int x = - 1;
+				// 	// while (++x < 10)
+				// 	// {
+				// 	// 	ft_image(mlx, W / 2 - 5 + x, mlx->cya, 0xFFFF00);
+				// 	// 	ft_image(mlx, W / 2 - 5 + x, mlx->cnya, 0xFF0000);
+				// 	// }
+				// }
 				int ceil_t = sector->ceil_txt;
 				int floor_t = sector->floor_txt;
 				int ceil_f = (ceil_t >= 0) && (ceil_t < TXT);
@@ -456,55 +476,29 @@ void	ft_draw(t_mlx *mlx)
 						unsigned txtx = (mlx->map_x * 32);
 						unsigned txtz = (mlx->map_z * 32);
 						//	RENDER CEILING
-						if (y < mlx->cya && ceil_f)
-						{
-							if (mlx->now->sector_n != mlx->player->sector)
-							{
-								if (mlx->opening[y][x] == 1)
-									ft_image(mlx, x, y, mlx->txt[ceil_t]->data[txtz % mlx->txt[ceil_t]->h * mlx->txt[ceil_t]->w + txtx % mlx->txt[ceil_t]->w]);
-							}
-							else
-								ft_image(mlx, x, y, mlx->txt[ceil_t]->data[txtz % mlx->txt[ceil_t]->h * mlx->txt[ceil_t]->w + txtx % mlx->txt[ceil_t]->w]);
-						}
-						else if (y >= mlx->cya && floor_f)
-						{
-							if (mlx->now->sector_n != mlx->player->sector)
-							{
-								if (mlx->opening[y][x] == 1)
-									ft_image(mlx, x, y, mlx->txt[floor_t]->data[txtz % mlx->txt[floor_t]->h * mlx->txt[floor_t]->w + txtx % mlx->txt[floor_t]->w]);
-							}
-							else
-								ft_image(mlx, x, y, mlx->txt[floor_t]->data[txtz % mlx->txt[floor_t]->h * mlx->txt[floor_t]->w + txtx % mlx->txt[floor_t]->w]);
-						}
+						if (y < mlx->cya && ceil_f && mlx->opening[y][x] == -1)
+							ft_image(mlx, x, y, mlx->txt[ceil_t]->data[txtz % mlx->txt[ceil_t]->h * mlx->txt[ceil_t]->w + txtx % mlx->txt[ceil_t]->w]);
+						else if (y >= mlx->cya && floor_f && mlx->opening[y][x] == -1)
+							ft_image(mlx, x, y, mlx->txt[floor_t]->data[txtz % mlx->txt[floor_t]->h * mlx->txt[floor_t]->w + txtx % mlx->txt[floor_t]->w]);
 					}
 				}
+				mlx->open_f = 0;
 				if (!ceil_f)
-					ft_draw_vline(mlx, x, ytop[x], (mlx->cya - 1), LINE_COLOR, CEILING_COLOR, LINE_COLOR);
+				{
+					if (mlx->cya != mlx->cnya && neighbor >= 0)
+						mlx->open_f = 1;
+					ft_draw_vline(mlx, x, ytop[x], (mlx->cya), LINE_COLOR, CEILING_COLOR, LINE_COLOR);
+					mlx->open_f = 0;
+				}
 				if (!floor_f)
-					ft_draw_vline(mlx, x, (mlx->cyb + 1), ybottom[x], LINE_COLOR, FLOOR_COLOR, LINE_COLOR);
-				
-				if (mlx->cyb + 1 < p_min_cnyb)
-					p_min_cnyb = mlx->cyb + 1;
-				if (mlx->cyb + 1 > p_max_cnyb)
-					p_max_cnyb = mlx->cyb + 1;
+				{
+					if (mlx->cyb != mlx->cnyb && neighbor >= 0)
+						mlx->open_f = 1;
+					ft_draw_vline(mlx, x, (mlx->cyb), ybottom[x], LINE_COLOR, FLOOR_COLOR, LINE_COLOR);
+					mlx->open_f = 0;
+				}
 
-				if (mlx->cya < p_min_cnya)
-					p_min_cnya = mlx->cya;
-				if (mlx->cya - 1 > p_max_cnya)
-					p_max_cnya = mlx->cya - 1;
-
-				// ft_image(mlx, x, mlx->cya - 1, 0xFFFF00);
-				
-				if (x == beginx)
-					bp_y1 = mlx->cyb;
-				if (x == endx)
-					bp_y2 = mlx->cyb;
-				if (x == beginx)
-					tp_y1 = mlx->cya;
-				if (x == endx)
-					tp_y2 = mlx->cya;
-
-				// ft_image(mlx, x, mlx->cyb + 1, 0xFFFF00);
+				mlx->open_f = 0;
 
 				// ft_scaler_init(mlx->scaler, cya, cya, cyb, 0, 64);
 				// ft_draw_tvline(mlx, x, 0, cya, txtx, mlx->sky[0], 0);
@@ -512,11 +506,11 @@ void	ft_draw(t_mlx *mlx)
 				// RENDER NEIGHBORS
 				if (neighbor >= 0)
 				{
-					int nya = ft_scaler_next(mlx->nya_int);
-					int nyb = ft_scaler_next(mlx->nyb_int);
+					// int nya = ft_scaler_next(mlx->nya_int);
+					// int nyb = ft_scaler_next(mlx->nyb_int);
 
-                    mlx->cnya = ft_clamp(nya, ytop[x], ybottom[x]);
-                    mlx->cnyb = ft_clamp(nyb, ytop[x], ybottom[x]);
+                    // mlx->cnya = ft_clamp(nya, ytop[x], ybottom[x]);
+                    // mlx->cnyb = ft_clamp(nyb, ytop[x], ybottom[x]);
 
 					if (sector->txt_count > 0)
 					{
@@ -558,6 +552,7 @@ void	ft_draw(t_mlx *mlx)
 					}
 					else
 					{
+						mlx->open_f = 1;
 						// RENDER UPPER WALL
 						ft_upper_solid(mlx, x, mlx->cya, mlx->cnya, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : UPPER_COLOR, LINE_COLOR, &ytop[x]);
 
@@ -579,6 +574,8 @@ void	ft_draw(t_mlx *mlx)
 							tw_y1 = mlx->cnya;
 						if (x == endx)
 							tw_y2 = mlx->cnya;
+
+						mlx->open_f = 0;
 					}
 				}
 				else
@@ -603,27 +600,18 @@ void	ft_draw(t_mlx *mlx)
 			if ((tp_y1 != tp_y2) || (tw_y1 != tw_y2) || (bp_y1 != bp_y2) || (bw_y1 != bw_y2))
 				curline = 1;
 
-			// int index = f * mlx->seg + s;
-			// if (index >= mlx->drawseg_count)
-			// {
-			// 	printf("s %d\n", s);
-			// 	printf("f %d\n", f);
-			// 	printf("seg %d\n", mlx->seg);
-			// 	printf("sect %d\n\n", mlx->now->sector_n);
-			// }
-
 			int index = mlx->seg_i;
 			if (index >= MAX_DRAWSEG)
 				ft_drawseg_error();
 
-			t_vec2 *v1 = sector->verts[s + 0];
-			t_vec2 *v2 = sector->verts[s + 1];
-			t_vec3 *p = mlx->player->pos;
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			//	SPRITE CLIPPING
-			if (neighbor < 0)// && index < mlx->drawseg_count)				//		SOLID
+			if (neighbor < 0)												//		SOLID	WALL
 			{
+				t_vec2 *v1 = sector->verts[s + 0];
+				t_vec2 *v2 = sector->verts[s + 1];
+				t_vec3 *p = mlx->player->pos;
+
 				mlx->drawseg[index].seg_type = 0;
 				mlx->drawseg[index].x1 = beginx;
 				mlx->drawseg[index].x2 = endx;
@@ -632,269 +620,14 @@ void	ft_draw(t_mlx *mlx)
 
 				double v1_dist = sqrtf(powf(v1->x - p->x, 2) + powf(v1->y - p->y, 2));
 				double v2_dist = sqrtf(powf(v2->x - p->x, 2) + powf(v2->y - p->y, 2));
-				mlx->drawseg[index].dist = (v1_dist > v2_dist) ? v1_dist : v2_dist;
-			}
-			else if (neighbor >= 0)// && index < mlx->drawseg_count)
-			{
-				double dx1 = v1->x - p->x;
-				double dy1 = v1->y - p->y;
-				double dx2 = v2->x - p->x;
-				double dy2 = v2->y - p->y;
-				double v1_dist = sqrtf(dx1 * dx1 + dy1 * dy1);
-				double v2_dist = sqrtf(dx2 * dx2 + dy2 * dy2);
-				// printf("dist 1 			%f\n", v1_dist);
-				// printf("dist 2 			%f\n", v2_dist);
-				// printf("px %f		py %f\n", p->x, p->y);
-				// printf("v1 x %f		v1 y %f\n", v1->x, v1->y);
-				// printf("v2 x %f		v2 y %f\n\n", v2->x, v2->y);
-				// mlx->drawseg[index].dist = (v1_dist < v2_dist) ? v1_dist : v2_dist;
-				// double dist = fabs((v2->y - v1->y) * p->x - (v2->x - v1->x) * p->y + v2->x * v1->y - v2->y * v1->x) / sqrtf(powf(v2->y - v1->y, 2) + powf(v2->x - v1->x, 2));
-
 				double mx = (v1->x + v2->x) / 2.0f;
 				double my = (v1->y + v2->y) / 2.0f;
-
 				double dx = mx - p->x;
 				double dy = my - p->y;
 				double mid_dist = sqrtf(dx * dx + dy * dy);
-
-				double min_dist = ft_min(mid_dist, ft_min(v1_dist, v2_dist));
-				double max_dist = ft_max(mid_dist, ft_max(v1_dist, v2_dist));
+				double min_dist = ft_max(v1_dist, v2_dist);
 
 				mlx->drawseg[index].dist = min_dist;
-
-				mlx->drawseg[index].min_dist = min_dist;
-				mlx->drawseg[index].max_dist = max_dist;
-
-				if (mlx->cyb != mlx->cnyb && mlx->cya == mlx->cnya)		//		BOTTOM
-				{
-					mlx->drawseg[index].seg_type = 1;
-					mlx->drawseg[index].x1 = beginx;
-					mlx->drawseg[index].x2 = endx;
-
-					mlx->drawseg[index].curline = 0;
-					mlx->drawseg[index].top_h = (p_max_cnyb < w_max_cnyb) ? p_max_cnyb : w_max_cnyb;
-					mlx->drawseg[index].bottom_h = H - 1;
-
-					if (curline)
-					{
-						mlx->drawseg[index].curline = 1;
-
-						mlx->drawseg[index].b_v0 = (t_vec2*)malloc(sizeof(t_vec2));
-						mlx->drawseg[index].b_v1 = (t_vec2*)malloc(sizeof(t_vec2));
-						mlx->drawseg[index].b_v2 = (t_vec2*)malloc(sizeof(t_vec2));
-
-						ft_triangle_clear(mlx->drawseg[index].b_v0, mlx->drawseg[index].b_v1, mlx->drawseg[index].b_v2);
-
-						if (mlx->drawseg[index].top_h == p_max_cnyb)
-						{
-							if (bp_y1 > bp_y2)
-							{
-								mlx->drawseg[index].b_v0->x = beginx;
-								mlx->drawseg[index].b_v0->y = bp_y1;
-								mlx->drawseg[index].b_v1->x = endx;
-								mlx->drawseg[index].b_v1->y = bp_y2;
-								mlx->drawseg[index].b_v2->x = endx;
-								mlx->drawseg[index].b_v2->y = bp_y1;
-							}
-							else
-							{
-								mlx->drawseg[index].b_v0->x = beginx;
-								mlx->drawseg[index].b_v0->y = bp_y1;
-								mlx->drawseg[index].b_v1->x = endx;
-								mlx->drawseg[index].b_v1->y = bp_y2;
-								mlx->drawseg[index].b_v2->x = beginx;
-								mlx->drawseg[index].b_v2->y = bp_y2;
-							}
-						}
-						else
-						{
-							if (bw_y1 > bw_y2)
-							{
-								mlx->drawseg[index].b_v0->x = beginx;
-								mlx->drawseg[index].b_v0->y = bw_y1;
-								mlx->drawseg[index].b_v1->x = endx;
-								mlx->drawseg[index].b_v1->y = bw_y2;
-								mlx->drawseg[index].b_v2->x = endx;
-								mlx->drawseg[index].b_v2->y = bw_y1;
-							}
-							else
-							{
-								mlx->drawseg[index].b_v0->x = beginx;
-								mlx->drawseg[index].b_v0->y = bw_y1;
-								mlx->drawseg[index].b_v1->x = endx;
-								mlx->drawseg[index].b_v1->y = bw_y2;
-								mlx->drawseg[index].b_v2->x = beginx;
-								mlx->drawseg[index].b_v2->y = bw_y2;
-							}
-						}
-					}
-				}
-				else if (mlx->cyb == mlx->cnyb && mlx->cya != mlx->cnya)			//		TOP
-				{
-					mlx->drawseg[index].seg_type = 2;
-					mlx->drawseg[index].x1 = beginx;
-					mlx->drawseg[index].x2 = endx;
-
-					mlx->drawseg[index].curline = 0;
-					mlx->drawseg[index].top_h = 0;
-					mlx->drawseg[index].bottom_h = (p_min_cnya > w_min_cnya) ? p_min_cnya : w_min_cnya;
-
-					if (curline)
-					{
-						mlx->drawseg[index].curline = 1;
-
-						mlx->drawseg[index].t_v0 = (t_vec2*)malloc(sizeof(t_vec2));
-						mlx->drawseg[index].t_v1 = (t_vec2*)malloc(sizeof(t_vec2));
-						mlx->drawseg[index].t_v2 = (t_vec2*)malloc(sizeof(t_vec2));
-
-						ft_triangle_clear(mlx->drawseg[index].t_v0, mlx->drawseg[index].t_v1, mlx->drawseg[index].t_v2);
-
-						if (mlx->drawseg[index].bottom_h == p_min_cnya)
-						{
-							if (tp_y1 > tp_y2)
-							{
-								mlx->drawseg[index].t_v0->x = beginx;
-								mlx->drawseg[index].t_v0->y = tp_y1;
-								mlx->drawseg[index].t_v1->x = beginx;
-								mlx->drawseg[index].t_v1->y = tp_y2;
-								mlx->drawseg[index].t_v2->x = endx;
-								mlx->drawseg[index].t_v2->y = tp_y2;
-							}
-							else
-							{
-								mlx->drawseg[index].t_v0->x = beginx;
-								mlx->drawseg[index].t_v0->y = tp_y1;
-								mlx->drawseg[index].t_v1->x = endx;
-								mlx->drawseg[index].t_v1->y = tp_y1;
-								mlx->drawseg[index].t_v2->x = endx;
-								mlx->drawseg[index].t_v2->y = tp_y2;
-							}
-						}
-						else
-						{
-							if (tw_y1 > tw_y2)
-							{
-								mlx->drawseg[index].t_v0->x = beginx;
-								mlx->drawseg[index].t_v0->y = tw_y1;
-								mlx->drawseg[index].t_v1->x = beginx;
-								mlx->drawseg[index].t_v1->y = tw_y2;
-								mlx->drawseg[index].t_v2->x = endx;
-								mlx->drawseg[index].t_v2->y = tw_y2;
-							}
-							else
-							{
-								mlx->drawseg[index].t_v0->x = beginx;
-								mlx->drawseg[index].t_v0->y = tw_y1;
-								mlx->drawseg[index].t_v1->x = endx;
-								mlx->drawseg[index].t_v1->y = tw_y1;
-								mlx->drawseg[index].t_v2->x = endx;
-								mlx->drawseg[index].t_v2->y = tw_y2;
-							}
-						}
-					}
-				}
-				else if (mlx->cyb != mlx->cnyb && mlx->cya != mlx->cnya)			//		BOTH
-				{
-					mlx->drawseg[index].seg_type = 3;
-					mlx->drawseg[index].x1 = beginx;
-					mlx->drawseg[index].x2 = endx;
-
-					mlx->drawseg[index].curline = 0;
-					mlx->drawseg[index].ceil_h = 0;
-					mlx->drawseg[index].floor_h = H - 1;
-					mlx->drawseg[index].top_h = (p_min_cnya >= w_min_cnya) ? p_min_cnya : w_min_cnya;
-					mlx->drawseg[index].bottom_h = (p_max_cnyb < w_max_cnyb) ? p_max_cnyb : w_max_cnyb;
-
-					if (curline)
-					{
-						mlx->drawseg[index].curline = 1;
-
-						mlx->drawseg[index].t_v0 = (t_vec2*)malloc(sizeof(t_vec2));
-						mlx->drawseg[index].t_v1 = (t_vec2*)malloc(sizeof(t_vec2));
-						mlx->drawseg[index].t_v2 = (t_vec2*)malloc(sizeof(t_vec2));
-						mlx->drawseg[index].b_v0 = (t_vec2*)malloc(sizeof(t_vec2));
-						mlx->drawseg[index].b_v1 = (t_vec2*)malloc(sizeof(t_vec2));
-						mlx->drawseg[index].b_v2 = (t_vec2*)malloc(sizeof(t_vec2));
-
-						ft_triangle_clear(mlx->drawseg[index].t_v0, mlx->drawseg[index].t_v1, mlx->drawseg[index].t_v2);
-						ft_triangle_clear(mlx->drawseg[index].b_v0, mlx->drawseg[index].b_v1, mlx->drawseg[index].b_v2);
-
-						if (mlx->drawseg[index].top_h == p_min_cnya)
-						{
-							mlx->drawseg[index].t_v0->x = beginx;
-							mlx->drawseg[index].t_v0->y = tp_y1;
-							mlx->drawseg[index].t_v2->x = endx;
-							mlx->drawseg[index].t_v2->y = tp_y2;
-							if (tp_y1 > tp_y2)
-							{
-								mlx->drawseg[index].t_v1->x = beginx;
-								mlx->drawseg[index].t_v1->y = tp_y2;
-							}
-							else
-							{
-								mlx->drawseg[index].t_v1->x = endx;
-								mlx->drawseg[index].t_v1->y = tp_y1;
-							}
-						}
-						else
-						{
-							mlx->drawseg[index].t_v0->x = beginx;
-							mlx->drawseg[index].t_v0->y = tw_y1;
-							mlx->drawseg[index].t_v2->x = endx;
-							mlx->drawseg[index].t_v2->y = tw_y2;
-							if (tw_y1 > tw_y2)
-							{
-								mlx->drawseg[index].t_v1->x = beginx;
-								mlx->drawseg[index].t_v1->y = tw_y2;
-							}
-							else
-							{
-								mlx->drawseg[index].t_v1->x = endx;
-								mlx->drawseg[index].t_v1->y = tw_y1;
-							}
-						}
-
-						if (mlx->drawseg[index].bottom_h == p_max_cnyb)
-						{
-							mlx->drawseg[index].b_v0->x = beginx;
-							mlx->drawseg[index].b_v0->y = bp_y1;
-							mlx->drawseg[index].b_v1->x = endx;
-							mlx->drawseg[index].b_v1->y = bp_y2;
-							if (bp_y1 > bp_y2)
-							{
-								mlx->drawseg[index].b_v2->x = endx;
-								mlx->drawseg[index].b_v2->y = bp_y1;
-							}
-							else
-							{
-								mlx->drawseg[index].b_v2->x = beginx;
-								mlx->drawseg[index].b_v2->y = bp_y2;
-							}
-						}
-						else
-						{
-							mlx->drawseg[index].b_v0->x = beginx;
-							mlx->drawseg[index].b_v0->y = bw_y1;
-							mlx->drawseg[index].b_v1->x = endx;
-							mlx->drawseg[index].b_v1->y = bw_y2;
-							if (bw_y1 > bw_y2)
-							{
-								mlx->drawseg[index].b_v2->x = endx;
-								mlx->drawseg[index].b_v2->y = bw_y1;
-							}
-							else
-							{
-								mlx->drawseg[index].b_v2->x = beginx;
-								mlx->drawseg[index].b_v2->y = bw_y2;
-							}
-						}
-					}
-				}
-				else if (mlx->cyb == mlx->cnyb && mlx->cya == mlx->cnya)
-				{
-					mlx->drawseg[index].seg_type = -1;
-					mlx->drawseg[index].dist = DBL_MAX;
-				}
 			}
 			mlx->seg_i++;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

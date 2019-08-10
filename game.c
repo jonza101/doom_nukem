@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:40:26 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/08 19:53:59 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/09 19:04:23 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,11 @@
 int		ft_game_loop(t_mlx *mlx)
 {
 	clock_t start_time = clock();
+
 	ft_opening_clear(mlx);
 	ft_drawseg_clear(mlx);
 	ft_obj_sort(mlx);
-	ft_drawseg_sort(mlx);
+	// ft_drawseg_sort(mlx);
 
 	ft_collision(mlx);
 	ft_player_view(mlx);
@@ -50,10 +51,12 @@ int		ft_game_loop(t_mlx *mlx)
 	// printf("dx %f	dy %f	dz %f\n\n", mlx->player->velocity->x, mlx->player->velocity->y, mlx->player->velocity->z);
 	// printf("g %d\nf %d\nm %d\nc %d\n\n", mlx->ground, mlx->falling, mlx->moving, mlx->crouching);
 	// printf("\n");
+
 	// FPS COUNTER
 	clock_t end_time = clock();
 	double dif = ((double)(end_time - start_time) / CLOCKS_PER_SEC);
 	double result = 1.0 / dif;
-	printf("%f\n",result);
+	// printf("%f\n", result);
+
 	return (0);
 }

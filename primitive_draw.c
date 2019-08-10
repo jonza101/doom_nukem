@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/06 13:54:07 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/08 19:48:46 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/10 17:12:24 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@ void	ft_triangle_rast(t_mlx *mlx, t_vec2 *v0, t_vec2 *v1, t_vec2 *v2)
 
 			if (w0 >= 0 && w1 >= 0 && w2 >= 0)
 			{
-				mlx->opening[(int)p->y][(int)p->x] = 0;
-				// ft_image(mlx, p->x, p->y, 0xFFFFFF);
+				mlx->opening[(int)p->y][(int)p->x] = -2;
+				ft_image(mlx, p->x, p->y, 0xFFFFFF);
 			}
 		}
 	}

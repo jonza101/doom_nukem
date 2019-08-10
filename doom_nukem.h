@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/08 19:43:14 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/10 19:14:28 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,21 +122,21 @@ typedef	struct		s_obj
 	struct s_obj	*prev;
 }					t_obj;
 
+typedef	struct		s_obj_temp
+{
+	t_img			*frame;
+	t_img			**anim;
+	int				anim_n;
+	int				anim_i;
+	int				delay;
+	int				del;
+}					t_obj_temp;
+
 typedef struct		s_drawseg
 {
 	short			seg_type;		//	0 - SOLID	|	1 - BOTTOM	|	2 - TOP	|	3 - BOTH
 	int				bottom_h;
 	int				top_h;
-	int				ceil_h;
-	int				floor_h;
-
-	short			curline;
-	t_vec2			*t_v0;
-	t_vec2			*t_v1;
-	t_vec2			*t_v2;
-	t_vec2			*b_v0;
-	t_vec2			*b_v1;
-	t_vec2			*b_v2;
 
 	int				x1;
 	int				x2;
@@ -281,11 +281,14 @@ typedef	struct		s_mlx
 	int				obj_count;
 	int				obj_i;
 
+	t_obj_temp		**obj_t;
+
 	int				seg_i;
 	t_drawseg		drawseg[MAX_DRAWSEG];
 	int				drawseg_count;
 	int				seg;
 	short			**opening;
+	short			open_f;
 
 	int				cya;
 	int				cyb;
@@ -337,6 +340,8 @@ void				ft_init_textures(t_mlx *mlx);
 void				ft_init_obj(t_mlx *mlx);
 void				ft_init_transparent(t_mlx *mlx);
 void				ft_init_sky(t_mlx *mlx);
+
+void				ft_init_anim_obj(t_mlx *mlx);
 
 void				ft_init_revolver(t_mlx *mlx);
 void				ft_init_shotgun(t_mlx *mlx);

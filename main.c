@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/08 17:50:21 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/10 19:05:45 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,8 @@ void	ft_init_graphics(t_mlx *mlx)
 	ft_init_transparent(mlx);
 	ft_init_sky(mlx);
 
+	ft_init_anim_obj(mlx);
+
 	ft_init_revolver(mlx);
 	ft_init_shotgun(mlx);
 	ft_init_arifle(mlx);
@@ -144,9 +146,8 @@ void	ft_init(t_mlx *mlx)
 		mlx->opening[y] = (short*)malloc(sizeof(short) * W);
 		int x = -1;
 		while (++x < W)
-			mlx->opening[y][x] = 1;
+			mlx->opening[y][x] = -1;
 	}
-	// ft_opening_clear(mlx);
 }
 
 int		main()
