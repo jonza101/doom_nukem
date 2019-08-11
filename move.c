@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/11 15:06:15 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/05 17:04:38 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/11 13:05:52 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,4 +194,10 @@ void	ft_move_calc(t_mlx *mlx)
 
 	if (pushing)
 		mlx->moving = 1;
+
+	if (mlx->player->jump && mlx->ground && !mlx->crouching)
+	{
+		mlx->player->velocity->z += JUMP_H;
+		mlx->falling = 1;
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/08 18:21:34 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/11 20:02:47 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -297,7 +297,11 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->obj_list->next->specs->sect = ft_atoi(temp[1]);
 				mlx->obj_list->next->specs->x = ft_atof(tmp_t[0]);
 				mlx->obj_list->next->specs->y = ft_atof(tmp_t[1]);
-				mlx->obj_list->next->specs->txt_index = ft_atoi(temp[3]);
+				mlx->obj_list->next->specs->obj_i = ft_atoi(temp[3]);
+				mlx->obj_list->next->specs->frame = mlx->obj_l[mlx->obj_list->next->specs->obj_i]->anim[0];
+				mlx->obj_list->next->specs->del = 0;
+				mlx->obj_list->next->specs->anim_i = 0;
+				mlx->obj_list->next->specs->expl_f = 0;
 				mlx->obj_list = mlx->obj_list->next;
 				mlx->obj_list->next = NULL;
 				mlx->obj_list->prev = prev;
@@ -315,7 +319,11 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->obj_list->specs->sect = ft_atoi(temp[1]);
 				mlx->obj_list->specs->x = ft_atof(tmp_t[0]);
 				mlx->obj_list->specs->y = ft_atof(tmp_t[1]);
-				mlx->obj_list->specs->txt_index = ft_atoi(temp[3]);
+				mlx->obj_list->specs->obj_i = ft_atoi(temp[3]);
+				mlx->obj_list->specs->frame = mlx->obj_l[mlx->obj_list->specs->obj_i]->anim[0];
+				mlx->obj_list->specs->del = 0;
+				mlx->obj_list->specs->anim_i = 0;
+				mlx->obj_list->specs->expl_f = 0;
 				mlx->obj_list->next = NULL;
 				mlx->obj_list->prev = NULL;
 				temp_obj = mlx->obj_list;

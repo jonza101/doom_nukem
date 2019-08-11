@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/10 19:05:45 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/11 15:55:49 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,10 +86,8 @@ void	ft_init_graphics(t_mlx *mlx)
 {
 	ft_init_textures(mlx);
 	ft_init_obj(mlx);
-	ft_init_transparent(mlx);
-	ft_init_sky(mlx);
-
-	ft_init_anim_obj(mlx);
+	// ft_init_transparent(mlx);
+	// ft_init_sky(mlx);
 
 	ft_init_revolver(mlx);
 	ft_init_shotgun(mlx);
@@ -166,17 +164,15 @@ int		main()
 	ft_load_map(mlx, "maps/map4");
 	ft_init(mlx);
 
-	// printf("%d\n", (int)2.75f);
-
 	// printf("\n------------------------------------------------\n\n");
 	// t_obj *obj = mlx->obj_list;
 	// while (obj)
 	// {
-	// 	printf("sect %d				index %d\n", obj->specs->sect, obj->specs->txt_index);
+	// 	printf("sect %d				index %d\n", obj->specs->sect, obj->specs->obj_i);
 	// 	printf("x %f			y %f\n", obj->specs->x, obj->specs->y);
 	// 	if (obj->prev)
 	// 	{
-	// 		printf("prev_sect %d			prev_index %d\n", obj->prev->specs->sect, obj->prev->specs->txt_index);
+	// 		printf("prev_sect %d			prev_index %d\n", obj->prev->specs->sect, obj->prev->specs->obj_i);
 	// 		printf("prev_x %f		prev_y %f\n", obj->prev->specs->x, obj->prev->specs->y);
 	// 	}
 	// 	else
@@ -184,19 +180,6 @@ int		main()
 	// 	printf("\n------------------------------------------------\n");
 	// 	obj = obj->next;
 	// }
-
-	// t_vec2 *v1 = (t_vec2*)malloc(sizeof(t_vec2));
-	// t_vec2 *v2 = (t_vec2*)malloc(sizeof(t_vec2));
-	// t_vec2 *v3 = (t_vec2*)malloc(sizeof(t_vec2));
-
-	// v1->x = 546;
-	// v1->y = 273;
-	// v2->x = 546;
-	// v2->y = 161;
-	// v3->x = 1093;
-	// v3->y = 161;
-	// ft_triangle_rast(mlx, v1, v2, v3);
-	// mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
 
 	// mlx_hook(mlx->win, 6, 1L<<6, ft_mouse_move, mlx);
 	mlx_loop_hook(mlx->mlx, ft_game_loop, mlx);

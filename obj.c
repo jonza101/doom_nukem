@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 15:17:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/10 19:12:13 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/11 20:11:12 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,6 @@ void	ft_drawseg_clear(t_mlx *mlx)
 		mlx->drawseg[i].seg_type = -1;
 		mlx->drawseg[i].x1 = -1;
 		mlx->drawseg[i].x2 = -1;
-		mlx->drawseg[i].top_h = -1;
-		mlx->drawseg[i].bottom_h = -1;
 		mlx->drawseg[i].dist = DBL_MAX;
 	}
 }
@@ -124,7 +122,12 @@ void	ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector)
 	// obj_angle *= ((double)H / (double)W);
 	// int inf_fov = (fabs(obj_angle) <= 0.83f) ? 1 : 0;
 
-	double obj_aspect_ratio = (double)mlx->obj[obj->specs->txt_index]->h / (double)mlx->obj[obj->specs->txt_index]->w;
+	if (mlx->obj_l[obj->specs->obj_i]->anim_n > 1)
+		ft_obj_anim(mlx, obj);
+
+	t_img *frame = obj->specs->frame;
+
+	double obj_aspect_ratio = (double)frame->h / (double)frame->w;
 
 	double vx1_l = (obj->specs->x - px) / obj_dist;
 	double vy1_l = (obj->specs->y - py) / obj_dist;
@@ -159,8 +162,8 @@ void	ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector)
 	else
 		yceil = 30.0f + yfloor * 4.025f;
 
-	int	fix_obj_h1 = yscale1 * mlx->obj[obj->specs->txt_index]->scaler;
-	int fix_obj_h2 = yscale2 * mlx->obj[obj->specs->txt_index]->scaler;
+	int	fix_obj_h1 = yscale1 * mlx->obj_l[obj->specs->obj_i]->scaler;
+	int fix_obj_h2 = yscale2 * mlx->obj_l[obj->specs->obj_i]->scaler;
 	int ya1 = H / 2 + (int)(-ft_yaw(yceil, tz1, mlx->player->yaw * 4) * yscale1) / 4 + fix_obj_h1;
 	int yb1 = H / 2 + (int)(-ft_yaw(yfloor, tz1, mlx->player->yaw) * yscale1);
 	int ya2 = H / 2 + (int)(-ft_yaw(yceil, tz2, mlx->player->yaw * 4) * yscale2) / 4 + fix_obj_h2;
@@ -181,13 +184,16 @@ void	ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector)
 	else
 		yb = yb2;
 	int obj_h = (yb - ya);
-	int obj_w = obj_h / ((double)obj_aspect_ratio * mlx->obj[obj->specs->txt_index]->aspect_scaler);
+	int obj_w = obj_h / ((double)obj_aspect_ratio * mlx->obj_l[obj->specs->obj_i]->aspect_scaler);
 	x1 = x1 - (obj_w / 2.0f);
 	int obj_middle = (obj_w / 2.0f) + x1;
 	int x2 = x1 + obj_w;
 
 	obj->specs->x1 = x1;
 	obj->specs->x2 = x2;
+	obj->specs->y1 = ya;
+	obj->specs->y2 = yb;
+
 	// ft_image(mlx, x1, H / 6, 0xFFFFF);
 	// ft_image(mlx, x2, H / 6, 0xFFFFF);
 
@@ -198,18 +204,18 @@ void	ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector)
 	// printf("obj_w %f\n\n", obj_w);
 
 	int f = -1;
-	while (++f <= mlx->seg_i)//mlx->drawseg_count)
+	while (++f <= mlx->seg_i)
 	{
-		if (mlx->drawseg[f].seg_type == 0 && mlx->drawseg[f].dist < obj_dist)												//	TOO SLOW, I THINK
+		if (mlx->drawseg[f].seg_type == 0 && mlx->drawseg[f].dist < obj_dist && ft_overlap(x1, x2, mlx->drawseg[f].x1, mlx->drawseg[f].x2))												//	TOO SLOW, I THINK
 		{
-			int y =  -1;																	//			SOLID
+			int y = -1;																		//			SOLID
 			while (++y < H)
 			{
 				int x = mlx->drawseg[f].x1 - 1;
 				while (++x <= mlx->drawseg[f].x2)
 				{
 					if (x >= 0 && x < W && y >= 0 && y < H)
-						mlx->opening[y][x] = -2;
+						mlx->opening[y][x] = mlx->drawseg[f].sect;
 				}
 			}
 		}
@@ -217,7 +223,7 @@ void	ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector)
 
 	if (x1 >= (-W * 1) && x1 < (W * 2) && x2 >= (-W * 1) && x2 < (W * 2)		//		obj_w <= W
 			&& ya >= (-H * 3) && ya < (H * 3) && yb >= (-H * 3) && yb < (H * 3)
-			&& obj_dist >= 1.0f)
+			&& obj_dist >= 0.0f)
 	{
 		int ox = -1;
 		while (++ox < obj_w)
@@ -228,9 +234,9 @@ void	ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector)
 			{
 				double sample_ox = (double)ox / (double)obj_w;
 				double sample_oy = (double)oy / (double)obj_h;
-				int color = ft_texture_sampling(mlx->obj[obj->specs->txt_index], sample_ox, sample_oy);
+				int color = ft_texture_sampling(frame, sample_ox, sample_oy);
 				int yc = (int)ya + (int)oy;
-				if (color != IGNORE_COLOR)
+				if (color != IGNORE_COLOR && color != IGNORE_COLOR1)
 				{
 					if (yc >= 0 && yc < H && xc >= 0 && xc < W)
 					{
@@ -255,6 +261,25 @@ void	ft_find_obj_sect(t_mlx *mlx, int sector)
 			return ;
 		if (obj->specs->sect == sector)
 			ft_draw_sector_obj(mlx, obj, sector);
+		obj = obj->next;
+	}
+}
+
+void	ft_explosive_obj(t_mlx *mlx)											//		TEST
+{
+	t_obj *obj = mlx->obj_list;
+	while (obj)
+	{
+		if (mlx->obj_l[obj->specs->obj_i]->expl == 1)
+		{
+			if (ft_overlap(obj->specs->x1, obj->specs->x2, W / 2, W / 2) && ft_overlap(obj->specs->y1, obj->specs->y2, H / 2, H / 2))
+			{
+				if (obj->specs->obj_i == 3)
+					obj->specs->obj_i = 6;
+				obj->specs->expl_f = 1;
+				return ;
+			}
+		}
 		obj = obj->next;
 	}
 }

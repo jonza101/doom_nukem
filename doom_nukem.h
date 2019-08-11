@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/10 19:14:28 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/11 20:02:03 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,11 +49,12 @@
 #define LINE_COLOR 0x0
 
 #define IGNORE_COLOR 0xFF000000
+#define IGNORE_COLOR1 0x001000
 
 #define THREAD 16
 
 #define TXT 3
-#define OBJ 3
+#define OBJ 8													//	3 - 6 (CANISTER)
 #define TRANSPARENT 1
 #define SKY 1
 
@@ -97,9 +98,6 @@ typedef	struct		s_img
 	int				bpp;
 	int				size_line;
 	int				endian;
-
-	double			scaler;
-	double			aspect_scaler;
 }					t_img;
 
 typedef struct		s_obj_specs
@@ -110,9 +108,28 @@ typedef struct		s_obj_specs
 
 	int				x1;
 	int				x2;
+	int				y1;
+	int				y2;
 
-	int				txt_index;
+	t_img			*frame;
+	int				anim_i;
+	int				del;
+
+	int				obj_i;
+	int				expl_f;
 }					t_obj_specs;
+
+typedef struct		s_anim_list
+{
+	t_img			**anim;
+	int				anim_n;
+	int				delay;
+
+	double			scaler;
+	double			aspect_scaler;
+
+	int				expl;
+}					t_anim_list;
 
 typedef	struct		s_obj
 {
@@ -122,24 +139,14 @@ typedef	struct		s_obj
 	struct s_obj	*prev;
 }					t_obj;
 
-typedef	struct		s_obj_temp
-{
-	t_img			*frame;
-	t_img			**anim;
-	int				anim_n;
-	int				anim_i;
-	int				delay;
-	int				del;
-}					t_obj_temp;
-
 typedef struct		s_drawseg
 {
-	short			seg_type;		//	0 - SOLID	|	1 - BOTTOM	|	2 - TOP	|	3 - BOTH
-	int				bottom_h;
-	int				top_h;
+	short			seg_type;		//	0 - SOLID
 
 	int				x1;
 	int				x2;
+
+	int				sect;
 
 	double			dist;
 
@@ -273,15 +280,13 @@ typedef	struct		s_mlx
 	short			s;
 
 	t_img			*txt[TXT];
-	t_img			*obj[OBJ];
+	t_anim_list		**obj_l;
 	t_img			*transparent[TRANSPARENT];
 	t_img			*sky[SKY];
 
 	t_obj			*obj_list;
 	int				obj_count;
 	int				obj_i;
-
-	t_obj_temp		**obj_t;
 
 	int				seg_i;
 	t_drawseg		drawseg[MAX_DRAWSEG];
@@ -390,5 +395,9 @@ void				ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector);
 void				ft_find_obj_sect(t_mlx *mlx, int sector);
 
 void				ft_bzero(void *s, size_t n);
+
+void				ft_obj_anim(t_mlx *mlx, t_obj *obj);
+
+void				ft_explosive_obj(t_mlx *mlx);
 
 #endif

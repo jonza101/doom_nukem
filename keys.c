@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:41:19 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/06 17:19:53 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/11 19:05:46 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,9 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 	// 	mlx->c0 -= 32;
 	// 	printf("u0 %d\n", mlx->u0);
 	// }
+
+	if (keycode == MAC_X)
+		ft_explosive_obj(mlx);
 
 	if (keycode == MAC_DOT)
 	{

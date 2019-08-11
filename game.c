@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:40:26 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/09 19:04:23 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/11 17:35:08 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,8 @@ int		ft_game_loop(t_mlx *mlx)
 	ft_collision(mlx);
 	ft_player_view(mlx);
 	ft_move_calc(mlx);
-	if (mlx->player->jump && mlx->ground && !mlx->crouching)
-	{
-		mlx->player->velocity->z += JUMP_H;
-		mlx->falling = 1;
-	}
 	ft_reset_image(mlx);
 	ft_draw(mlx);
-	// ft_obj(mlx);
 	ft_weapon_state(mlx);
 	if (mlx->player->weapon_state == 1)
 		ft_gun_anim(mlx, mlx->player->weapon, mlx->player->weapon->fire_delay, 0);
@@ -56,6 +50,7 @@ int		ft_game_loop(t_mlx *mlx)
 	clock_t end_time = clock();
 	double dif = ((double)(end_time - start_time) / CLOCKS_PER_SEC);
 	double result = 1.0 / dif;
+	double sleep_time = result - 60;
 	// printf("%f\n", result);
 
 	return (0);

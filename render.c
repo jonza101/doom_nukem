@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/10 18:29:44 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/11 17:46:26 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -514,14 +514,14 @@ void	ft_draw(t_mlx *mlx)
 
 					if (sector->txt_count > 0)
 					{
-						char **asd = ft_strsplit(sector->texts[s], '/');
+						char **tmp = ft_strsplit(sector->texts[s], '/');
 						int count = 0;
-						while (asd[count])
+						while (tmp[count])
 							count++;
 						if (count == 2)
 						{
-							int up = ft_atoi(asd[1]);
-							int low = ft_atoi(asd[0]);
+							int up = ft_atoi(tmp[1]);
+							int low = ft_atoi(tmp[0]);
 							
 							if (up >= 0 && up < TXT)
 								ft_upper_txt(mlx, x, mlx->cya, mlx->cnya, txtx, up, ya, yb, &ytop[x]);
@@ -548,7 +548,7 @@ void	ft_draw(t_mlx *mlx)
 							}
 							
 						}
-						ft_strsplit_free(asd);
+						ft_strsplit_free(tmp);
 					}
 					else
 					{
@@ -615,19 +615,13 @@ void	ft_draw(t_mlx *mlx)
 				mlx->drawseg[index].seg_type = 0;
 				mlx->drawseg[index].x1 = beginx;
 				mlx->drawseg[index].x2 = endx;
-				mlx->drawseg[index].top_h = mlx->cya;
-				mlx->drawseg[index].bottom_h = mlx->cyb;
 
 				double v1_dist = sqrtf(powf(v1->x - p->x, 2) + powf(v1->y - p->y, 2));
 				double v2_dist = sqrtf(powf(v2->x - p->x, 2) + powf(v2->y - p->y, 2));
-				double mx = (v1->x + v2->x) / 2.0f;
-				double my = (v1->y + v2->y) / 2.0f;
-				double dx = mx - p->x;
-				double dy = my - p->y;
-				double mid_dist = sqrtf(dx * dx + dy * dy);
-				double min_dist = ft_max(v1_dist, v2_dist);
+				double max_dist = ft_max(v1_dist, v2_dist);
 
-				mlx->drawseg[index].dist = min_dist;
+				mlx->drawseg[index].dist = max_dist;
+				mlx->drawseg[index].sect = mlx->now->sector_n;
 			}
 			mlx->seg_i++;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
