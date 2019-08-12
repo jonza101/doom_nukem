@@ -105,12 +105,12 @@ void	ft_draw_vline(t_mlx *mlx, int x, int y1,int y2, int top_color,int middle_co
 		if (y1 != H - 1 && y1 != 0)
 		{
 			if (mlx->opening[y1][x] == -1)
-				ft_image(mlx, x, y1, bottom_color);
+				mlx->data[x + y1 * W] = bottom_color;
 		}
 		else
 		{
 			if (mlx->opening[y1][x] == -1)
-				ft_image(mlx, x, y1, middle_color);
+				mlx->data[x + y1 * W] = middle_color;
 		}
 		if (mlx->opening[y1][x] == -1 && mlx->open_f)
 				mlx->opening[y1][x] = mlx->now->sector_n;
@@ -121,12 +121,12 @@ void	ft_draw_vline(t_mlx *mlx, int x, int y1,int y2, int top_color,int middle_co
 		if (y1 != H - 1 && y1 != 0)
 		{
 			if (mlx->opening[y1][x] == -1)
-				ft_image(mlx, x, y1, top_color);
+				mlx->data[x + y1 * W] = top_color;
 		}
 		else
 		{
 			if (mlx->opening[y1][x] == -1)
-				ft_image(mlx, x, y1, middle_color);
+				mlx->data[x + y1 * W] = middle_color;
 		}
 		if (mlx->opening[y1][x] == -1 && mlx->open_f)
 			mlx->opening[y1][x] = mlx->now->sector_n;
@@ -135,7 +135,7 @@ void	ft_draw_vline(t_mlx *mlx, int x, int y1,int y2, int top_color,int middle_co
 		{
 			if (mlx->opening[y][x] == -1)
 			{
-				ft_image(mlx, x, y, middle_color);
+				mlx->data[x + y * W] = middle_color;
 				if (mlx->open_f)
 					mlx->opening[y][x] = mlx->now->sector_n;
 			}
@@ -144,12 +144,12 @@ void	ft_draw_vline(t_mlx *mlx, int x, int y1,int y2, int top_color,int middle_co
 		if (y2 != H - 1 && y2 != 0)
 		{
 			if (mlx->opening[y1][x] == -1)
-				ft_image(mlx, x, y1, bottom_color);
+				mlx->data[x + y1 * W] = bottom_color;
 		}
 		else
 		{
 			if (mlx->opening[y1][x] == -1)
-				ft_image(mlx, x, y, middle_color);
+				mlx->data[x + y * W] = middle_color;
 		}
 		if (mlx->opening[y1][x] == -1 && mlx->open_f)
 			mlx->opening[y1][x] = mlx->now->sector_n;
@@ -168,7 +168,7 @@ void	ft_draw_tvline(t_mlx *mlx, int x, int y1, int y2, unsigned txtx, t_img *tex
 		int color = texture->data[txty % texture->h * texture->w + txtx % texture->w];
 		if (!is_transparent && mlx->opening[y][x] == -1)
 		{
-			ft_image(mlx, x, y, color);
+			mlx->data[x + y * W] = color;
 			if (mlx->open_f)
 				mlx->opening[y][x] = mlx->now->sector_n;
 		}

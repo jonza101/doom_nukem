@@ -477,9 +477,9 @@ void	ft_draw(t_mlx *mlx)
 						unsigned txtz = (mlx->map_z * 32);
 						//	RENDER CEILING
 						if (y < mlx->cya && ceil_f && mlx->opening[y][x] == -1)
-							ft_image(mlx, x, y, mlx->txt[ceil_t]->data[txtz % mlx->txt[ceil_t]->h * mlx->txt[ceil_t]->w + txtx % mlx->txt[ceil_t]->w]);
+							mlx->data[x + y * W] = mlx->txt[ceil_t]->data[txtz % mlx->txt[ceil_t]->h * mlx->txt[ceil_t]->w + txtx % mlx->txt[ceil_t]->w];
 						else if (y >= mlx->cya && floor_f && mlx->opening[y][x] == -1)
-							ft_image(mlx, x, y, mlx->txt[floor_t]->data[txtz % mlx->txt[floor_t]->h * mlx->txt[floor_t]->w + txtx % mlx->txt[floor_t]->w]);
+							mlx->data[x + y * W] = mlx->txt[floor_t]->data[txtz % mlx->txt[floor_t]->h * mlx->txt[floor_t]->w + txtx % mlx->txt[floor_t]->w];
 					}
 				}
 				mlx->open_f = 0;

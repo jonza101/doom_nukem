@@ -48,7 +48,7 @@ void	ft_triangle_rast(t_mlx *mlx, t_vec2 *v0, t_vec2 *v1, t_vec2 *v2)
 			if (w0 >= 0 && w1 >= 0 && w2 >= 0)
 			{
 				mlx->opening[(int)p->y][(int)p->x] = -2;
-				ft_image(mlx, p->x, p->y, 0xFFFFFF);
+				mlx->data[(int) (p->x + p->y * W)] = 0xFFFFFF;
 			}
 		}
 	}

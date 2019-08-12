@@ -236,7 +236,7 @@ void	ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector)
 					{
 						if ((mlx->opening[yc][xc] == obj->specs->sect || mlx->opening[yc][xc] == -1))
 						{
-							ft_image(mlx, xc, yc, color);
+							mlx->data[xc + yc * W] = color;
 							mlx->opening[yc][xc] = obj->specs->sect;
 						}
 					}

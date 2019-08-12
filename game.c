@@ -51,7 +51,7 @@ int		ft_game_loop(t_mlx *mlx)
 	double dif = ((double)(end_time - start_time) / CLOCKS_PER_SEC);
 	double result = 1.0 / dif;
 	double sleep_time = result - 60;
-	// printf("%f\n", result);
+	printf("%f\n", result);
 
 	return (0);
 }
