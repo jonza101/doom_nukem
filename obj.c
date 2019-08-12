@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 15:17:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/11 20:11:12 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/12 16:54:06 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,8 +183,11 @@ void	ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector)
 		yb = yb1;
 	else
 		yb = yb2;
+
+	double expl_scaler = (frame == mlx->obj_l[8]->anim[19] || frame == mlx->obj_l[8]->anim[20] || frame == mlx->obj_l[8]->anim[21]) ? 0.75 : 0.0f;
+
 	int obj_h = (yb - ya);
-	int obj_w = obj_h / ((double)obj_aspect_ratio * mlx->obj_l[obj->specs->obj_i]->aspect_scaler);
+	int obj_w = obj_h / ((double)obj_aspect_ratio * (mlx->obj_l[obj->specs->obj_i]->aspect_scaler + expl_scaler));
 	x1 = x1 - (obj_w / 2.0f);
 	int obj_middle = (obj_w / 2.0f) + x1;
 	int x2 = x1 + obj_w;
@@ -193,15 +196,6 @@ void	ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector)
 	obj->specs->x2 = x2;
 	obj->specs->y1 = ya;
 	obj->specs->y2 = yb;
-
-	// ft_image(mlx, x1, H / 6, 0xFFFFF);
-	// ft_image(mlx, x2, H / 6, 0xFFFFF);
-
-	// printf("ya %d		yb %d\n", ya, yb);
-	// printf("\n");
-
-	// printf("obj_dist %f\n", obj_dist);
-	// printf("obj_w %f\n\n", obj_w);
 
 	int f = -1;
 	while (++f <= mlx->seg_i)

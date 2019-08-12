@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/10 19:12:17 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/11 20:08:09 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/12 16:32:00 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,13 @@ void	ft_obj_anim(t_mlx *mlx, t_obj *obj)
 			obj->specs->anim_i = 0;
 			if (obj->specs->expl_f == 1)
 			{
-				obj->specs->obj_i = 7;
-				obj->specs->expl_f = 0;
+				if (obj->specs->obj_i == 6)
+					obj->specs->obj_i = 8;
+				else if (obj->specs->obj_i == 8)
+				{
+					obj->specs->obj_i = 7;
+					obj->specs->expl_f = 0;
+				}
 			}
 		}
 	}

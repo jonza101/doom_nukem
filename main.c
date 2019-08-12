@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/11 15:55:49 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/12 18:38:43 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,16 +59,14 @@ void	ft_player_view(t_mlx *mlx)
 	if (mlx->player->left)
 	{
 		mlx->player->angle -= 0.045f;
-		// mlx->player->sin_angle = sinf(mlx->player->angle);
-		// mlx->player->cos_angle = cosf(mlx->player->angle);
-		ft_move_player(mlx, 0, 0);
+		mlx->player->sin_angle = sinf(mlx->player->angle);
+		mlx->player->cos_angle = cosf(mlx->player->angle);
 	}
 	if (mlx->player->right)
 	{
 		mlx->player->angle += 0.045f;
-		// mlx->player->sin_angle = sinf(mlx->player->angle);
-		// mlx->player->cos_angle = cosf(mlx->player->angle);
-		ft_move_player(mlx, 0, 0);
+		mlx->player->sin_angle = sinf(mlx->player->angle);
+		mlx->player->cos_angle = cosf(mlx->player->angle);
 	}
 	if (mlx->player->up)
 	{
@@ -146,6 +144,8 @@ void	ft_init(t_mlx *mlx)
 		while (++x < W)
 			mlx->opening[y][x] = -1;
 	}
+
+	mlx->shoot_p = (t_vec2*)malloc(sizeof(t_vec2));
 }
 
 int		main()

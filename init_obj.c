@@ -6,11 +6,50 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/11 13:43:09 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/11 20:12:25 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/12 16:42:02 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doom_nukem.h"
+
+void	ft_init_explosion(t_mlx *mlx)
+{
+	int fd;
+	char *line;
+	int id = 8;
+	char *expl[21] = { "textures/obj/explosion/explosion01.xpm", "textures/obj/explosion/explosion02.xpm", "textures/obj/explosion/explosion03.xpm",
+						"textures/obj/explosion/explosion04.xpm", "textures/obj/explosion/explosion05.xpm", "textures/obj/explosion/explosion06.xpm",
+						"textures/obj/explosion/explosion07.xpm", "textures/obj/explosion/explosion08.xpm", "textures/obj/explosion/explosion09.xpm",
+						"textures/obj/explosion/explosion10.xpm", "textures/obj/explosion/explosion11.xpm", "textures/obj/explosion/explosion12.xpm",
+						"textures/obj/explosion/explosion13.xpm", "textures/obj/explosion/explosion14.xpm", "textures/obj/explosion/explosion15.xpm",
+						"textures/obj/explosion/explosion16.xpm", "textures/obj/explosion/explosion17.xpm", "textures/obj/explosion/explosion18.xpm",
+						"textures/obj/explosion/explosion19.xpm", "textures/obj/explosion/explosion20.xpm", "textures/obj/explosion/explosion21.xpm" };
+	mlx->obj_l[id] = (t_anim_list*)malloc(sizeof(t_anim_list));
+	mlx->obj_l[id]->anim = (t_img**)malloc(sizeof(t_img*) * 21);
+	mlx->obj_l[id]->anim_n = 21;
+	mlx->obj_l[id]->delay = 5;
+	mlx->obj_l[id]->expl = 1;
+	int i = -1;
+	while (++i < 21)
+	{
+		fd = open(expl[i], O_RDONLY);
+		int j = -1;
+		while (++j < 4)
+		{
+			get_next_line(fd, &line);
+			(j < 3) ? ft_strdel(&line) : 1;
+		}
+		char **tmp = ft_strsplit(line, ' ');
+		mlx->obj_l[id]->anim[i] = (t_img*)malloc(sizeof(t_img));
+		mlx->obj_l[id]->anim[i]->w = ft_atoi(&tmp[0][1]);
+		mlx->obj_l[id]->anim[i]->h = ft_atoi(tmp[1]);
+		mlx->obj_l[id]->anim[i]->img = mlx_xpm_file_to_image(mlx->mlx, expl[i], &mlx->obj_l[id]->anim[i]->w, &mlx->obj_l[id]->anim[i]->h);
+		mlx->obj_l[id]->anim[i]->data = (int*)mlx_get_data_addr(mlx->obj_l[id]->anim[i]->img, &mlx->obj_l[id]->anim[i]->bpp, &mlx->obj_l[id]->anim[i]->size_line, &mlx->obj_l[id]->anim[i]->endian);
+		ft_strsplit_free(tmp);
+		close(fd);
+		ft_strdel(&line);
+	}
+}
 
 void	ft_init_fire_a(t_mlx *mlx)
 {
@@ -159,6 +198,7 @@ void	ft_init_anim_obj(t_mlx *mlx)
 	ft_init_water(mlx);
 	ft_init_canister(mlx);
 	ft_init_fire_a(mlx);
+	ft_init_explosion(mlx);
 }
 
 void	ft_init_static_obj(t_mlx *mlx)
@@ -203,6 +243,7 @@ void	ft_init_scaler(t_mlx *mlx)
 	mlx->obj_l[5]->scaler = -10.0f;
 	mlx->obj_l[6]->scaler = 2.0f;
 	mlx->obj_l[7]->scaler = 2.5;
+	mlx->obj_l[8]->scaler = -1.0f;
 
 	mlx->obj_l[0]->aspect_scaler = 1.0f;
 	mlx->obj_l[1]->aspect_scaler = 0.95f;
@@ -212,6 +253,7 @@ void	ft_init_scaler(t_mlx *mlx)
 	mlx->obj_l[5]->aspect_scaler = 1.0f;
 	mlx->obj_l[6]->aspect_scaler = 1.0f;
 	mlx->obj_l[7]->aspect_scaler = 1.5f;
+	mlx->obj_l[8]->aspect_scaler = 1.0f;
 
 	mlx->obj_l[3]->expl = 1;
 }

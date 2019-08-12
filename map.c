@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/11 20:02:47 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/12 16:31:55 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -285,9 +285,6 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 		}
 		if (line[0] == 'o' && line[1] == '|')
 		{
-			// temp = ft_strsplit(line, '|');
-			// int sect = ft_atoi(temp[1]);
-			// mlx->sect[sect]->obj = (t_obj*)malloc(sizeof(t_obj));
 			if (o > 1)
 			{
 				mlx->obj_list->next = (t_obj*)malloc(sizeof(t_obj));

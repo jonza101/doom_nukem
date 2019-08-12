@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/11 20:02:03 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/12 18:41:03 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@
 #define THREAD 16
 
 #define TXT 3
-#define OBJ 8													//	3 - 6 (CANISTER)
+#define OBJ 9													//	3 -> 6 -> 8 -> 7 (CANISTER)
 #define TRANSPARENT 1
 #define SKY 1
 
@@ -68,6 +68,8 @@
 
 #define ARIFLE_IDLE 1
 #define ARIFLE_FIRE 4
+
+#define FIRE_RANGE 10000
 
 typedef struct		s_vec2
 {
@@ -295,6 +297,8 @@ typedef	struct		s_mlx
 	short			**opening;
 	short			open_f;
 
+	t_vec2			*shoot_p;
+
 	int				cya;
 	int				cyb;
 	int				cnya;
@@ -369,9 +373,6 @@ void				ft_relative_to_absolute(t_mlx *mlx);
 
 int					ft_texture_sampling(t_img *img, double sample_x, double sample_y);
 
-int					ft_line_intersect(t_vec2 *p0, t_vec2 *p1, t_vec2 *v0, t_vec2 *v1);
-int					ft_is_inside(t_sector *sector, double px, double py, double dx, double dy);
-
 int					ft_game_loop(t_mlx *mlx);
 void				ft_game_mechanics(t_mlx *mlx);
 
@@ -399,5 +400,7 @@ void				ft_bzero(void *s, size_t n);
 void				ft_obj_anim(t_mlx *mlx, t_obj *obj);
 
 void				ft_explosive_obj(t_mlx *mlx);
+
+void				ft_shoot(t_mlx *mlx);
 
 #endif

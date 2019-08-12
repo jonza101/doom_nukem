@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/11 15:06:15 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/11 13:05:52 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/12 17:29:25 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	ft_move_player(t_mlx *mlx, double dx, double dy)
 				sector->verts[s + 1]->x, sector->verts[s + 1]->y)
 			&& ft_point_side(px + dx, py + dy,
 				sector->verts[s + 0]->x, sector->verts[s + 0]->y,
-				sector->verts[s + 1]->x, sector->verts[s + 1]->y) <= 0)
+				sector->verts[s + 1]->x, sector->verts[s + 1]->y) < 0)
 			{
 				mlx->player->sector = neighbor;
 				break ;
