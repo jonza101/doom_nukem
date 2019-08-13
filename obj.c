@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 15:17:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/13 20:07:10 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/13 20:12:41 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,7 +237,6 @@ void	ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector)
 						if ((mlx->opening[yc][xc] == obj->specs->sect || mlx->opening[yc][xc] == -1))
 						{
 							mlx->data[yc * W + xc] = color;
-							// ft_image(mlx, xc, yc, color);
 							mlx->opening[yc][xc] = obj->specs->sect;
 						}
 					}

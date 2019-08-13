@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/27 13:56:20 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/07 19:08:43 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/13 20:13:57 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,10 +62,10 @@ void	ft_draw_cross(t_mlx *mlx)
 {
 	int i = W / 2 - 3;
 	while (++i <= W / 2 + 2)
-		ft_image(mlx, i, H / 2, 0xFFFFFF);
+		mlx->data[ i + (H / 2) * W] = 0xFFFFFF;
 	i = H / 2 - 3;
 	while (++i <= H / 2 + 2)
-		ft_image(mlx, W / 2, i, 0xFFFFFF);
+		mlx->data[ W / 2 + i * W] = 0xFFFFFF;
 }
 
 void	ft_draw_player(t_mlx *mlx)
@@ -88,7 +88,7 @@ void	ft_draw_player(t_mlx *mlx)
 			int xc = (int)(w_mid - (w_w / 2.0f) + x);
 			int yc = (int)w_ya + (int)y;
 			if (color != IGNORE_COLOR)
-				ft_image(mlx, xc, yc, color);
+				mlx->data[yc * W + xc] = color;
 		}
 	}
 	ft_draw_cross(mlx);

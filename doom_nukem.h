@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/13 19:46:40 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/13 20:12:21 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -391,9 +391,6 @@ void				ft_obj_sort(t_mlx *mlx);
 void				ft_drawseg_sort(t_mlx *mlx);
 
 void				ft_thread(t_mlx *mlx);
-
-void				ft_triangle_rast(t_mlx *mlx, t_vec2 *v0, t_vec2 *v1, t_vec2 *v2);
-void				ft_triangle_clear(t_vec2 *v0, t_vec2 *v1, t_vec2 *v2);
 
 void				ft_drawseg_error();
 
