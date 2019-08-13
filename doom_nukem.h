@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/12 18:41:03 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/13 19:46:40 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,11 @@
 
 #define THREAD 16
 
+//	OBJ	|	0 - BARREL	|	1 - BACKPACK	|	2 - CACODEMON	|	3 - CANISTER	|	4 - FIRE_POT	|	5 - WATER	|	6 - CANISTER_EXPL	|	7 - FIRE	|	8 - EXPLOSION	|
+
 #define TXT 3
 #define OBJ 9													//	3 -> 6 -> 8 -> 7 (CANISTER)
+#define WALL_OBJ 1
 #define TRANSPARENT 1
 #define SKY 1
 
@@ -283,6 +286,7 @@ typedef	struct		s_mlx
 
 	t_img			*txt[TXT];
 	t_anim_list		**obj_l;
+	t_anim_list		**wobj_l;
 	t_img			*transparent[TRANSPARENT];
 	t_img			*sky[SKY];
 
@@ -347,6 +351,7 @@ void				ft_player_view(t_mlx *mlx);
 
 void				ft_init_textures(t_mlx *mlx);
 void				ft_init_obj(t_mlx *mlx);
+void				ft_init_wobj(t_mlx *mlx);
 void				ft_init_transparent(t_mlx *mlx);
 void				ft_init_sky(t_mlx *mlx);
 

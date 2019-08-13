@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:41:19 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/12 17:24:25 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/13 18:02:41 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,10 +148,7 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 		ft_explosive_obj(mlx);
 	}
 	if (keycode == MAC_SHIFT_R && mlx->player->weapon_state == 0 && mlx->player->weapon->has_altfire)
-	{
 		mlx->player->weapon_state = 2;
-		ft_explosive_obj(mlx);
-	}
 
 	if (keycode == MAC_ONE && mlx->player->weapon_state == 0)
 	{

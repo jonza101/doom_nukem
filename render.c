@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/11 17:46:26 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/13 20:09:38 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -276,9 +276,6 @@ void	ft_draw(t_mlx *mlx)
 			double vx2 = sector->verts[s + 1]->x - mlx->player->pos->x;
 			double vy2 = sector->verts[s + 1]->y - mlx->player->pos->y;
 
-			// double dist = floorf(sqrtf(powf(sector->verts[s + 0]->x - sector->verts[s + 1]->x, 2) + powf(sector->verts[s + 0]->y - sector->verts[s + 1]->y, 2)));
-			// printf("%f\n", dist);
-
 			//	ROTATE THEM AROUND THE PLAYER
 			double p_cos = mlx->player->cos_angle;
 			double p_sin = mlx->player->sin_angle;
@@ -377,6 +374,9 @@ void	ft_draw(t_mlx *mlx)
 			double yceil = sector->ceiling - mlx->player->pos->z;
 			double yfloor = sector->floor - mlx->player->pos->z;
 
+			double wyceil = 22 - mlx->player->pos->z;
+			double wyfloor = 5 - mlx->player->pos->z;
+
 			//	CHECK NEIGHBORS
 			int neighbor = ft_atoi(sector->neighbors[s]);
 			double nyceil = 0;
@@ -401,26 +401,13 @@ void	ft_draw(t_mlx *mlx)
 
 			//	RENDER THE WALL
 			
-			int beginx = x1 > mlx->now->sx1 ? x1 : mlx->now->sx1;
-			int endx = x2 < mlx->now->sx2 ? x2 : mlx->now->sx2;
+			int beginx = ft_max(x1, mlx->now->sx1);
+			int endx = ft_min(x2, mlx->now->sx2);
 
 			ft_scaler_init(mlx->ya_int, x1, beginx, x2, y1a, y2a);
             ft_scaler_init(mlx->yb_int, x1, beginx, x2, y1b, y2b);
             ft_scaler_init(mlx->nya_int, x1, beginx, x2, ny1a, ny2a);
             ft_scaler_init(mlx->nyb_int, x1, beginx, x2, ny1b, ny2b);
-
-			int tp_y1 = -1, bp_y1 = -1;
-			int tp_y2 = -1, bp_y2 = -1;
-			int tw_y1 = -1, bw_y1 = -1;
-			int tw_y2 = -1, bw_y2 = -1;
-
-			int w_max_cnyb = -1;
-			int	p_min_cnyb = H;
-			int p_max_cnyb = -1;
-
-			int p_min_cnya = H;
-			int p_max_cnya = -1;
-			int w_min_cnya = H;
 
 			int x = beginx - 1;
 			while (++x <= endx)
@@ -446,17 +433,6 @@ void	ft_draw(t_mlx *mlx)
 				mlx->cnya = ft_clamp(nya, ytop[x], ybottom[x]);
 				mlx->cnyb = ft_clamp(nyb, ytop[x], ybottom[x]);
 
-				// if (mlx->now->sector_n == 7)
-				// {
-				// 	printf("sect %d		s %d\n", mlx->now->sector_n, s);
-				// 	printf("cya %d		cnya %d\n\n", mlx->cya, mlx->cnya);
-				// 	int x = - 1;
-				// 	// while (++x < 10)
-				// 	// {
-				// 	// 	ft_image(mlx, W / 2 - 5 + x, mlx->cya, 0xFFFF00);
-				// 	// 	ft_image(mlx, W / 2 - 5 + x, mlx->cnya, 0xFF0000);
-				// 	// }
-				// }
 				int ceil_t = sector->ceil_txt;
 				int floor_t = sector->floor_txt;
 				int ceil_f = (ceil_t >= 0) && (ceil_t < TXT);
@@ -477,9 +453,9 @@ void	ft_draw(t_mlx *mlx)
 						unsigned txtz = (mlx->map_z * 32);
 						//	RENDER CEILING
 						if (y < mlx->cya && ceil_f && mlx->opening[y][x] == -1)
-							mlx->data[x + y * W] = mlx->txt[ceil_t]->data[txtz % mlx->txt[ceil_t]->h * mlx->txt[ceil_t]->w + txtx % mlx->txt[ceil_t]->w];
+							mlx->data[y * W + x] = mlx->txt[ceil_t]->data[txtz % mlx->txt[ceil_t]->h * mlx->txt[ceil_t]->w + txtx % mlx->txt[ceil_t]->w];
 						else if (y >= mlx->cya && floor_f && mlx->opening[y][x] == -1)
-							mlx->data[x + y * W] = mlx->txt[floor_t]->data[txtz % mlx->txt[floor_t]->h * mlx->txt[floor_t]->w + txtx % mlx->txt[floor_t]->w];
+							mlx->data[y * W + x] = mlx->txt[floor_t]->data[txtz % mlx->txt[floor_t]->h * mlx->txt[floor_t]->w + txtx % mlx->txt[floor_t]->w];
 					}
 				}
 				mlx->open_f = 0;
@@ -558,22 +534,6 @@ void	ft_draw(t_mlx *mlx)
 
 						// RENDER LOWER WALL
 						ft_lower_solid(mlx, x, mlx->cnyb, mlx->cyb, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : LOWER_COLOR, LINE_COLOR, &ybottom[x]);
-						
-						//	SPRITE CLIPPING
-						if (mlx->cnyb > w_max_cnyb)
-							w_max_cnyb = mlx->cnyb;
-						
-						if (mlx->cnya < w_min_cnya)
-							w_min_cnya = mlx->cnya;
-						
-						if (x == beginx)
-							bw_y1 = mlx->cnyb;
-						if (x == endx)
-							bw_y2 = mlx->cnyb;
-						if (x == beginx)
-							tw_y1 = mlx->cnya;
-						if (x == endx)
-							tw_y2 = mlx->cnya;
 
 						mlx->open_f = 0;
 					}
@@ -595,10 +555,6 @@ void	ft_draw(t_mlx *mlx)
 						ft_draw_vline(mlx, x, mlx->cya, mlx->cyb, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : WALL_COLOR, LINE_COLOR);
 				}
 			}
-			//	SPRITE CLIPPING
-			int curline = 0;
-			if ((tp_y1 != tp_y2) || (tw_y1 != tw_y2) || (bp_y1 != bp_y2) || (bw_y1 != bw_y2))
-				curline = 1;
 
 			int index = mlx->seg_i;
 			if (index >= MAX_DRAWSEG)

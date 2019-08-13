@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/12 17:10:17 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/12 18:47:49 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/13 19:46:07 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,11 +70,13 @@ void	ft_shoot(t_mlx *mlx)
 {
 	double px = mlx->player->pos->x;
 	double py = mlx->player->pos->y;
-	double angle = atan2f(mlx->player->sin_angle, mlx->player->cos_angle);
-	double dx = FIRE_RANGE * cosf(angle) + px;
-	double dy = FIRE_RANGE * sinf(angle) + py;
+	double pz = mlx->player->pos->z;// + mlx->sect[mlx->player->sector]->floor;
+	double angle_xy = atan2f(mlx->player->sin_angle, mlx->player->cos_angle);
+	double angle_z = atanf(-mlx->player->yaw);
+	double dx = FIRE_RANGE * cosf(angle_xy) + px;
+	double dy = FIRE_RANGE * sinf(angle_xy) + py;
 
-	printf("px %f		py %f\n", px, py);
+	printf("\npx %f		py %f		pz %f\n", px, py, pz);
 	printf("dx %f		dy %f\n", dx, dy);
 
 	t_vec2 *p1 = (t_vec2*)malloc(sizeof(t_vec2));
@@ -94,17 +96,66 @@ void	ft_shoot(t_mlx *mlx)
 		if (s != -1)
 		{
 			int neighbor = ft_atoi(sector->neighbors[s]);
+
+			double dxx = mlx->shoot_p->x - px;
+			double dyy = mlx->shoot_p->y - py;
+			double p_dist = sqrtf(dxx * dxx + dyy * dyy);
+			double dzz = p_dist * tanf(angle_z) + pz;
+			printf("angle_z %f\n", angle_z);
+			printf("dz %f\n\n", dzz);
+			double n_sect_f = mlx->sect[neighbor]->floor;
+			double n_sect_c = mlx->sect[neighbor]->ceiling;
+			double p_sect_f = mlx->sect[mlx->player->sector]->floor;
+			double p_sect_c = mlx->sect[mlx->player->sector]->ceiling;
+			// printf("nf %f		nc %f\n", n_sect_f, n_sect_c);
+			// printf("pf %f		pc %f\n", p_sect_f, p_sect_c);
+			if (dzz < p_sect_f)
+			{
+				printf("hit floor\n");
+				printf("sect %d\n", mlx->now->sector_n);
+				printf("----------------------------------------------------\n");
+				hit = 1;
+				return ;
+			}
+			if (dzz > p_sect_c)
+			{
+				printf("hit ceiling\n");
+				printf("sect %d\n", mlx->now->sector_n);
+				printf("----------------------------------------------------\n");
+				hit = 1;
+				return ;
+			}
 			if (neighbor >= 0)
 			{
+				if (n_sect_f != p_sect_f || n_sect_c != p_sect_c)
+				{
+					if (dzz > p_sect_f && dzz < n_sect_f)
+					{
+						printf("hit lower wall\n");
+						printf("sect %d			s %d\n", mlx->now->sector_n, s);
+						printf("----------------------------------------------------\n");
+						hit = 1;
+						return ;
+					}
+					if (dzz <= p_sect_c && dzz >= n_sect_c)
+					{
+						printf("hit upper wall\n");
+						printf("sect %d			s %d\n", mlx->now->sector_n, s);
+						printf("----------------------------------------------------\n");
+						hit = 1;
+						return ;
+					}
+				}
 				sector = mlx->sect[neighbor];
 				mlx->now->sector_n = neighbor;
-				// printf("sx %f		sy %f\n\n", mlx->shoot_p->x, mlx->shoot_p->y);
 			}
 			else
 			{
-				printf("hit\n");
-				printf("sect %d			s %d\n\n", mlx->now->sector_n, s);
+				printf("hit solid wall\n");
+				printf("sect %d			s %d\n", mlx->now->sector_n, s);
+				printf("----------------------------------------------------\n");
 				hit = 1;
+				return ;
 			}
 		}
 	}

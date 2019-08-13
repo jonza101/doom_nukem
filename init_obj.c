@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/11 13:43:09 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/12 16:42:02 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/13 18:38:42 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,7 +219,7 @@ void	ft_init_static_obj(t_mlx *mlx)
 		}
 		char **tmp = ft_strsplit(line, ' ');
 		mlx->obj_l[i] = (t_anim_list*)malloc(sizeof(t_anim_list));
-		mlx->obj_l[i]->anim = (t_img**)malloc(sizeof(t_img));
+		mlx->obj_l[i]->anim = (t_img**)malloc(sizeof(t_img*));
 		mlx->obj_l[i]->anim[0] = (t_img*)malloc(sizeof(t_img));
 		mlx->obj_l[i]->anim[0]->w = ft_atoi(&tmp[0][1]);
 		mlx->obj_l[i]->anim[0]->h = ft_atoi(tmp[1]);
@@ -233,7 +233,7 @@ void	ft_init_static_obj(t_mlx *mlx)
 	}
 }
 
-void	ft_init_scaler(t_mlx *mlx)
+void	ft_init_obj_scaler(t_mlx *mlx)
 {
 	mlx->obj_l[0]->scaler = 2.5f;
 	mlx->obj_l[1]->scaler = 4.5f;
@@ -263,5 +263,51 @@ void	ft_init_obj(t_mlx *mlx)
 	mlx->obj_l = (t_anim_list**)malloc(sizeof(t_anim_list*) * OBJ);
 	ft_init_static_obj(mlx);
 	ft_init_anim_obj(mlx);
-	ft_init_scaler(mlx);
+	ft_init_obj_scaler(mlx);
+}
+
+void	ft_init_static_wobj(t_mlx *mlx)
+{
+	int fd;
+	char *line;
+	char *wobj[1] = { "textures/wall_obj/static/puppy_pic.xpm" };
+	int i = -1;
+	while (++i < 1)
+	{
+		fd = open(wobj[i], O_RDONLY);
+		int j = -1;
+		while (++j < 4)
+		{
+			get_next_line(fd, &line);
+			(j < 3) ? ft_strdel(&line) : 1;
+		}
+		char **tmp = ft_strsplit(line, ' ');
+		mlx->wobj_l[i] = (t_anim_list*)malloc(sizeof(t_anim_list));
+		mlx->wobj_l[i]->anim = (t_img**)malloc(sizeof(t_img*));
+		mlx->wobj_l[i]->anim[0] = (t_img*)malloc(sizeof(t_img));
+		mlx->wobj_l[i]->anim[0]->w = ft_atoi(&tmp[0][1]);
+		mlx->wobj_l[i]->anim[0]->h = ft_atoi(tmp[1]);
+		mlx->wobj_l[i]->anim[0]->img = mlx_xpm_file_to_image(mlx->mlx, wobj[i], &mlx->wobj_l[i]->anim[0]->w, &mlx->wobj_l[i]->anim[0]->h);
+		mlx->wobj_l[i]->anim[0]->data = (int*)mlx_get_data_addr(mlx->wobj_l[i]->anim[0]->img, &mlx->wobj_l[i]->anim[0]->bpp, &mlx->wobj_l[i]->anim[0]->size_line, &mlx->wobj_l[i]->anim[0]->endian);
+		mlx->wobj_l[i]->anim_n = 1;
+		mlx->wobj_l[i]->expl = 0;
+		ft_strsplit_free(tmp);
+		close(fd);
+		ft_strdel(&line);
+	}
+
+}
+
+void	ft_init_wobj_scaler(t_mlx *mlx)
+{
+	mlx->wobj_l[0]->scaler = 2.0f;
+
+	mlx->wobj_l[0]->aspect_scaler = 1.0f;
+}
+
+void	ft_init_wobj(t_mlx *mlx)
+{
+	mlx->wobj_l = (t_anim_list**)malloc(sizeof(t_anim_list*) * WALL_OBJ);
+	ft_init_static_wobj(mlx);
+	ft_init_wobj_scaler(mlx);
 }

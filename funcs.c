@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:38 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/10 18:26:39 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/13 20:06:31 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,7 @@ void	ft_draw_vline(t_mlx *mlx, int x, int y1,int y2, int top_color,int middle_co
 		else
 		{
 			if (mlx->opening[y1][x] == -1)
-				mlx->data[x + y * W] = middle_color;
+				mlx->data[x + y1 * W] = middle_color;
 		}
 		if (mlx->opening[y1][x] == -1 && mlx->open_f)
 			mlx->opening[y1][x] = mlx->now->sector_n;

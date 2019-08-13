@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/12 18:38:43 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/13 20:07:50 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,8 @@ void	ft_image(t_mlx *mlx, int x, int y, int color)
 {
 	// nahooy this check
 	//if (x >= 0 && x < W && y >= 0 && y < H)
-	//Не юзай эту функцию, вставляй в код сразу вот так : mlx->data[x + y * W] = color;
-	// Так будет работать гораздо быстрее
-	//mlx->data[y * W + x] = mlx_get_color_value(mlx->mlx, color);
-	//printf("%d\n",mlx->bpp);
-	//mlx->data[x + y * W] = color;
+	//TODO вынести это нахуй из функции? Можно получить прирост в производительности
+	mlx->data[y * W + x] = mlx_get_color_value(mlx->mlx, color);
 }
 
 void	ft_reset_image(t_mlx *mlx)
@@ -57,36 +54,11 @@ int		ft_close(int i)
 // 	return (0);
 // }
 
-void	ft_player_view(t_mlx *mlx)
-{	
-	if (mlx->player->left)
-	{
-		mlx->player->angle -= 0.045f;
-		mlx->player->sin_angle = sinf(mlx->player->angle);
-		mlx->player->cos_angle = cosf(mlx->player->angle);
-	}
-	if (mlx->player->right)
-	{
-		mlx->player->angle += 0.045f;
-		mlx->player->sin_angle = sinf(mlx->player->angle);
-		mlx->player->cos_angle = cosf(mlx->player->angle);
-	}
-	if (mlx->player->up)
-	{
-		mlx->player->yaw -= 0.15f;
-		mlx->player->yaw = ft_clamp(mlx->player->yaw, -10, 10);
-	}
-	if (mlx->player->down)
-	{
-		mlx->player->yaw += 0.15f;
-		mlx->player->yaw = ft_clamp(mlx->player->yaw, -10, 10);
-	}
-}
-
 void	ft_init_graphics(t_mlx *mlx)
 {
 	ft_init_textures(mlx);
 	ft_init_obj(mlx);
+	ft_init_wobj(mlx);
 	// ft_init_transparent(mlx);
 	// ft_init_sky(mlx);
 

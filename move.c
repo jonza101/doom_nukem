@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/11 15:06:15 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/12 17:29:25 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/13 14:19:08 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,6 +160,33 @@ void	ft_collision(t_mlx *mlx)
 			ft_move_player(mlx, mlx->player->velocity->x, mlx->player->velocity->y);		//	mlx->player->velocity->x	//	mlx->player->velocity->y
 		mlx->falling = 1;
 	}
+}
+
+void	ft_player_view(t_mlx *mlx)
+{	
+	if (mlx->player->left)
+	{
+		mlx->player->angle -= 0.045f;
+		mlx->player->sin_angle = sinf(mlx->player->angle);
+		mlx->player->cos_angle = cosf(mlx->player->angle);
+	}
+	if (mlx->player->right)
+	{
+		mlx->player->angle += 0.045f;
+		mlx->player->sin_angle = sinf(mlx->player->angle);
+		mlx->player->cos_angle = cosf(mlx->player->angle);
+	}
+	if (mlx->player->up)
+	{
+		mlx->player->yaw -= 0.15f;
+		mlx->player->yaw = ft_clamp(mlx->player->yaw, -10, 10);
+	}
+	if (mlx->player->down)
+	{
+		mlx->player->yaw += 0.15f;
+		mlx->player->yaw = ft_clamp(mlx->player->yaw, -10, 10);
+	}
+	// printf("yaw %f\n", mlx->player->yaw);
 }
 
 void	ft_move_calc(t_mlx *mlx)

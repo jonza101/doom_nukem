@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:40:26 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/12 17:43:02 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/13 15:53:34 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int		ft_game_loop(t_mlx *mlx)
 	double dif = ((double)(end_time - start_time) / CLOCKS_PER_SEC);
 	double result = 1.0 / dif;
 	double sleep_time = result - 60;
-	//printf("%f\n", result);
+	// printf("%f\n", result);
 
 	return (0);
 }
