@@ -6,11 +6,39 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/12 16:31:55 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/14 19:44:44 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doom_nukem.h"
+
+int		ft_find_sect_mirror_side(t_mlx *mlx, int sector, int side, int sect_to_find)
+{
+	int s = -1;
+	t_vec2 *v1;
+	t_vec2 *v2;
+
+	t_sector *sect = mlx->sect[sector];
+	while (++s < sect->verts_count)
+	{
+		if (s == side)
+		{
+			v1 = sect->verts[s + 0];
+			v2 = sect->verts[s + 1];
+			break ;
+		}
+	}
+	// printf("v1x %f		v1y %f\nv2x %f		v2y %f\n\n", v1->x, v1->y, v2->x, v2->y);
+	t_sector *sect_to = mlx->sect[sect_to_find];
+	s = 0;
+	while (++s < sect_to->verts_count)
+	{
+		if (v1->x == sect_to->verts[s + 1]->x && v1->y == sect_to->verts[s + 1]->y
+				&& v2->x == sect_to->verts[s + 0]->x && v2->y == sect_to->verts[s + 0]->y)
+			return (s);
+	}
+	return (-1);
+}
 
 void	ft_strsplit_free(char **temp)
 {
@@ -60,6 +88,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 	int s = 1;
 	int t = 1;
 	int o = 1;
+	int g = 1;		//	TRANSPARENT
 	int seg = 1;
 	
 	char *line;
@@ -77,6 +106,9 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 
 	t_obj *temp_obj, *prev;
 	mlx->obj_count = 0;
+
+	t_trans *temp_trans, *trans_prev;
+	mlx->trans_count = 0;
 
 	while (get_next_line(fd, &line))
 	{
@@ -173,16 +205,6 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->sect[s - 1]->verts[0]->x = (double)verts[ft_atoi(t[j - 1])]->x;
 				mlx->sect[s - 1]->verts[0]->y = (double)verts[ft_atoi(t[j - 1])]->y;
 
-				// j = -1;
-				// while (++j < seg)
-				// 	free(mlx->drawseg[j]);
-				// free(mlx->drawseg);
-				seg += v_count;
-				// mlx->drawseg = (t_drawseg**)malloc(sizeof(t_drawseg*) * seg);
-				j = -1;
-				// while (++j < seg)
-				// 	mlx->drawseg[j] = (t_drawseg*)malloc(sizeof(t_drawseg));
-
 				ft_strsplit_free(t);
 
 				t = ft_strsplit(temp[3], ' ');
@@ -233,12 +255,6 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->sect[0]->verts[0] = (t_vec2*)malloc(sizeof(t_vec2));
 				mlx->sect[0]->verts[0]->x = (double)verts[ft_atoi(t[j - 1])]->x;
 				mlx->sect[0]->verts[0]->y = (double)verts[ft_atoi(t[j - 1])]->y;
-
-				// mlx->drawseg = (t_drawseg**)malloc(sizeof(t_drawseg*) * v_count);
-				seg = v_count;
-				// j = -1;
-				// while (++j < v_count)
-				// 	mlx->drawseg[j] = (t_drawseg*)malloc(sizeof(t_drawseg));
 
 				ft_strsplit_free(t);
 
@@ -300,7 +316,6 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->obj_list->next->specs->anim_i = 0;
 				mlx->obj_list->next->specs->expl_f = 0;
 				mlx->obj_list = mlx->obj_list->next;
-				mlx->obj_list->next = NULL;
 				mlx->obj_list->prev = prev;
 				prev = mlx->obj_list;
 
@@ -321,7 +336,6 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->obj_list->specs->del = 0;
 				mlx->obj_list->specs->anim_i = 0;
 				mlx->obj_list->specs->expl_f = 0;
-				mlx->obj_list->next = NULL;
 				mlx->obj_list->prev = NULL;
 				temp_obj = mlx->obj_list;
 				prev = mlx->obj_list;
@@ -331,6 +345,64 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 			}
 			o++;
 			mlx->obj_count++;
+		}
+		if (line[0] == 'g' && line[1] == '|')
+		{
+			if (g > 1)
+			{
+				temp = ft_strsplit(line, '|');
+
+				mlx->trans_list->next = (t_trans*)malloc(sizeof(t_trans));
+				mlx->trans_list->next->sect = ft_atoi(temp[1]);
+				mlx->trans_list->next->side = ft_atoi(temp[2]);
+				mlx->trans_list->next->trans_i = ft_atoi(temp[3]);
+				mlx->trans_list = mlx->trans_list->next;
+
+				mlx->trans_list->prev = trans_prev;
+				trans_prev = mlx->trans_list;
+
+				mlx->trans_list->next = (t_trans*)malloc(sizeof(t_trans));
+				int neigh_sect = ft_atoi(mlx->sect[mlx->trans_list->sect]->neighbors[mlx->trans_list->side]);
+				int mirror_side = ft_find_sect_mirror_side(mlx, mlx->trans_list->sect, mlx->trans_list->side, neigh_sect);
+				mlx->trans_list->next->sect = neigh_sect;
+				mlx->trans_list->next->side = mirror_side;
+				mlx->trans_list->next->trans_i = mlx->trans_list->trans_i;
+
+				mlx->trans_list = mlx->trans_list->next;
+				mlx->trans_list->prev = trans_prev;
+				trans_prev = mlx->trans_list;
+
+				ft_strsplit_free(temp);
+			}
+			else
+			{
+				temp = ft_strsplit(line, '|');
+
+				mlx->trans_list = (t_trans*)malloc(sizeof(t_trans));
+				mlx->trans_list->sect = ft_atoi(temp[1]);
+				mlx->trans_list->side = ft_atoi(temp[2]);
+				mlx->trans_list->trans_i = ft_atoi(temp[3]);
+
+				mlx->trans_list->prev = NULL;
+				temp_trans = mlx->trans_list;
+				trans_prev = mlx->trans_list;
+
+				mlx->trans_list->next = (t_trans*)malloc(sizeof(t_trans));
+				int neigh_sect = ft_atoi(mlx->sect[mlx->trans_list->sect]->neighbors[mlx->trans_list->side]);
+				int mirror_side = ft_find_sect_mirror_side(mlx, mlx->trans_list->sect, mlx->trans_list->side, neigh_sect);
+
+				mlx->trans_list->next->sect = neigh_sect;
+				mlx->trans_list->next->side = mirror_side;
+				mlx->trans_list->next->trans_i = mlx->trans_list->trans_i;
+
+				mlx->trans_list = mlx->trans_list->next;
+				mlx->trans_list->prev = trans_prev;
+				trans_prev = mlx->trans_list;
+
+				ft_strsplit_free(temp);
+			}
+			g++;
+			mlx->trans_count++;
 		}
 		if (line[0] == 'p' && line[1] == '|')
 		{
@@ -358,22 +430,24 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 	mlx->num_sec = s - 1;
 
 	if (mlx->obj_count > 0)
+	{
+		mlx->obj_list->next = NULL;
 		mlx->obj_list = temp_obj;
+	}
+
+	if (mlx->trans_count > 0)
+	{
+		mlx->trans_list->next = NULL;
+		mlx->trans_list = temp_trans;
+	}
+	
+	printf("trans count%d\n", mlx->trans_count);
 
 	printf("px %f	py %f	sect %d\n\n", mlx->player->pos->x, mlx->player->pos->y, mlx->player->sector);
 	int j = -1;
 	while (++j < v - 1)
 		free(verts[j]);
 	free(verts);
-	// mlx->drawseg_count = seg;
-	// printf("seg %d\n\n", seg);
-	// int i = -1;
-	// while (++i < mlx->drawseg_count)
-	// {
-	// 	mlx->drawseg[i]->x1 = -1;
-	// 	mlx->drawseg[i]->x2 = -1;
-	// 	mlx->drawseg[i]->dist = DBL_MAX;
-	// }
 	// printf("sect %d\n", mlx->num_sec);
 	// int j = 0;
 	// while (j < s - 1)
@@ -393,5 +467,22 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 	// 		printf("%s ", mlx->sect[j]->texts[k]);
 	// 	printf("\n________________________________\n");
 	// 	j++;
+	// }
+
+	// printf("\n------------------------------------------------\n\n");
+	// t_obj *obj = mlx->obj_list;
+	// while (obj)
+	// {
+	// 	printf("sect %d				index %d\n", obj->specs->sect, obj->specs->obj_i);
+	// 	printf("x %f			y %f\n", obj->specs->x, obj->specs->y);
+	// 	if (obj->prev)
+	// 	{
+	// 		printf("prev_sect %d			prev_index %d\n", obj->prev->specs->sect, obj->prev->specs->obj_i);
+	// 		printf("prev_x %f		prev_y %f\n", obj->prev->specs->x, obj->prev->specs->y);
+	// 	}
+	// 	else
+	// 		printf("prev -\n");
+	// 	printf("\n------------------------------------------------\n");
+	// 	obj = obj->next;
 	// }
 }

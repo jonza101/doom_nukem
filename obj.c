@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 15:17:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/13 20:12:41 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/14 19:02:43 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ void	ft_obj_dist(t_mlx *mlx)
 
 void	ft_obj_sort(t_mlx *mlx)
 {
+	if (mlx->obj_count <= 0)
+		return ;
 	t_obj *obj = mlx->obj_list;
 	ft_obj_dist(mlx);
 	while (mlx->obj_list)
@@ -205,8 +207,9 @@ void	ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector)
 			int y = -1;																		//			SOLID
 			while (++y < H)
 			{
-				int x = mlx->drawseg[f].x1 - 1;
-				while (++x <= mlx->drawseg[f].x2)
+				int x = ft_clamp(mlx->drawseg[f].x1, 0, W - 1) - 1;
+				int x_2 = ft_clamp(mlx->drawseg[f].x2, 0, W - 1);
+				while (++x <= x_2)
 				{
 					if (x >= 0 && x < W && y >= 0 && y < H)
 						mlx->opening[y][x] = mlx->drawseg[f].sect;
@@ -215,41 +218,42 @@ void	ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector)
 		}
 	}
 
-	if (x1 >= (-W * 1) && x1 < (W * 2) && x2 >= (-W * 1) && x2 < (W * 2)		//		obj_w <= W
-			&& ya >= (-H * 3) && ya < (H * 3) && yb >= (-H * 3) && yb < (H * 3)
-			&& obj_dist >= 0.0f)
+	if (x1 < -W || x1 > 2 * W || x2 < -W || x2 > 2 * W || obj_dist < 1.0f)
+		return ;
+	int ox = -1;
+	while (++ox < obj_w)
 	{
-		int ox = -1;
-		while (++ox < obj_w)
+		int xc = (int)(obj_middle - (obj_w / 2.0f) + ox);
+		int oy = -1;
+		while (++oy < obj_h)
 		{
-			int xc = (int)(obj_middle - (obj_w / 2.0f) + ox);
-			int oy = -1;
-			while (++oy < obj_h)
+			double sample_ox = (double)ox / (double)obj_w;
+			double sample_oy = (double)oy / (double)obj_h;
+			int color = ft_texture_sampling(frame, sample_ox, sample_oy);
+			int yc = (int)ya + (int)oy;
+			if (color != IGNORE_COLOR && color != IGNORE_COLOR1)
 			{
-				double sample_ox = (double)ox / (double)obj_w;
-				double sample_oy = (double)oy / (double)obj_h;
-				int color = ft_texture_sampling(frame, sample_ox, sample_oy);
-				int yc = (int)ya + (int)oy;
-				if (color != IGNORE_COLOR && color != IGNORE_COLOR1)
+				if (yc >= 0 && yc < H && xc >= 0 && xc < W)
 				{
-					if (yc >= 0 && yc < H && xc >= 0 && xc < W)
+					if ((mlx->opening[yc][xc] == obj->specs->sect || mlx->opening[yc][xc] == -1))
 					{
-						if ((mlx->opening[yc][xc] == obj->specs->sect || mlx->opening[yc][xc] == -1))
-						{
-							mlx->data[yc * W + xc] = color;
-							mlx->opening[yc][xc] = obj->specs->sect;
-						}
+						mlx->data[yc * W + xc] = color;
+						mlx->opening[yc][xc] = obj->specs->sect;
 					}
 				}
 			}
 		}
 	}
+	mlx->obj_i++;
 }
 
 void	ft_find_obj_sect(t_mlx *mlx, int sector)
 {
+	if (mlx->obj_count <= 0)
+		return ;
+	int i = -1;
 	t_obj *obj = mlx->obj_list;
-	while (obj)
+	while (++i < mlx->obj_count)
 	{
 		if (mlx->obj_i >= MAX_VISSPRITES)
 			return ;
@@ -259,21 +263,24 @@ void	ft_find_obj_sect(t_mlx *mlx, int sector)
 	}
 }
 
-void	ft_explosive_obj(t_mlx *mlx)											//		TEST
+int		ft_explosive_obj(t_mlx *mlx, double p_dist)											//		TEST
 {
+	if (mlx->obj_count <= 0)
+		return (0);
 	t_obj *obj = mlx->obj_list;
 	while (obj)
 	{
 		if (mlx->obj_l[obj->specs->obj_i]->expl == 1)
 		{
-			if (ft_overlap(obj->specs->x1, obj->specs->x2, W / 2, W / 2) && ft_overlap(obj->specs->y1, obj->specs->y2, H / 2, H / 2))
+			if (ft_overlap(obj->specs->x1, obj->specs->x2, W / 2, W / 2) && ft_overlap(obj->specs->y1, obj->specs->y2, H / 2, H / 2) && obj->dist < p_dist)
 			{
 				if (obj->specs->obj_i == 3)
 					obj->specs->obj_i = 6;
 				obj->specs->expl_f = 1;
-				return ;
+				return (1);
 			}
 		}
 		obj = obj->next;
 	}
+	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/28 21:24:48 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/11 13:43:23 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/14 15:35:23 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,9 @@ void	ft_init_transparent(t_mlx *mlx)
 {
 	int fd;
 	char *line;
-	char *twall[TRANSPARENT] = { "textures/transparent/glass.xpm" };
+	char *twall[TRANSPARENT] = { "textures/transparent/glass.xpm", "textures/transparent/bars.xpm", "textures/transparent/fence.xpm",
+								"textures/transparent/breakable_wall_hole.xpm" };
+	mlx->trans = (t_anim_list**)malloc(sizeof(t_anim_list*) * TRANSPARENT);
 	int i = -1;
 	while (++i < TRANSPARENT)
 	{
@@ -55,11 +57,15 @@ void	ft_init_transparent(t_mlx *mlx)
 			(j < 3) ? ft_strdel(&line) : 1;
 		}
 		char **tmp = ft_strsplit(line, ' ');
-		mlx->transparent[i] = (t_img*)malloc(sizeof(t_img));
-		mlx->transparent[i]->w = ft_atoi(&tmp[0][1]);
-		mlx->transparent[i]->h = ft_atoi(tmp[1]);
-		mlx->transparent[i]->img = mlx_xpm_file_to_image(mlx->mlx, twall[i], &mlx->transparent[i]->w, &mlx->transparent[i]->h);
-		mlx->transparent[i]->data = (int*)mlx_get_data_addr(mlx->transparent[i]->img, &mlx->transparent[i]->bpp, &mlx->transparent[i]->size_line, &mlx->transparent[i]->endian);
+		mlx->trans[i] = (t_anim_list*)malloc(sizeof(t_anim_list));
+		mlx->trans[i]->anim = (t_img**)malloc(sizeof(t_img*));
+		mlx->trans[i]->anim_n = 1;
+		mlx->trans[i]->expl = 0;
+		mlx->trans[i]->anim[0] = (t_img*)malloc(sizeof(t_img));
+		mlx->trans[i]->anim[0]->w = ft_atoi(&tmp[0][1]);
+		mlx->trans[i]->anim[0]->h = ft_atoi(tmp[1]);
+		mlx->trans[i]->anim[0]->img = mlx_xpm_file_to_image(mlx->mlx, twall[i], &mlx->trans[i]->anim[0]->w, &mlx->trans[i]->anim[0]->h);
+		mlx->trans[i]->anim[0]->data = (int*)mlx_get_data_addr(mlx->trans[i]->anim[0]->img, &mlx->trans[i]->anim[0]->bpp, &mlx->trans[i]->anim[0]->size_line, &mlx->trans[i]->anim[0]->endian);
 		ft_strsplit_free(tmp);
 		close(fd);
 		ft_strdel(&line);

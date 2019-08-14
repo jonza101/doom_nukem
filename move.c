@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/11 15:06:15 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/13 14:19:08 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/14 19:49:48 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,6 +137,7 @@ void	ft_collision(t_mlx *mlx)
 				//	!!!
 				if (!stop)
 				{
+					
 					double hole_low = 9e9;
 					double hole_high = -9e9;
 					if (neighbor >= 0)

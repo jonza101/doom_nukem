@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:40:26 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/13 15:53:34 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/14 18:35:03 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,8 @@ int		ft_game_loop(t_mlx *mlx)
 {
 	clock_t start_time = clock();
 
-	ft_opening_clear(mlx);
-	ft_drawseg_clear(mlx);
 	ft_obj_sort(mlx);
-	// ft_drawseg_sort(mlx);
+	ft_drawseg_sort(mlx);
 
 	ft_collision(mlx);
 	ft_player_view(mlx);
@@ -52,6 +50,9 @@ int		ft_game_loop(t_mlx *mlx)
 	double result = 1.0 / dif;
 	double sleep_time = result - 60;
 	// printf("%f\n", result);
+
+	ft_drawseg_clear(mlx);
+	ft_opening_clear(mlx);
 
 	return (0);
 }

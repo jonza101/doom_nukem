@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:38 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/13 20:06:31 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/14 16:40:52 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,6 +167,12 @@ void	ft_draw_tvline(t_mlx *mlx, int x, int y1, int y2, unsigned txtx, t_img *tex
 		unsigned txty = ft_scaler_next(mlx->scaler);
 		int color = texture->data[txty % texture->h * texture->w + txtx % texture->w];
 		if (!is_transparent && mlx->opening[y][x] == -1)
+		{
+			mlx->data[x + y * W] = color;
+			if (mlx->open_f)
+				mlx->opening[y][x] = mlx->now->sector_n;
+		}
+		else if (is_transparent && mlx->opening[y][x] == -1 && color != IGNORE_COLOR && color != IGNORE_COLOR1 && color != IGNORE_COLOR2)
 		{
 			mlx->data[x + y * W] = color;
 			if (mlx->open_f)
