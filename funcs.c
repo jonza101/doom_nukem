@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:38 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/14 16:40:52 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/15 15:37:19 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void	ft_scaler_init(t_scaler *scaler, int a, int b, int c, int d, int f)
 	scaler->bop = ((f < d) ^ (c < a)) ? -1 : 1;
 	scaler->fd = abs(f - d);
 	scaler->ca = abs(c - a);
-	scaler->cache = (int)((b - 1 - a) * abs(f - d)) % abs(c  - a);
+	scaler->cache = (int)((b - 1 - a) * abs(f - d)) % abs(c - a);
 }
 
 int		ft_scaler_next(t_scaler *scaler)

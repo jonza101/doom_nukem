@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/14 19:34:38 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/15 17:40:44 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,9 @@ void	ft_init(t_mlx *mlx)
 	mlx->yb_int = (t_scaler*)malloc(sizeof(t_scaler));
 	mlx->nya_int = (t_scaler*)malloc(sizeof(t_scaler));
 	mlx->nyb_int = (t_scaler*)malloc(sizeof(t_scaler));
+
+	mlx->wya_int = (t_scaler*)malloc(sizeof(t_scaler));
+	mlx->wyb_int = (t_scaler*)malloc(sizeof(t_scaler));
 
 	mlx->u0 = 0;
 	mlx->u1 = 512;

@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/14 19:44:44 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/15 17:50:59 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 	int t = 1;
 	int o = 1;
 	int g = 1;		//	TRANSPARENT
+	int w = 1;
 	int seg = 1;
 	
 	char *line;
@@ -107,8 +108,11 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 	t_obj *temp_obj, *prev;
 	mlx->obj_count = 0;
 
-	t_trans *temp_trans, *trans_prev;
+	t_trans *temp_trans = NULL, *trans_prev = NULL;
 	mlx->trans_count = 0;
+
+	t_wobj *temp_wobj = NULL;
+	mlx->wobj_count = 0;
 
 	while (get_next_line(fd, &line))
 	{
@@ -348,10 +352,9 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 		}
 		if (line[0] == 'g' && line[1] == '|')
 		{
+			temp = ft_strsplit(line, '|');
 			if (g > 1)
 			{
-				temp = ft_strsplit(line, '|');
-
 				mlx->trans_list->next = (t_trans*)malloc(sizeof(t_trans));
 				mlx->trans_list->next->sect = ft_atoi(temp[1]);
 				mlx->trans_list->next->side = ft_atoi(temp[2]);
@@ -371,13 +374,9 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->trans_list = mlx->trans_list->next;
 				mlx->trans_list->prev = trans_prev;
 				trans_prev = mlx->trans_list;
-
-				ft_strsplit_free(temp);
 			}
 			else
 			{
-				temp = ft_strsplit(line, '|');
-
 				mlx->trans_list = (t_trans*)malloc(sizeof(t_trans));
 				mlx->trans_list->sect = ft_atoi(temp[1]);
 				mlx->trans_list->side = ft_atoi(temp[2]);
@@ -398,11 +397,56 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->trans_list = mlx->trans_list->next;
 				mlx->trans_list->prev = trans_prev;
 				trans_prev = mlx->trans_list;
-
-				ft_strsplit_free(temp);
 			}
+			ft_strsplit_free(temp);
+
 			g++;
 			mlx->trans_count++;
+		}
+		if (line[0] == 'w' && line[1] == '|')
+		{
+			temp = ft_strsplit(line, '|');
+			
+			int w_sect = ft_atoi(temp[1]);
+			int w_side = ft_atoi(temp[2]);
+			char **w_pos = ft_strsplit(temp[3], ' ');
+			int w_i = ft_atoi(temp[4]);
+
+			if (w > 1)
+			{
+				mlx->wobj_list->next = (t_wobj*)malloc(sizeof(t_wobj));
+				mlx->wobj_list->next->sect = w_sect;
+				mlx->wobj_list->next->side = w_side;
+				mlx->wobj_list->next->wobj_i = w_i;
+				mlx->wobj_list->next->rendered = 0;
+				mlx->wobj_list->next->pos = (t_vec3*)malloc(sizeof(t_vec3));
+				mlx->wobj_list->next->pos->x = ft_atof(w_pos[0]);
+				mlx->wobj_list->next->pos->y = ft_atof(w_pos[1]);
+				mlx->wobj_list->next->pos->z = ft_atof(w_pos[2]);
+
+				mlx->wobj_list = mlx->wobj_list->next;
+			}
+			else
+			{
+				mlx->wobj_list = (t_wobj*)malloc(sizeof(t_wobj));
+				mlx->wobj_list->sect = w_sect;
+				mlx->wobj_list->side = w_side;
+				mlx->wobj_list->wobj_i = w_i;
+				mlx->wobj_list->rendered = 0;
+				mlx->wobj_list->pos = (t_vec3*)malloc(sizeof(t_vec3));
+				mlx->wobj_list->pos->x = ft_atof(w_pos[0]);
+				mlx->wobj_list->pos->y = ft_atof(w_pos[1]);
+				mlx->wobj_list->pos->z = ft_atof(w_pos[2]);
+
+				temp_wobj = mlx->wobj_list;
+			}
+			
+
+			ft_strsplit_free(w_pos);
+			ft_strsplit_free(temp);
+
+			mlx->wobj_count++;
+			w++;
 		}
 		if (line[0] == 'p' && line[1] == '|')
 		{
@@ -440,8 +484,12 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 		mlx->trans_list->next = NULL;
 		mlx->trans_list = temp_trans;
 	}
-	
-	printf("trans count%d\n", mlx->trans_count);
+
+	if (mlx->wobj_count > 0)
+	{
+		mlx->wobj_list->next = NULL;
+		mlx->wobj_list = temp_wobj;
+	}
 
 	printf("px %f	py %f	sect %d\n\n", mlx->player->pos->x, mlx->player->pos->y, mlx->player->sector);
 	int j = -1;

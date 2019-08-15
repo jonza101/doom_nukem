@@ -6,11 +6,25 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/14 18:25:19 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/15 18:05:38 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doom_nukem.h"
+
+t_wobj	*ft_find_wobj(t_mlx *mlx, int sect, int side)
+{
+	if (mlx->wobj_count <= 0)
+		return (NULL);
+	t_wobj *wobj = mlx->wobj_list;
+	while (wobj)
+	{
+		if (!wobj->rendered && wobj->sect == sect && wobj->side == side)
+			return (wobj);
+		wobj = wobj->next;
+	}
+	return (NULL);
+}
 
 void	ft_draw(t_mlx *mlx)
 {
@@ -57,11 +71,32 @@ void	ft_draw(t_mlx *mlx)
 
 			mlx->r_trans = -1;
 
+			int wflag = 1;
+			t_wobj *wobj_to_rend = ft_find_wobj(mlx, mlx->now->sector_n, s);
+			if (wobj_to_rend)
+			{
+				printf("sect %d			side %d			index %d\nx %f		y %f		z %f\n\n", wobj_to_rend->sect, wobj_to_rend->side, wobj_to_rend->wobj_i,
+																									wobj_to_rend->pos->x, wobj_to_rend->pos->y, wobj_to_rend->pos->z);
+			}
+
 			//	ACQUIRE THE X,Y COORDINATES OF THE TWO ENDPOINTS (VERTICES) OF THIS EDGE OF THE SECTOR
 			double vx1 = sector->verts[s + 0]->x - mlx->player->pos->x;
 			double vy1 = sector->verts[s + 0]->y - mlx->player->pos->y;
 			double vx2 = sector->verts[s + 1]->x - mlx->player->pos->x;
 			double vy2 = sector->verts[s + 1]->y - mlx->player->pos->y;
+
+			double wvx1, wvy1;
+			double wvx2, wvy2;
+
+			if (wobj_to_rend)
+			{
+				double diff_x = mlx->wobj_l[wobj_to_rend->wobj_i]->wobj_specs->abs_w / 2.0f;
+				double diff_y = mlx->wobj_l[wobj_to_rend->wobj_i]->wobj_specs->abs_h / 2.0f;
+				wvx1 = (wobj_to_rend->pos->x - diff_x) - mlx->player->pos->x;
+				wvy1 = (wobj_to_rend->pos->y - 0) - mlx->player->pos->y;
+				wvx2 = (wobj_to_rend->pos->x + diff_x) - mlx->player->pos->x;
+				wvy2 = (wobj_to_rend->pos->y + 0) - mlx->player->pos->y;
+			}
 
 			//	ROTATE THEM AROUND THE PLAYER
 			double p_cos = mlx->player->cos_angle;
@@ -72,12 +107,29 @@ void	ft_draw(t_mlx *mlx)
 			double tx2 = vx2 * p_sin - vy2 * p_cos;
 			double tz2 = vx2 * p_cos + vy2 * p_sin;
 
+			double wtx1, wtz1;
+			double wtx2, wtz2;
+
+			if (wobj_to_rend)
+			{
+				wtx1 = wvx1 * p_sin - wvy1 * p_cos;
+				wtz1 = wvx1 * p_cos + wvy1 * p_sin;
+				wtx2 = wvx2 * p_sin - wvy2 * p_cos;
+				wtz2 = wvx2 * p_cos + wvy2 * p_sin;
+			}
+
 			//	IS THE WALL AT LEAST PARTIALLY IN FRONT OF THE PLAYER?
 			if (tz1 <= 0 && tz2 <= 0)
 				continue;
 
+			if (wobj_to_rend && wtz1 <= 0 && wtz2 <= 0)
+				wflag = 0;
+
 			int u0 = 0;
 			int u1 = mlx->u1;
+
+			int wu0 = 0;
+			int wu1 = 32;
 
 			//	IF IT'S PARTIALLY BEHIND THE PLAYER, CLIP IT AGAINST PLAYER'S VIEW FRUSTRUM
 			if (tz1 <= 0 || tz2 <= 0)
@@ -146,6 +198,72 @@ void	ft_draw(t_mlx *mlx)
 				free(org2);
 			}
 
+			if (wobj_to_rend && wflag && (wtz1 <= 0 || wtz2 <= 0))
+			{
+				double near_z = 1e-4f;
+				double far_z = 5.0f;
+				double nearside = 1e-5f;
+				double farside = 20.0f;
+
+				// //	FIND AN INTERSECTION BETWEEN THE WALL AND THE APPROXIMATE EDGES OF PLAYER'S VIEW
+				t_vec2 *wi1 = (t_vec2*)malloc(sizeof(t_vec2));
+				t_vec2 *wi2 = (t_vec2*)malloc(sizeof(t_vec2));
+
+				ft_intersect(wi1, wtx1, wtz1, wtx2, wtz2, -nearside, near_z, -farside, far_z);
+				ft_intersect(wi2, wtx1, wtz1, wtx2, wtz2, nearside, near_z, farside, far_z);
+
+				t_vec2 *worg1 = (t_vec2*)malloc(sizeof(t_vec2));
+				t_vec2 *worg2 = (t_vec2*)malloc(sizeof(t_vec2));
+				worg1->x = wtx1;
+				worg1->y = wtz1;
+				worg2->x = wtx2;
+				worg2->y = wtz2;
+
+				if (wtz1 < near_z)
+				{
+					if (wi1->y > 0)
+					{
+						wtx1 = wi1->x;
+						wtz1 = wi1->y;
+					}
+					else
+					{
+						wtx1 = wi2->x;
+						wtz1 = wi2->y;
+					}
+				}
+				if (wtz2 < near_z)
+				{
+					if (wi1->y > 0)
+					{
+						wtx2 = wi1->x;
+						wtz2 = wi1->y;
+					}
+					else
+					{
+						wtx2 = wi2->x;
+						wtz2 = wi2->y;
+					}
+				}
+
+				if (fabs(wtx2 - wtx1) > fabs(wtz2 - wtz1))
+				{
+					wu0 = (wtx1 - worg1->x) * 32 / (worg2->x - worg1->x);
+					wu1 = (wtx2 - worg1->x) * 32 / (worg2->x - worg1->x);
+				}
+				else
+				{
+					wu0 = (wtz1 - worg1->y) * 32 / (worg2->y - worg1->y);
+					wu1 = (wtz2 - worg1->y) * 32 / (worg2->y - worg1->y);
+				}
+
+				free(wi1);
+				free(wi2);
+
+				free(worg1);
+				free(worg2);
+			}
+
 			//	DO PERSPECTIVE TRANSFORMATION
 			double xscale1 = (W * FOV_H) / tz1;
 			double yscale1 = (H * FOV_V) / tz1;
@@ -154,12 +272,38 @@ void	ft_draw(t_mlx *mlx)
 			double yscale2 = (H * FOV_V) / tz2;
 			int x2 = W / 2 + (int)(-tx2 * xscale2);
 
+			double wxscale1, wyscale1;
+			double wxscale2, wyscale2;
+			double wx1, wx2;
+
+			if (wobj_to_rend && wflag)
+			{
+				wxscale1 = (W * FOV_H) / wtz1;
+				wyscale1 = (H * FOV_V) / wtz1;
+				wx1 = W / 2 + (int)(-wtx1 * wxscale1);
+				wxscale2 = (W * FOV_H) / wtz2;
+				wyscale2 = (H * FOV_V) / wtz2;
+				wx2 = W / 2 + (int)(-wtx2 * wxscale2);
+			}
+
 			if (x1 >= x2 || x2 < mlx->now->sx1 || x1 > mlx->now->sx2)
 				continue;
+
+			if (wobj_to_rend && wflag && wx1 >= wx2)
+				wflag = 0;
 
 			//	ACQUIRE THE FLOOR AND CEILING HEIGHTS, RELATIVE TO WHERE THE PLAYER'S VIEW IS
 			double yceil = sector->ceiling - mlx->player->pos->z;
 			double yfloor = sector->floor - mlx->player->pos->z;
+
+			double wyceil, wyfloor;
+
+			if (wobj_to_rend && wflag)
+			{
+				double diff_z = mlx->wobj_l[wobj_to_rend->wobj_i]->wobj_specs->abs_h / 2.0f;
+				wyceil = (wobj_to_rend->pos->z + diff_z) - mlx->player->pos->z;
+				wyfloor = (wobj_to_rend->pos->z - diff_z) - mlx->player->pos->z;
+			}
 
 			//	CHECK NEIGHBORS
 			int neighbor = ft_atoi(sector->neighbors[s]);
@@ -183,18 +327,35 @@ void	ft_draw(t_mlx *mlx)
 			int ny2a = H / 2 + (int)(-(nyceil + tz2 * mlx->player->yaw) * yscale2);
 			int ny2b = H / 2 + (int)(-(nyfloor + tz2 * mlx->player->yaw) * yscale2);
 
+
+			int wy1a, wy1b;
+			int wy2a, wy2b;
+
+			if (wobj_to_rend && wflag)
+			{
+				wy1a = H / 2 + (int)(-(wyceil + wtz1 * mlx->player->yaw) * wyscale1);
+				wy1b = H / 2 + (int)(-(wyfloor + wtz1 * mlx->player->yaw) * wyscale1);
+				wy2a = H / 2 + (int)(-(wyceil + wtz2 * mlx->player->yaw) * wyscale2);
+				wy2b = H / 2 + (int)(-(wyfloor + wtz2 * mlx->player->yaw) * wyscale2);
+			}
+
 			//	RENDER THE WALL
-			
 			int beginx = ft_max(x1, mlx->now->sx1);
 			int endx = ft_min(x2, mlx->now->sx2);
+
+			int wbeginx = wx1;
+			int wendx = wx2;
 
 			ft_scaler_init(mlx->ya_int, x1, beginx, x2, y1a, y2a);
             ft_scaler_init(mlx->yb_int, x1, beginx, x2, y1b, y2b);
             ft_scaler_init(mlx->nya_int, x1, beginx, x2, ny1a, ny2a);
             ft_scaler_init(mlx->nyb_int, x1, beginx, x2, ny1b, ny2b);
 
-			// ft_scaler_init(mlx->wya_int, wx1, wbeginx, wx2, wy1a, wy2a);
-            // ft_scaler_init(mlx->wyb_int, wx1, wbeginx, wx2, wy1b, wy2b);
+			if (wobj_to_rend && wflag)
+			{
+				ft_scaler_init(mlx->wya_int, wx1, wbeginx, wx2, wy1a, wy2a);
+				ft_scaler_init(mlx->wyb_int, wx1, wbeginx, wx2, wy1b, wy2b);
+			}
 
 			int x = beginx - 1;
 			while (++x <= endx)
@@ -210,8 +371,8 @@ void	ft_draw(t_mlx *mlx)
 				int ya = ft_scaler_next(mlx->ya_int);
 				int yb = ft_scaler_next(mlx->yb_int);
 				
-                mlx->cya = ft_clamp(ya, ytop[x],ybottom[x]);
-                mlx->cyb = ft_clamp(yb, ytop[x],ybottom[x]);
+                mlx->cya = ft_clamp(ya, ytop[x], ybottom[x]);
+                mlx->cyb = ft_clamp(yb, ytop[x], ybottom[x]);
 
 				//	SAME FOR NEIGHBORS
 				int nya = ft_scaler_next(mlx->nya_int);
@@ -335,12 +496,10 @@ void	ft_draw(t_mlx *mlx)
 						mlx->open_f = 0;
 					}
 
-					//////////////////////////////////////////////////////////TRANSPARENT//////////////////////////////////////////////////////////
+					//////////////////////////////////////////////////////////	TRANSPARENT	//////////////////////////////////////////////////////////
 					int trans_i = ft_find_trans_sect(mlx, mlx->now->sector_n, s);
 					if (trans_i != -1)
 					{
-						mlx->open_f = 1;
-
 						int cl = (mlx->sect[neighbor]->ceiling < mlx->sect[mlx->now->sector_n]->ceiling) ? nya : ya;
 						int fl = (mlx->sect[neighbor]->floor > mlx->sect[mlx->now->sector_n]->floor) ? nyb : yb;
 
@@ -349,13 +508,13 @@ void	ft_draw(t_mlx *mlx)
 
 						if ((mlx->sect[neighbor]->ceiling > mlx->sect[mlx->now->sector_n]->floor) && (mlx->sect[mlx->now->sector_n]->ceiling > mlx->sect[neighbor]->floor))
 						{
+							mlx->open_f = 1;
 							ft_scaler_init(mlx->scaler, cl, c_cl, fl, mlx->u0, mlx->u1);
 							ft_draw_tvline(mlx, x, c_cl, c_fl, txtx, mlx->trans[trans_i]->anim[0], 1);
+							mlx->open_f = 0;
 						}
-
-						mlx->open_f = 0;
 					}
-					///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+					///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 				}
 				else
 				{
@@ -373,10 +532,27 @@ void	ft_draw(t_mlx *mlx)
 					else
 						ft_draw_vline(mlx, x, mlx->cya, mlx->cyb, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : WALL_COLOR, LINE_COLOR);
 				}
+
+				if (wobj_to_rend && wflag && x >= wbeginx && x <= wendx)
+				{
+					int wtxtx = (wu0 * ((wx2 - x) * wtz2) + wu1 * ((x - wx1) * wtz1)) / ((wx2 - x) * wtz2 + (x - wx1) * wtz1);
+
+					int wya = ft_scaler_next(mlx->wya_int);
+					int wyb = ft_scaler_next(mlx->wyb_int);
+
+					int cwya = ft_clamp(wya, ytop[x], ybottom[x]);
+					int cwyb = ft_clamp(wyb, ytop[x], ybottom[x]);
+
+					ft_scaler_init(mlx->scaler, wya, cwya, wyb, 0, 32);
+					ft_draw_tvline(mlx, x, wya, wyb, wtxtx, mlx->wobj_l[wobj_to_rend->wobj_i]->anim[0], 0);
+				}
 			}
 
 			if (mlx->r_trans != -1)
 				mlx->trans_i++;
+
+			// if (wobj_to_rend)
+			// 	wobj_to_rend->rendered = 0;
 
 			int index = mlx->seg_i;
 			if (index >= MAX_DRAWSEG)

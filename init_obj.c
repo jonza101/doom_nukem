@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/11 13:43:09 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/13 18:38:42 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/15 17:44:23 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -283,6 +283,7 @@ void	ft_init_static_wobj(t_mlx *mlx)
 		}
 		char **tmp = ft_strsplit(line, ' ');
 		mlx->wobj_l[i] = (t_anim_list*)malloc(sizeof(t_anim_list));
+		mlx->wobj_l[i]->wobj_specs = (t_wobj_specs*)malloc(sizeof(t_wobj_specs));
 		mlx->wobj_l[i]->anim = (t_img**)malloc(sizeof(t_img*));
 		mlx->wobj_l[i]->anim[0] = (t_img*)malloc(sizeof(t_img));
 		mlx->wobj_l[i]->anim[0]->w = ft_atoi(&tmp[0][1]);
@@ -295,19 +296,19 @@ void	ft_init_static_wobj(t_mlx *mlx)
 		close(fd);
 		ft_strdel(&line);
 	}
-
 }
 
-void	ft_init_wobj_scaler(t_mlx *mlx)
+void	ft_init_wobj_specs(t_mlx *mlx)
 {
-	mlx->wobj_l[0]->scaler = 2.0f;
-
-	mlx->wobj_l[0]->aspect_scaler = 1.0f;
+	mlx->wobj_l[0]->wobj_specs->abs_w = 0.75f;
+	mlx->wobj_l[0]->wobj_specs->abs_h = 2.0f;
+	mlx->wobj_l[0]->wobj_specs->u0 = 0;
+	mlx->wobj_l[0]->wobj_specs->u1 = 32;
 }
 
 void	ft_init_wobj(t_mlx *mlx)
 {
-	mlx->wobj_l = (t_anim_list**)malloc(sizeof(t_anim_list*) * WALL_OBJ);
+	mlx->wobj_l = (t_anim_list**)malloc(sizeof(t_anim_list*) * WOBJ);
 	ft_init_static_wobj(mlx);
-	ft_init_wobj_scaler(mlx);
+	ft_init_wobj_specs(mlx);
 }

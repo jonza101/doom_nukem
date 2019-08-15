@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/14 19:45:08 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/15 18:04:48 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@
 
 #define MAX_DRAWSEG 128
 #define MAX_VISSPRITES 64
-#define MAX_VISTRANSPARENT 128
+#define MAX_VISWALLSPRITES 64
+#define MAX_VISTRANSPARENT 64
 
 #define DBL_MAX 1.7976931348623158e+308
 
@@ -57,9 +58,13 @@
 
 //	OBJ	|	0 - BARREL	|	1 - BACKPACK	|	2 - CACODEMON	|	3 - CANISTER	|	4 - FIRE_POT	|	5 - WATER	|	6 - CANISTER_EXPL	|	7 - FIRE	|	8 - EXPLOSION	|
 
+
+//	WOBJ	|	0 - PUPPY_PICTURE	|
+
+
 #define TXT 3
 #define OBJ 9													//	3 -> 6 -> 8 -> 7 (CANISTER)
-#define WALL_OBJ 1
+#define WOBJ 1
 #define TRANSPARENT 4
 #define SKY 1
 
@@ -126,6 +131,15 @@ typedef struct		s_obj_specs
 	int				expl_f;
 }					t_obj_specs;
 
+typedef	struct		s_wobj_specs
+{
+	double			abs_w;
+	double			abs_h;
+
+	int				u0;
+	id_t			u1;
+}					t_wobj_specs;
+
 typedef struct		s_anim_list
 {
 	t_img			**anim;
@@ -136,6 +150,8 @@ typedef struct		s_anim_list
 	double			aspect_scaler;
 
 	int				expl;
+
+	t_wobj_specs	*wobj_specs;
 }					t_anim_list;
 
 typedef	struct		s_trans
@@ -156,6 +172,18 @@ typedef	struct		s_obj
 	struct s_obj	*next;
 	struct s_obj	*prev;
 }					t_obj;
+
+typedef	struct		s_wobj
+{
+	t_vec3			*pos;
+	int				sect;
+	int				side;
+	int				wobj_i;
+
+	short			rendered;
+
+	struct s_wobj	*next;
+}					t_wobj;
 
 typedef struct		s_drawseg
 {
@@ -179,8 +207,6 @@ typedef struct		s_sector
 
 	t_vec2			**verts;
 
-	// t_obj			**obj;
-
 	int				ceil_txt;
 	int				floor_txt;
 	char			**texts;
@@ -188,8 +214,6 @@ typedef struct		s_sector
 
 	char			**neighbors;
 	int				neighbors_count;
-
-	char			**transparent;
 
 	int				verts_count;
 }					t_sector;
@@ -292,6 +316,9 @@ typedef	struct		s_mlx
 	t_scaler		*nya_int;
 	t_scaler		*nyb_int;
 
+	t_scaler		*wya_int;
+	t_scaler		*wyb_int;
+
 	double			map_x;
 	double			map_z;
 
@@ -312,12 +339,16 @@ typedef	struct		s_mlx
 	int				trans_i;
 	int 			r_trans;
 
+	t_wobj			*wobj_list;
+	int				wobj_count;
+
 	int				seg_i;
 	t_drawseg		drawseg[MAX_DRAWSEG];
-	int				drawseg_count;
 	int				seg;
 	short			**opening;
 	short			open_f;
+
+	double			dist;
 
 	t_vec2			*shoot_p;
 

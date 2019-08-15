@@ -6,11 +6,25 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/11 15:06:15 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/14 19:49:48 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/15 15:29:15 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doom_nukem.h"
+
+int		ft_trans_find(t_mlx *mlx, int sect, int s)
+{
+	if (mlx->trans_count <= 0)
+		return (0);
+	t_trans *trans = mlx->trans_list;
+	while (trans)
+	{
+		if (trans->sect == sect && trans->side == s)
+			return (1);
+		trans = trans->next;
+	}
+	return (0);
+}
 
 void	ft_move_player(t_mlx *mlx, double dx, double dy)
 {
@@ -81,8 +95,6 @@ void	ft_collision(t_mlx *mlx)
 
 		t_sector *sector = mlx->sect[mlx->player->sector];
 
-		// printf("%d\n", ft_is_inside(sector, px, py, dx, dy));
-
 		int s = -1;
 		while (++s < sector->verts_count)
 		{
@@ -137,7 +149,7 @@ void	ft_collision(t_mlx *mlx)
 				//	!!!
 				if (!stop)
 				{
-					
+					int has_trans = ft_trans_find(mlx, mlx->player->sector, s);
 					double hole_low = 9e9;
 					double hole_high = -9e9;
 					if (neighbor >= 0)
@@ -146,7 +158,7 @@ void	ft_collision(t_mlx *mlx)
 						hole_high = ft_min(sector->ceiling, mlx->sect[neighbor]->ceiling);
 					}
 					if (hole_high < mlx->player->pos->z + 0 ||				//	HEAD_MARGIN
-						hole_low > mlx->player->pos->z - eye_h + STAIRS_H)
+						hole_low > mlx->player->pos->z - eye_h + STAIRS_H || has_trans)
 					{
 						double xd = sector->verts[s + 1]->x - sector->verts[s + 0]->x;
 						double yd = sector->verts[s + 1]->y - sector->verts[s + 0]->y;
