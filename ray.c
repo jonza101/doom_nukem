@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/12 17:10:17 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/14 19:42:54 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/17 19:41:59 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ int		ft_line_intersect(t_mlx *mlx, t_vec2 *p0, t_vec2 *p1, t_vec2 *v0, t_vec2 *v
 
 	if (s >= 0 && s <= 1 && t >= 0 && t <= 1)
 	{
-		mlx->shoot_p->x = p0->x + (t * s1_x * 1.01f);
-		mlx->shoot_p->y = p0->y + (t * s1_y * 1.01f);
+		mlx->shoot_p->x = p0->x + (t * s1_x * 1.0001f);
+		mlx->shoot_p->y = p0->y + (t * s1_y * 1.0001f);
 		return (1);
 	}
 	return (0);

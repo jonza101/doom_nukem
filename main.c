@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/15 17:40:44 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/17 19:49:04 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,15 @@ void	ft_init(t_mlx *mlx)
 
 	mlx->wya_int = (t_scaler*)malloc(sizeof(t_scaler));
 	mlx->wyb_int = (t_scaler*)malloc(sizeof(t_scaler));
+
+	mlx->rend_wobj = (t_rend_wobj**)malloc(sizeof(t_rend_wobj*) * MAX_WSPRITES_ON_WALL);
+	int w = -1;
+	while (++w < MAX_WSPRITES_ON_WALL)
+	{
+		mlx->rend_wobj[w] = (t_rend_wobj*)malloc(sizeof(t_rend_wobj));
+		mlx->rend_wobj[w]->wya_int = (t_scaler*)malloc(sizeof(t_scaler));
+		mlx->rend_wobj[w]->wyb_int = (t_scaler*)malloc(sizeof(t_scaler));
+	}
 
 	mlx->u0 = 0;
 	mlx->u1 = 512;

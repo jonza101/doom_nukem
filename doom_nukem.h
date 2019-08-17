@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/15 18:04:48 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/17 19:24:43 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@
 
 #define MAX_DRAWSEG 128
 #define MAX_VISSPRITES 64
-#define MAX_VISWALLSPRITES 64
+#define MAX_VISWSPRITES 64
+#define MAX_WSPRITES_ON_WALL 16
 #define MAX_VISTRANSPARENT 64
 
 #define DBL_MAX 1.7976931348623158e+308
@@ -64,7 +65,7 @@
 
 #define TXT 3
 #define OBJ 9													//	3 -> 6 -> 8 -> 7 (CANISTER)
-#define WOBJ 1
+#define WOBJ 4
 #define TRANSPARENT 4
 #define SKY 1
 
@@ -111,6 +112,15 @@ typedef	struct		s_img
 	int				size_line;
 	int				endian;
 }					t_img;
+
+typedef struct		s_scaler
+{
+	int				result;
+	int				bop;
+	int				fd;
+	int				ca;
+	int				cache;
+}					t_scaler;
 
 typedef struct		s_obj_specs
 {
@@ -185,6 +195,48 @@ typedef	struct		s_wobj
 	struct s_wobj	*next;
 }					t_wobj;
 
+typedef struct		s_rend_wobj
+{
+	t_wobj			*wobj;
+
+	short			w_flag;
+
+	double			wvx1;
+	double			wvy1;
+	double			wvx2;
+	double			wvy2;
+
+	double			wtx1;
+	double			wtz1;
+	double			wtx2;
+	double			wtz2;
+
+	int				wu0;
+	int				wu1;
+
+	int				wy1a;
+	int				wy1b;
+	int				wy2a;
+	int				wy2b;
+
+	double			wxscale1;
+	double			wyscale1;
+	double			wxscale2;
+	double			wyscale2;
+
+	int				wx1;
+	int				wx2;
+
+	double			wyceil;
+	double			wyfloor;
+
+	int				wbeginx;
+	int				wendx;
+
+	t_scaler		*wya_int;
+	t_scaler		*wyb_int;
+}					t_rend_wobj;
+
 typedef struct		s_drawseg
 {
 	short			seg_type;		//	0 - SOLID
@@ -217,15 +269,6 @@ typedef struct		s_sector
 
 	int				verts_count;
 }					t_sector;
-
-typedef struct		s_scaler
-{
-	int				result;
-	int				bop;
-	int				fd;
-	int				ca;
-	int				cache;
-}					t_scaler;
 
 typedef	struct		s_weapon
 {
@@ -341,6 +384,7 @@ typedef	struct		s_mlx
 
 	t_wobj			*wobj_list;
 	int				wobj_count;
+	t_rend_wobj		**rend_wobj;
 
 	int				seg_i;
 	t_drawseg		drawseg[MAX_DRAWSEG];
@@ -452,5 +496,9 @@ void				ft_obj_anim(t_mlx *mlx, t_obj *obj);
 int					ft_explosive_obj(t_mlx *mlx, double p_dist);
 
 void				ft_shoot(t_mlx *mlx);
+
+void				ft_wobj_specs_calc(t_mlx *mlx, t_sector *sector, int s, int w_count);
+
+int					ft_line_intersect(t_mlx *mlx, t_vec2 *p0, t_vec2 *p1, t_vec2 *v0, t_vec2 *v1);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 15:17:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/15 14:51:26 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/17 12:49:11 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,10 +109,10 @@ void	ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector)
 	double px = mlx->player->pos->x;
 	double py = mlx->player->pos->y;
 
-	double dx = obj->specs->x - px;
-	double dy = obj->specs->y - py;
+	// double dx = obj->specs->x - px;
+	// double dy = obj->specs->y - py;
 
-	double obj_dist = sqrtf(dx * dx + dy * dy);
+	// double obj_dist = sqrtf(dx * dx + dy * dy);
 
 	double eye_y = mlx->player->sin_angle;
 	double eye_x = mlx->player->cos_angle;
@@ -131,8 +131,8 @@ void	ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector)
 
 	double obj_aspect_ratio = (double)frame->h / (double)frame->w;
 
-	double vx1_l = (obj->specs->x - px) / obj_dist;
-	double vy1_l = (obj->specs->y - py) / obj_dist;
+	double vx1_l = (obj->specs->x - px) / obj->dist;
+	double vy1_l = (obj->specs->y - py) / obj->dist;
 	double vx2_l = vy1_l;
 	double vy2_l = vx1_l;
 	double vx1 = (obj->specs->x - px);
@@ -202,7 +202,7 @@ void	ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector)
 	int f = -1;
 	while (++f <= mlx->seg_i)
 	{
-		if (mlx->drawseg[f].seg_type == 0 && mlx->drawseg[f].dist < obj_dist && ft_overlap(x1, x2, mlx->drawseg[f].x1, mlx->drawseg[f].x2))												//	TOO SLOW, I THINK
+		if (mlx->drawseg[f].seg_type == 0 && mlx->drawseg[f].dist < obj->dist && ft_overlap(x1, x2, mlx->drawseg[f].x1, mlx->drawseg[f].x2))												//	TOO SLOW, I THINK
 		{
 			int y = -1;																		//			SOLID
 			while (++y < H)
@@ -218,7 +218,7 @@ void	ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector)
 		}
 	}
 
-	if (x1 < -W || x1 > 2 * W || x2 < -W || x2 > 2 * W || obj_dist < 1.0f)
+	if (x1 < -W || x1 > 2 * W || x2 < -W || x2 > 2 * W || obj->dist < 1.0f)
 		return ;
 	int ox = -1;
 	while (++ox < obj_w)

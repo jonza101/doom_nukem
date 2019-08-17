@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:38 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/15 15:37:19 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/17 19:27:01 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,7 +156,7 @@ void	ft_draw_vline(t_mlx *mlx, int x, int y1,int y2, int top_color,int middle_co
 	}
 }
 
-void	ft_draw_tvline(t_mlx *mlx, int x, int y1, int y2, unsigned txtx, t_img *texture, int is_transparent)
+void	ft_draw_tvline(t_mlx *mlx, int x, int y1, int y2, unsigned txtx, t_img *texture, int rend_i)		//|		0 - WALL	|	1 - TRANSPARENT	|	1 - WALL_OBJECT		|
 {
 	y1 = ft_clamp(y1, 0, H - 1);
 	y2 = ft_clamp(y2, 0, H - 1);
@@ -166,13 +166,13 @@ void	ft_draw_tvline(t_mlx *mlx, int x, int y1, int y2, unsigned txtx, t_img *tex
 	{
 		unsigned txty = ft_scaler_next(mlx->scaler);
 		int color = texture->data[txty % texture->h * texture->w + txtx % texture->w];
-		if (!is_transparent && mlx->opening[y][x] == -1)
+		if (rend_i == 0 && mlx->opening[y][x] == -1)
 		{
 			mlx->data[x + y * W] = color;
 			if (mlx->open_f)
 				mlx->opening[y][x] = mlx->now->sector_n;
 		}
-		else if (is_transparent && mlx->opening[y][x] == -1 && color != IGNORE_COLOR && color != IGNORE_COLOR1 && color != IGNORE_COLOR2)
+		else if (rend_i == 1 && (mlx->opening[y][x] == -1 || mlx->opening[y][x] == mlx->now->sector_n) && color != IGNORE_COLOR && color != IGNORE_COLOR1 && color != IGNORE_COLOR2)
 		{
 			mlx->data[x + y * W] = color;
 			if (mlx->open_f)

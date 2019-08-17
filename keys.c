@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:41:19 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/14 13:08:28 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/17 19:33:50 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,30 +95,23 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 	if (keycode == MAC_NUM_PLUS)
 	{
 		mlx->u1 += 32;
-		mlx->c1 += 32;
 		printf("u1 %d\n", mlx->u1);
 	}
 	if (keycode == MAC_NUM_MINUS)
 	{
 		mlx->u1 -= 32;
-		mlx->c1 -= 32;
 		printf("u1 %d\n", mlx->u1);
 	}
 	if (keycode == MAC_PLUS)
 	{
 		mlx->u0 += 32;
-		mlx->c0 += 32;
 		printf("u0 %d\n", mlx->u0);
 	}
 	if (keycode == MAC_MINUS)
 	{
 		mlx->u0 -= 32;
-		mlx->c0 -= 32;
 		printf("u0 %d\n", mlx->u0);
 	}
-
-	// if (keycode == MAC_X)
-		// ft_explosive_obj(mlx);
 
 	if (keycode == MAC_DOT)
 	{

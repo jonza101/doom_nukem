@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/11 13:43:09 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/15 17:44:23 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/17 19:38:35 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -270,9 +270,10 @@ void	ft_init_static_wobj(t_mlx *mlx)
 {
 	int fd;
 	char *line;
-	char *wobj[1] = { "textures/wall_obj/static/puppy_pic.xpm" };
+	char *wobj[4] = { "textures/wall_obj/static/puppy_pic.xpm", "textures/wall_obj/static/dog_pic.xpm", "textures/wall_obj/static/w_blood1.xpm",
+						"textures/wall_obj/static/w_blood2.xpm"};
 	int i = -1;
-	while (++i < 1)
+	while (++i < 4)
 	{
 		fd = open(wobj[i], O_RDONLY);
 		int j = -1;
@@ -304,6 +305,21 @@ void	ft_init_wobj_specs(t_mlx *mlx)
 	mlx->wobj_l[0]->wobj_specs->abs_h = 2.0f;
 	mlx->wobj_l[0]->wobj_specs->u0 = 0;
 	mlx->wobj_l[0]->wobj_specs->u1 = 32;
+
+	mlx->wobj_l[1]->wobj_specs->abs_w = 1.5;
+	mlx->wobj_l[1]->wobj_specs->abs_h = 5.0f;
+	mlx->wobj_l[1]->wobj_specs->u0 = 0;
+	mlx->wobj_l[1]->wobj_specs->u1 = 64;
+
+	mlx->wobj_l[2]->wobj_specs->abs_w = 1.5;
+	mlx->wobj_l[2]->wobj_specs->abs_h = 5.0f;
+	mlx->wobj_l[2]->wobj_specs->u0 = 1;
+	mlx->wobj_l[2]->wobj_specs->u1 = 39;
+
+	mlx->wobj_l[3]->wobj_specs->abs_w = 1.75;
+	mlx->wobj_l[3]->wobj_specs->abs_h = 5.0f;
+	mlx->wobj_l[3]->wobj_specs->u0 = 0;
+	mlx->wobj_l[3]->wobj_specs->u1 = 44;
 }
 
 void	ft_init_wobj(t_mlx *mlx)

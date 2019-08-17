@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/15 17:50:59 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/17 19:47:57 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -296,6 +296,8 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 			while (++j < txt_count)
 				mlx->sect[tmp]->texts[j] = ft_strdup(tmp_t[j]);
 
+			ft_strsplit_free(tmp_t);
+
 			tmp_t = ft_strsplit(temp[2], ' ');
 			mlx->sect[tmp]->floor_txt = ft_atoi(tmp_t[0]);
 			mlx->sect[tmp]->ceil_txt = ft_atoi(tmp_t[1]);
@@ -423,6 +425,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->wobj_list->next->pos->x = ft_atof(w_pos[0]);
 				mlx->wobj_list->next->pos->y = ft_atof(w_pos[1]);
 				mlx->wobj_list->next->pos->z = ft_atof(w_pos[2]);
+				mlx->wobj_list->next->rendered = 0;
 
 				mlx->wobj_list = mlx->wobj_list->next;
 			}
@@ -437,6 +440,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->wobj_list->pos->x = ft_atof(w_pos[0]);
 				mlx->wobj_list->pos->y = ft_atof(w_pos[1]);
 				mlx->wobj_list->pos->z = ft_atof(w_pos[2]);
+				mlx->wobj_list->rendered = 0;
 
 				temp_wobj = mlx->wobj_list;
 			}
