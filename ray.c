@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/12 17:10:17 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/17 19:41:59 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/18 17:17:30 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,8 @@ void	ft_shoot(t_mlx *mlx)
 	double pz = mlx->player->pos->z;// + mlx->sect[mlx->player->sector]->floor;
 	double angle_xy = atan2f(mlx->player->sin_angle, mlx->player->cos_angle);
 	double angle_z = atanf(-mlx->player->yaw);
-	double dx = FIRE_RANGE * cosf(angle_xy) + px;
-	double dy = FIRE_RANGE * sinf(angle_xy) + py;
+	double dx = mlx->fire_range * cosf(angle_xy) + px;
+	double dy = mlx->fire_range * sinf(angle_xy) + py;
 
 	printf("\npx %f		py %f		pz %f\n", px, py, pz);
 	printf("dx %f		dy %f\n", dx, dy);

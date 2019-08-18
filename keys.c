@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:41:19 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/17 19:33:50 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/18 18:07:00 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,18 +145,21 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 	if (keycode == MAC_ONE && mlx->player->weapon_state == 0)
 	{
 		mlx->player->weapon = mlx->player->revolver;
+		mlx->fire_range = FIRE_RANGE;
 		mlx->gun_fire_i = 0;
 		mlx->gun_delay = 0;
 	}
 	if (keycode == MAC_TWO && mlx->player->weapon_state == 0)
 	{
 		mlx->player->weapon = mlx->player->shotgun;
+		mlx->fire_range = FIRE_RANGE;
 		mlx->gun_fire_i = 0;
 		mlx->gun_delay = 0;
 	}
 	if (keycode == MAC_THREE && mlx->player->weapon_state == 0)
 	{
 		mlx->player->weapon = mlx->player->a_rifle;
+		mlx->fire_range = FIRE_RANGE;
 		mlx->gun_fire_i = 0;
 		mlx->gun_delay = 0;
 	}

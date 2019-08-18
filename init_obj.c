@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/11 13:43:09 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/17 19:38:35 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/18 19:29:31 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -308,6 +308,7 @@ void	ft_init_wobj_specs(t_mlx *mlx)
 
 	mlx->wobj_l[1]->wobj_specs->abs_w = 1.5;
 	mlx->wobj_l[1]->wobj_specs->abs_h = 5.0f;
+	mlx->wobj_l[1]->wobj_specs->aspect_ratio = (double)(1.5f / 5.0f);
 	mlx->wobj_l[1]->wobj_specs->u0 = 0;
 	mlx->wobj_l[1]->wobj_specs->u1 = 64;
 

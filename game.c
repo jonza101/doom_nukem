@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:40:26 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/15 14:46:33 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/18 19:19:01 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ int		ft_game_loop(t_mlx *mlx)
 	else if (mlx->player->weapon_state == 2)
 		ft_gun_anim(mlx, mlx->player->weapon, mlx->player->weapon->altfire_delay, mlx->player->weapon->altfire_cont_delay);
 	ft_draw_player(mlx);
-	// ft_transparent(mlx);
 	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
 	// printf("loop\n");
 	// printf("state %d\n", mlx->player->weapon_state);

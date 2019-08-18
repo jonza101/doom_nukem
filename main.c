@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/17 19:49:04 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/18 18:08:58 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ void	ft_init(t_mlx *mlx)
 	mlx->gun_fire_i = 0;
 	mlx->gun_delay = 0;
 	mlx->altfire = 0;
+	mlx->fire_range = FIRE_RANGE;
 
 	mlx->scaler = (t_scaler*)malloc(sizeof(t_scaler));
 	mlx->ya_int = (t_scaler*)malloc(sizeof(t_scaler));
@@ -131,8 +132,6 @@ void	ft_init(t_mlx *mlx)
 		while (++x < W)
 			mlx->opening[y][x] = -1;
 	}
-
-	mlx->shoot_p = (t_vec2*)malloc(sizeof(t_vec2));
 }
 
 int		main()

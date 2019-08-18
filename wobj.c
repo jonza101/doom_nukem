@@ -6,44 +6,64 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/17 18:28:03 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/17 18:30:56 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/18 19:42:17 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doom_nukem.h"
+
+void	ft_wobj_pos_correct(t_mlx *mlx)
+{
+	t_wobj *wobj = mlx->wobj_list;
+	while (wobj)
+	{
+		double ang = atan2f(wobj->pos->y - mlx->player->pos->y, wobj->pos->x - mlx->player->pos->x);
+
+		t_vec2 *p0 = (t_vec2*)malloc(sizeof(t_vec2));
+		t_vec2 *p1 = (t_vec2*)malloc(sizeof(t_vec2));
+		p0->x = mlx->player->pos->x;
+		p0->y = mlx->player->pos->y;
+		p1->x = FIRE_RANGE * cosf(ang) + wobj->pos->x;
+		p1->y = FIRE_RANGE * sinf(ang) + wobj->pos->y;
+
+		ft_line_intersect(mlx, p0, p1, mlx->sect[wobj->sect]->verts[wobj->side + 0], mlx->sect[wobj->sect]->verts[wobj->side + 1]);
+		wobj->pos->x = mlx->shoot_p->x;
+		wobj->pos->y = mlx->shoot_p->y;
+
+		wobj->p1 = (t_vec2*)malloc(sizeof(t_vec2));
+		wobj->p2 = (t_vec2*)malloc(sizeof(t_vec2));
+
+		double dx1 = mlx->sect[wobj->sect]->verts[wobj->side + 0]->x - wobj->pos->x;
+		double dy1 = mlx->sect[wobj->sect]->verts[wobj->side + 0]->y - wobj->pos->y;
+		double dx2 = wobj->pos->x - mlx->sect[wobj->sect]->verts[wobj->side + 1]->x;
+		double dy2 = wobj->pos->y - mlx->sect[wobj->sect]->verts[wobj->side + 1]->y;
+		double dist1 = sqrtf(dx1 * dx1 + dy1 * dy1);
+		double dist2 = sqrtf(dx2 * dx2 + dy2 * dy2);
+
+		double half_w = (double)mlx->wobj_l[wobj->wobj_i]->wobj_specs->abs_w / 2.0f;
+
+		wobj->p1->x = wobj->pos->x - ((half_w * (wobj->pos->x - mlx->sect[wobj->sect]->verts[wobj->side + 0]->x)) / dist1);
+		wobj->p1->y = wobj->pos->y - ((half_w * (wobj->pos->y - mlx->sect[wobj->sect]->verts[wobj->side + 0]->y)) / dist1);
+
+		wobj->p2->x = wobj->pos->x - ((half_w * (wobj->pos->x - mlx->sect[wobj->sect]->verts[wobj->side + 1]->x)) / dist2);
+		wobj->p2->y = wobj->pos->y - ((half_w * (wobj->pos->y - mlx->sect[wobj->sect]->verts[wobj->side + 1]->y)) / dist2);
+
+		free(p0);
+		free(p1);
+
+		wobj = wobj->next;
+	}
+}
 
 void	ft_wobj_specs_calc(t_mlx *mlx, t_sector *sector, int s, int w_count)
 {
 	int w = -1;
 	while (++w < w_count)
 	{
-		t_vec2 *p0 = (t_vec2*)malloc(sizeof(t_vec2));
-		t_vec2 *p1 = (t_vec2*)malloc(sizeof(t_vec2));
-		p0->x = mlx->player->pos->x;
-		p0->y = mlx->player->pos->y;
-		p1->x = mlx->rend_wobj[w]->wobj->pos->x;
-		p1->y = mlx->rend_wobj[w]->wobj->pos->y;
-
-		ft_line_intersect(mlx, p0, p1, sector->verts[s + 0], sector->verts[s + 1]);
-
-		double diff_x = 0.0f;
-		double diff_y = 0.0f;
-		if (sector->verts[s + 0]->y == sector->verts[s + 1]->y && sector->verts[s + 0]->x != sector->verts[s + 1]->x)
-			diff_x = (double)mlx->wobj_l[mlx->rend_wobj[w]->wobj->wobj_i]->wobj_specs->abs_w / 2.0f;
-		else if (sector->verts[s + 0]->y != sector->verts[s + 1]->y && sector->verts[s + 0]->x == sector->verts[s + 1]->x)
-			diff_y = (double)mlx->wobj_l[mlx->rend_wobj[w]->wobj->wobj_i]->wobj_specs->abs_w / 2.0f;
-		else
-		{
-			diff_x = (double)mlx->wobj_l[mlx->rend_wobj[w]->wobj->wobj_i]->wobj_specs->abs_w / 2.0f;
-			diff_y = (double)mlx->wobj_l[mlx->rend_wobj[w]->wobj->wobj_i]->wobj_specs->abs_w / 2.0f;
-		}
-		mlx->rend_wobj[w]->wvx1 = (mlx->shoot_p->x - diff_x) - mlx->player->pos->x;
-		mlx->rend_wobj[w]->wvy1 = (mlx->shoot_p->y - diff_y) - mlx->player->pos->y;
-		mlx->rend_wobj[w]->wvx2 = (mlx->shoot_p->x + diff_x) - mlx->player->pos->x;
-		mlx->rend_wobj[w]->wvy2 = (mlx->shoot_p->y + diff_y) - mlx->player->pos->y;
-
-		free(p0);
-		free(p1);
+		mlx->rend_wobj[w]->wvx1 = (mlx->rend_wobj[w]->wobj->p1->x) - mlx->player->pos->x;
+		mlx->rend_wobj[w]->wvy1 = (mlx->rend_wobj[w]->wobj->p1->y) - mlx->player->pos->y;
+		mlx->rend_wobj[w]->wvx2 = (mlx->rend_wobj[w]->wobj->p2->x) - mlx->player->pos->x;
+		mlx->rend_wobj[w]->wvy2 = (mlx->rend_wobj[w]->wobj->p2->y) - mlx->player->pos->y;
 
 		double p_cos = mlx->player->cos_angle;
 		double p_sin = mlx->player->sin_angle;

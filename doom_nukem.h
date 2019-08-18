@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/17 19:24:43 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/18 18:29:16 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,11 @@
 #define ARIFLE_IDLE 1
 #define ARIFLE_FIRE 4
 
+#define AXE_IDLE 1
+#define AXE_ATTACK 12
+
 #define FIRE_RANGE 10000
+#define MELEE_RANGE 1
 
 typedef struct		s_vec2
 {
@@ -145,6 +149,7 @@ typedef	struct		s_wobj_specs
 {
 	double			abs_w;
 	double			abs_h;
+	double			aspect_ratio;
 
 	int				u0;
 	id_t			u1;
@@ -186,6 +191,8 @@ typedef	struct		s_obj
 typedef	struct		s_wobj
 {
 	t_vec3			*pos;
+	t_vec2			*p1;
+	t_vec2			*p2;
 	int				sect;
 	int				side;
 	int				wobj_i;
@@ -394,6 +401,7 @@ typedef	struct		s_mlx
 
 	double			dist;
 
+	double			fire_range;
 	t_vec2			*shoot_p;
 
 	int				cya;
@@ -497,6 +505,7 @@ int					ft_explosive_obj(t_mlx *mlx, double p_dist);
 
 void				ft_shoot(t_mlx *mlx);
 
+void				ft_wobj_pos_correct(t_mlx *mlx);
 void				ft_wobj_specs_calc(t_mlx *mlx, t_sector *sector, int s, int w_count);
 
 int					ft_line_intersect(t_mlx *mlx, t_vec2 *p0, t_vec2 *p1, t_vec2 *v0, t_vec2 *v1);

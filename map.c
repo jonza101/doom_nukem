@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/17 19:47:57 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/18 15:14:39 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -425,6 +425,10 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->wobj_list->next->pos->x = ft_atof(w_pos[0]);
 				mlx->wobj_list->next->pos->y = ft_atof(w_pos[1]);
 				mlx->wobj_list->next->pos->z = ft_atof(w_pos[2]);
+				
+				mlx->wobj_list->next->p1 = (t_vec2*)malloc(sizeof(t_vec2));
+				mlx->wobj_list->next->p2 = (t_vec2*)malloc(sizeof(t_vec2));
+
 				mlx->wobj_list->next->rendered = 0;
 
 				mlx->wobj_list = mlx->wobj_list->next;
@@ -440,6 +444,10 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->wobj_list->pos->x = ft_atof(w_pos[0]);
 				mlx->wobj_list->pos->y = ft_atof(w_pos[1]);
 				mlx->wobj_list->pos->z = ft_atof(w_pos[2]);
+
+				mlx->wobj_list->p1 = (t_vec2*)malloc(sizeof(t_vec2));
+				mlx->wobj_list->p2 = (t_vec2*)malloc(sizeof(t_vec2));
+
 				mlx->wobj_list->rendered = 0;
 
 				temp_wobj = mlx->wobj_list;
@@ -493,6 +501,8 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 	{
 		mlx->wobj_list->next = NULL;
 		mlx->wobj_list = temp_wobj;
+		mlx->shoot_p = (t_vec2*)malloc(sizeof(t_vec2));
+		ft_wobj_pos_correct(mlx);
 	}
 
 	printf("px %f	py %f	sect %d\n\n", mlx->player->pos->x, mlx->player->pos->y, mlx->player->sector);
