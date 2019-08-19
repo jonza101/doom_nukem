@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/11 13:43:09 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/18 19:29:31 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/19 15:19:13 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -264,68 +264,4 @@ void	ft_init_obj(t_mlx *mlx)
 	ft_init_static_obj(mlx);
 	ft_init_anim_obj(mlx);
 	ft_init_obj_scaler(mlx);
-}
-
-void	ft_init_static_wobj(t_mlx *mlx)
-{
-	int fd;
-	char *line;
-	char *wobj[4] = { "textures/wall_obj/static/puppy_pic.xpm", "textures/wall_obj/static/dog_pic.xpm", "textures/wall_obj/static/w_blood1.xpm",
-						"textures/wall_obj/static/w_blood2.xpm"};
-	int i = -1;
-	while (++i < 4)
-	{
-		fd = open(wobj[i], O_RDONLY);
-		int j = -1;
-		while (++j < 4)
-		{
-			get_next_line(fd, &line);
-			(j < 3) ? ft_strdel(&line) : 1;
-		}
-		char **tmp = ft_strsplit(line, ' ');
-		mlx->wobj_l[i] = (t_anim_list*)malloc(sizeof(t_anim_list));
-		mlx->wobj_l[i]->wobj_specs = (t_wobj_specs*)malloc(sizeof(t_wobj_specs));
-		mlx->wobj_l[i]->anim = (t_img**)malloc(sizeof(t_img*));
-		mlx->wobj_l[i]->anim[0] = (t_img*)malloc(sizeof(t_img));
-		mlx->wobj_l[i]->anim[0]->w = ft_atoi(&tmp[0][1]);
-		mlx->wobj_l[i]->anim[0]->h = ft_atoi(tmp[1]);
-		mlx->wobj_l[i]->anim[0]->img = mlx_xpm_file_to_image(mlx->mlx, wobj[i], &mlx->wobj_l[i]->anim[0]->w, &mlx->wobj_l[i]->anim[0]->h);
-		mlx->wobj_l[i]->anim[0]->data = (int*)mlx_get_data_addr(mlx->wobj_l[i]->anim[0]->img, &mlx->wobj_l[i]->anim[0]->bpp, &mlx->wobj_l[i]->anim[0]->size_line, &mlx->wobj_l[i]->anim[0]->endian);
-		mlx->wobj_l[i]->anim_n = 1;
-		mlx->wobj_l[i]->expl = 0;
-		ft_strsplit_free(tmp);
-		close(fd);
-		ft_strdel(&line);
-	}
-}
-
-void	ft_init_wobj_specs(t_mlx *mlx)
-{
-	mlx->wobj_l[0]->wobj_specs->abs_w = 0.75f;
-	mlx->wobj_l[0]->wobj_specs->abs_h = 2.0f;
-	mlx->wobj_l[0]->wobj_specs->u0 = 0;
-	mlx->wobj_l[0]->wobj_specs->u1 = 32;
-
-	mlx->wobj_l[1]->wobj_specs->abs_w = 1.5;
-	mlx->wobj_l[1]->wobj_specs->abs_h = 5.0f;
-	mlx->wobj_l[1]->wobj_specs->aspect_ratio = (double)(1.5f / 5.0f);
-	mlx->wobj_l[1]->wobj_specs->u0 = 0;
-	mlx->wobj_l[1]->wobj_specs->u1 = 64;
-
-	mlx->wobj_l[2]->wobj_specs->abs_w = 1.5;
-	mlx->wobj_l[2]->wobj_specs->abs_h = 5.0f;
-	mlx->wobj_l[2]->wobj_specs->u0 = 1;
-	mlx->wobj_l[2]->wobj_specs->u1 = 39;
-
-	mlx->wobj_l[3]->wobj_specs->abs_w = 1.75;
-	mlx->wobj_l[3]->wobj_specs->abs_h = 5.0f;
-	mlx->wobj_l[3]->wobj_specs->u0 = 0;
-	mlx->wobj_l[3]->wobj_specs->u1 = 44;
-}
-
-void	ft_init_wobj(t_mlx *mlx)
-{
-	mlx->wobj_l = (t_anim_list**)malloc(sizeof(t_anim_list*) * WOBJ);
-	ft_init_static_wobj(mlx);
-	ft_init_wobj_specs(mlx);
 }

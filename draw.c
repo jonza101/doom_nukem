@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/27 13:56:20 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/13 20:13:57 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/19 18:54:27 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,16 @@ void	ft_gun_anim(t_mlx *mlx, t_weapon *gun, int delay, int cont_delay)
 {
 	if (mlx->player->weapon_state == 1)
 	{
+		if (mlx->gun_delay == 0 && mlx->gun_fire_i == 0)
+			ft_shoot(mlx);
 		mlx->gun_delay++;
-		if (mlx->gun_fire_i < gun->fire_n && mlx->gun_delay == delay)
+		if (mlx->gun_delay >= delay)
 		{
 			mlx->player->frame = gun->fire[mlx->gun_fire_i];
 			mlx->gun_fire_i++;
 			mlx->gun_delay = 0;
 		}
-		else if (mlx->gun_fire_i == gun->fire_n)
+		if (mlx->gun_fire_i >= gun->fire_n)
 		{
 			if (mlx->player->weapon != mlx->player->a_rifle)
 				mlx->player->weapon_state = 0;
@@ -35,19 +37,20 @@ void	ft_gun_anim(t_mlx *mlx, t_weapon *gun, int delay, int cont_delay)
 		mlx->gun_delay++;
 		int altfire_n = (!mlx->altfire) ? gun->altfire_n : gun->altfire_cont_n;
 		int del = (!mlx->altfire) ? delay : cont_delay;
-		if (mlx->gun_fire_i < altfire_n && mlx->gun_delay == del)
+		if (mlx->gun_delay >= del)
 		{
 			t_img *frame = (!mlx->altfire) ? gun->altfire[mlx->gun_fire_i] : gun->altfire_cont[mlx->gun_fire_i];
 			mlx->player->frame = frame;
 			mlx->gun_fire_i++;
 			mlx->gun_delay = 0;
 		}
-		else if (mlx->gun_fire_i == altfire_n)
+		else if (mlx->gun_fire_i >= altfire_n)
 		{
 			mlx->gun_fire_i = 0;
 			mlx->gun_delay = 0;
 			if (mlx->altfire == 0)
 				mlx->altfire = 1;
+			ft_shoot(mlx);
 		}
 	}
 }

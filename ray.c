@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/12 17:10:17 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/18 17:17:30 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/19 15:12:56 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,12 +103,9 @@ void	ft_shoot(t_mlx *mlx)
 			double sz = p_dist * tanf(angle_z) + pz;
 			printf("angle_z %f\n", angle_z);
 			printf("sx %f		sy %f		sz %f\n\n", mlx->shoot_p->x, mlx->shoot_p->y, sz);
-			double n_sect_f = mlx->sect[neighbor]->floor;
-			double n_sect_c = mlx->sect[neighbor]->ceiling;
 			double p_sect_f = mlx->sect[mlx->player->sector]->floor;
 			double p_sect_c = mlx->sect[mlx->player->sector]->ceiling;
-			// printf("nf %f		nc %f\n", n_sect_f, n_sect_c);
-			// printf("pf %f		pc %f\n", p_sect_f, p_sect_c);
+
 			if (sz < p_sect_f)
 			{
 				if (ft_explosive_obj(mlx, p_dist))
@@ -141,8 +138,19 @@ void	ft_shoot(t_mlx *mlx)
 				free(p1);
 				return ;
 			}
+
+			t_vec3 *pos = (t_vec3*)malloc(sizeof(t_vec3));
+			pos->x = mlx->shoot_p->x;
+			pos->y = mlx->shoot_p->y;
+			pos->z = sz;
+
 			if (neighbor >= 0)
 			{
+				double n_sect_f = mlx->sect[neighbor]->floor;
+				double n_sect_c = mlx->sect[neighbor]->ceiling;
+				// printf("nf %f		nc %f\n", n_sect_f, n_sect_c);
+				// printf("pf %f		pc %f\n", p_sect_f, p_sect_c);
+
 				if (n_sect_f != p_sect_f || n_sect_c != p_sect_c)
 				{
 					if (sz > p_sect_f && sz < n_sect_f)
@@ -151,28 +159,38 @@ void	ft_shoot(t_mlx *mlx)
 						{
 							printf("hit canister\n");
 							printf("----------------------------------------------------\n");
+							free(p1);
+							free(pos);
 							return ;
 						}
+
+						ft_add_wobj(mlx, pos, mlx->now->sector_n, s);
 
 						printf("hit lower wall\n");
 						printf("sect %d			s %d\n", mlx->now->sector_n, s);
 						printf("----------------------------------------------------\n");
 						free(p1);
+						free(pos);
 						return ;
 					}
-					if (sz <= p_sect_c && sz >= n_sect_c)
+					else if (sz <= p_sect_c && sz >= n_sect_c)
 					{
 						if (ft_explosive_obj(mlx, p_dist))
 						{
 							printf("hit canister\n");
 							printf("----------------------------------------------------\n");
+							free(p1);
+							free(pos);
 							return ;
 						}
+
+						ft_add_wobj(mlx, pos, mlx->now->sector_n, s);
 
 						printf("hit upper wall\n");
 						printf("sect %d			s %d\n", mlx->now->sector_n, s);
 						printf("----------------------------------------------------\n");
 						free(p1);
+						free(pos);
 						return ;
 					}
 				}
@@ -186,13 +204,17 @@ void	ft_shoot(t_mlx *mlx)
 					printf("hit canister\n");
 					printf("----------------------------------------------------\n");
 					free(p1);
+					free(pos);
 					return ;
 				}
+
+				ft_add_wobj(mlx, pos, mlx->now->sector_n, s);
 
 				printf("hit solid wall\n");
 				printf("sect %d			s %d\n", mlx->now->sector_n, s);
 				printf("----------------------------------------------------\n");
 				free(p1);
+				free(pos);
 				return ;
 			}
 		}

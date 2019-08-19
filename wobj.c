@@ -6,11 +6,53 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/17 18:28:03 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/18 19:42:17 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/19 18:47:12 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doom_nukem.h"
+
+void	ft_add_wobj(t_mlx *mlx, t_vec3 *pos, int sect, int side)
+{
+	if (mlx->sect_wobj[sect]->side[side] >= MAX_WSPRITES_ON_WALL)
+		return ;
+
+	mlx->last_wobj->next = (t_wobj*)malloc(sizeof(t_wobj));							//	CHECK IF NO WALL SPRITES
+	mlx->last_wobj->next->sect = sect;
+	mlx->last_wobj->next->side = side;
+	mlx->last_wobj->next->pos = (t_vec3*)malloc(sizeof(t_vec3));
+	mlx->last_wobj->next->pos->x = pos->x;
+	mlx->last_wobj->next->pos->y = pos->y;
+	mlx->last_wobj->next->pos->z = pos->z;
+	mlx->last_wobj->next->wobj_i = 4;
+	mlx->last_wobj->next->rendered = 0;
+
+	mlx->last_wobj->next->del = 0;
+	mlx->last_wobj->next->anim_i = 0;
+	mlx->last_wobj->next->frame = mlx->wobj_l[mlx->last_wobj->next->wobj_i]->anim[0];
+
+	mlx->last_wobj->next->p1 = (t_vec2*)malloc(sizeof(t_vec2));
+	mlx->last_wobj->next->p2 = (t_vec2*)malloc(sizeof(t_vec2));
+
+	double dx1 = mlx->sect[sect]->verts[side + 0]->x - mlx->last_wobj->next->pos->x;
+	double dy1 = mlx->sect[sect]->verts[side + 0]->y - mlx->last_wobj->next->pos->y;
+	double dx2 = mlx->last_wobj->next->pos->x - mlx->sect[sect]->verts[side + 1]->x;
+	double dy2 = mlx->last_wobj->next->pos->y - mlx->sect[sect]->verts[side + 1]->y;
+	double dist1 = sqrtf(dx1 * dx1 + dy1 * dy1);
+	double dist2 = sqrtf(dx2 * dx2 + dy2 * dy2);
+
+	double half_w = (double)mlx->wobj_l[mlx->last_wobj->next->wobj_i]->wobj_specs->abs_w / 2.0f;
+
+	mlx->last_wobj->next->p1->x = mlx->last_wobj->next->pos->x - ((half_w * (mlx->last_wobj->next->pos->x - mlx->sect[sect]->verts[side + 0]->x)) / dist1);
+	mlx->last_wobj->next->p1->y = mlx->last_wobj->next->pos->y - ((half_w * (mlx->last_wobj->next->pos->y - mlx->sect[sect]->verts[side + 0]->y)) / dist1);
+
+	mlx->last_wobj->next->p2->x = mlx->last_wobj->next->pos->x - ((half_w * (mlx->last_wobj->next->pos->x - mlx->sect[sect]->verts[side + 1]->x)) / dist2);
+	mlx->last_wobj->next->p2->y = mlx->last_wobj->next->pos->y - ((half_w * (mlx->last_wobj->next->pos->y - mlx->sect[sect]->verts[side + 1]->y)) / dist2);
+
+	mlx->last_wobj = mlx->last_wobj->next;
+	mlx->last_wobj->next = NULL;
+	mlx->wobj_count++;
+}
 
 void	ft_wobj_pos_correct(t_mlx *mlx)
 {
@@ -195,5 +237,8 @@ void	ft_wobj_specs_calc(t_mlx *mlx, t_sector *sector, int s, int w_count)
 			ft_scaler_init(mlx->rend_wobj[w]->wya_int, mlx->rend_wobj[w]->wx1, mlx->rend_wobj[w]->wbeginx, mlx->rend_wobj[w]->wx2, mlx->rend_wobj[w]->wy1a, mlx->rend_wobj[w]->wy2a);
 			ft_scaler_init(mlx->rend_wobj[w]->wyb_int, mlx->rend_wobj[w]->wx1, mlx->rend_wobj[w]->wbeginx, mlx->rend_wobj[w]->wx2, mlx->rend_wobj[w]->wy1b, mlx->rend_wobj[w]->wy2b);
 		}
+
+		if (mlx->wobj_l[mlx->rend_wobj[w]->wobj->wobj_i]->anim_n > 1)
+			ft_wobj_anim(mlx, mlx->rend_wobj[w]->wobj);
 	}
 }

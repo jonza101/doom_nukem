@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/18 18:19:32 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/19 16:05:23 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -420,9 +420,9 @@ void	ft_draw(t_mlx *mlx)
 
 						ft_scaler_init(mlx->scaler, wya, wcya, wyb + 1, mlx->wobj_l[mlx->rend_wobj[w]->wobj->wobj_i]->wobj_specs->u0, mlx->wobj_l[mlx->rend_wobj[w]->wobj->wobj_i]->wobj_specs->u1);
 						if (neighbor >= 0)
-							ft_draw_tvline(mlx, x, wcya, wcyb, wtxtx, mlx->wobj_l[mlx->rend_wobj[w]->wobj->wobj_i]->anim[0], 1);
+							ft_draw_tvline(mlx, x, wcya, wcyb, wtxtx, mlx->rend_wobj[w]->wobj->frame, 1);
 						else
-							ft_draw_tvline(mlx, x, wcya, wcyb, wtxtx, mlx->wobj_l[mlx->rend_wobj[w]->wobj->wobj_i]->anim[0], 1);
+							ft_draw_tvline(mlx, x, wcya, wcyb, wtxtx, mlx->rend_wobj[w]->wobj->frame, 1);
 					}
 				}
 				//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

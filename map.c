@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/18 15:14:39 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/19 18:46:22 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,12 +106,15 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 	t_img **tmp_t;
 
 	t_obj *temp_obj, *prev;
+	mlx->obj_list = NULL;
 	mlx->obj_count = 0;
 
 	t_trans *temp_trans = NULL, *trans_prev = NULL;
+	mlx->trans_list = NULL;
 	mlx->trans_count = 0;
 
-	t_wobj *temp_wobj = NULL;
+	t_wobj *temp_wobj = NULL, *wobj_last = NULL;
+	mlx->wobj_list = NULL;
 	mlx->wobj_count = 0;
 
 	while (get_next_line(fd, &line))
@@ -421,6 +424,9 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->wobj_list->next->side = w_side;
 				mlx->wobj_list->next->wobj_i = w_i;
 				mlx->wobj_list->next->rendered = 0;
+				mlx->wobj_list->next->del = 0;
+				mlx->wobj_list->next->anim_i = 0;
+				mlx->wobj_list->next->frame = mlx->wobj_l[w_i]->anim[0];
 				mlx->wobj_list->next->pos = (t_vec3*)malloc(sizeof(t_vec3));
 				mlx->wobj_list->next->pos->x = ft_atof(w_pos[0]);
 				mlx->wobj_list->next->pos->y = ft_atof(w_pos[1]);
@@ -429,9 +435,9 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->wobj_list->next->p1 = (t_vec2*)malloc(sizeof(t_vec2));
 				mlx->wobj_list->next->p2 = (t_vec2*)malloc(sizeof(t_vec2));
 
-				mlx->wobj_list->next->rendered = 0;
-
 				mlx->wobj_list = mlx->wobj_list->next;
+
+				mlx->last_wobj = mlx->wobj_list;
 			}
 			else
 			{
@@ -440,6 +446,9 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->wobj_list->side = w_side;
 				mlx->wobj_list->wobj_i = w_i;
 				mlx->wobj_list->rendered = 0;
+				mlx->wobj_list->del = 0;
+				mlx->wobj_list->anim_i = 0;
+				mlx->wobj_list->frame = mlx->wobj_l[w_i]->anim[0];
 				mlx->wobj_list->pos = (t_vec3*)malloc(sizeof(t_vec3));
 				mlx->wobj_list->pos->x = ft_atof(w_pos[0]);
 				mlx->wobj_list->pos->y = ft_atof(w_pos[1]);
@@ -448,9 +457,8 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->wobj_list->p1 = (t_vec2*)malloc(sizeof(t_vec2));
 				mlx->wobj_list->p2 = (t_vec2*)malloc(sizeof(t_vec2));
 
-				mlx->wobj_list->rendered = 0;
-
 				temp_wobj = mlx->wobj_list;
+				mlx->last_wobj = mlx->wobj_list;
 			}
 			
 
@@ -510,41 +518,24 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 	while (++j < v - 1)
 		free(verts[j]);
 	free(verts);
-	// printf("sect %d\n", mlx->num_sec);
-	// int j = 0;
-	// while (j < s - 1)
-	// {
-	// 	printf("\nsect %d\n", j);
-	// 	printf("v_count %d\n", mlx->sect[j]->verts_count);
-	// 	printf("floor %f	ceiling %f\n\n", mlx->sect[j]->floor, mlx->sect[j]->ceiling);
-	// 	int k = -1;
-	// 	while (++k < mlx->sect[j]->verts_count + 1)
-	// 		printf("x %f	y %f\n", mlx->sect[j]->verts[k]->x, mlx->sect[j]->verts[k]->y);
-	// 	k = -1;
-	// 	while (++k < mlx->sect[j]->neighbors_count)
-	// 		printf("%s ", mlx->sect[j]->neighbors[k]);
-	// 	printf("\n");
-	// 	k = -1;
-	// 	while (++k < mlx->sect[j]->txt_count)
-	// 		printf("%s ", mlx->sect[j]->texts[k]);
-	// 	printf("\n________________________________\n");
-	// 	j++;
-	// }
 
-	// printf("\n------------------------------------------------\n\n");
-	// t_obj *obj = mlx->obj_list;
-	// while (obj)
-	// {
-	// 	printf("sect %d				index %d\n", obj->specs->sect, obj->specs->obj_i);
-	// 	printf("x %f			y %f\n", obj->specs->x, obj->specs->y);
-	// 	if (obj->prev)
-	// 	{
-	// 		printf("prev_sect %d			prev_index %d\n", obj->prev->specs->sect, obj->prev->specs->obj_i);
-	// 		printf("prev_x %f		prev_y %f\n", obj->prev->specs->x, obj->prev->specs->y);
-	// 	}
-	// 	else
-	// 		printf("prev -\n");
-	// 	printf("\n------------------------------------------------\n");
-	// 	obj = obj->next;
-	// }
+	mlx->sect_wobj = (t_sect_wobj**)malloc(sizeof(t_sect_wobj*) * mlx->num_sec);
+	int i = -1;
+	while (++i < mlx->num_sec)
+	{
+		mlx->sect_wobj[i] = (t_sect_wobj*)malloc(sizeof(t_sect_wobj));
+		mlx->sect_wobj[i]->side = (int*)malloc(sizeof(int) * mlx->sect[i]->verts_count);
+		int t = -1;
+		while (++t < mlx->sect[i]->verts_count)
+		{
+			mlx->sect_wobj[i]->side[t] = 0;
+		}
+	}
+
+	t_wobj *wobj = mlx->wobj_list;
+	while (wobj)
+	{
+		mlx->sect_wobj[wobj->sect]->side[wobj->side]++;
+		wobj = wobj->next;
+	}
 }

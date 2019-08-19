@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/18 18:29:16 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/19 18:48:21 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@
 #define MAX_DRAWSEG 128
 #define MAX_VISSPRITES 64
 #define MAX_VISWSPRITES 64
-#define MAX_WSPRITES_ON_WALL 16
+#define MAX_WSPRITES_ON_WALL 128
 #define MAX_VISTRANSPARENT 64
 
 #define DBL_MAX 1.7976931348623158e+308
@@ -65,7 +65,7 @@
 
 #define TXT 3
 #define OBJ 9													//	3 -> 6 -> 8 -> 7 (CANISTER)
-#define WOBJ 4
+#define WOBJ 8
 #define TRANSPARENT 4
 #define SKY 1
 
@@ -79,9 +79,6 @@
 
 #define ARIFLE_IDLE 1
 #define ARIFLE_FIRE 4
-
-#define AXE_IDLE 1
-#define AXE_ATTACK 12
 
 #define FIRE_RANGE 10000
 #define MELEE_RANGE 1
@@ -199,8 +196,17 @@ typedef	struct		s_wobj
 
 	short			rendered;
 
+	t_img			*frame;
+	int				anim_i;
+	int				del;
+
 	struct s_wobj	*next;
 }					t_wobj;
+
+typedef	struct		s_sect_wobj
+{
+	int				*side;
+}					t_sect_wobj;
 
 typedef struct		s_rend_wobj
 {
@@ -390,8 +396,11 @@ typedef	struct		s_mlx
 	int 			r_trans;
 
 	t_wobj			*wobj_list;
+	t_wobj			*last_wobj;
 	int				wobj_count;
 	t_rend_wobj		**rend_wobj;
+	t_sect_wobj		**sect_wobj;
+
 
 	int				seg_i;
 	t_drawseg		drawseg[MAX_DRAWSEG];
@@ -500,6 +509,7 @@ int					ft_find_trans_sect(t_mlx *mlx, int sector, int side);
 void				ft_bzero(void *s, size_t n);
 
 void				ft_obj_anim(t_mlx *mlx, t_obj *obj);
+void				ft_wobj_anim(t_mlx *mlx, t_wobj *wobj);
 
 int					ft_explosive_obj(t_mlx *mlx, double p_dist);
 
@@ -507,6 +517,7 @@ void				ft_shoot(t_mlx *mlx);
 
 void				ft_wobj_pos_correct(t_mlx *mlx);
 void				ft_wobj_specs_calc(t_mlx *mlx, t_sector *sector, int s, int w_count);
+void				ft_add_wobj(t_mlx *mlx, t_vec3 *pos, int sect, int side);
 
 int					ft_line_intersect(t_mlx *mlx, t_vec2 *p0, t_vec2 *p1, t_vec2 *v0, t_vec2 *v1);
 

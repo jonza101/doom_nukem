@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/18 18:08:58 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/19 15:32:45 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,6 +145,8 @@ int		main()
 	mlx->data = (int *)mlx_get_data_addr(mlx->img, &mlx->bpp, &mlx->size_line, &mlx->endian);
 
 	mlx->player = (t_player*)malloc(sizeof(t_player));
+
+	mlx->shoot_p = (t_vec2*)malloc(sizeof(t_vec2));
 
 	ft_init_graphics(mlx);
 	ft_load_map(mlx, "maps/map4");

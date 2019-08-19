@@ -6,12 +6,26 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/10 19:12:17 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/12 16:32:00 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/19 16:10:17 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doom_nukem.h"
 
+void	ft_wobj_anim(t_mlx *mlx, t_wobj *wobj)
+{
+	wobj->del++;
+	if (wobj->del >= mlx->wobj_l[wobj->wobj_i]->delay)
+	{
+		wobj->frame = mlx->wobj_l[wobj->wobj_i]->anim[wobj->anim_i];
+		wobj->anim_i++;
+		wobj->del = 0;
+		if (wobj->anim_i >= mlx->wobj_l[wobj->wobj_i]->anim_n)
+		{
+			wobj->anim_i = 0;
+		}
+	}
+}
 
 void	ft_obj_anim(t_mlx *mlx, t_obj *obj)
 {
