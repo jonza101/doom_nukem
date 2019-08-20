@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/19 16:05:23 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/20 16:47:18 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,14 +29,28 @@ t_wobj	*ft_find_wobj(t_mlx *mlx, int sect, int side)
 	return (NULL);
 }
 
+// double	ft_check(t_vec3 *p, t_vec2 *v1, t_vec2 *v2)
+// {
+// 	double nx = v1->y - v2->y;
+// 	double ny = v2->x - v1->x;
+
+// 	double p_c = (nx * (p->x - v1->x) + ny * (p->y - v1->y)) / sqrtf(nx * nx + ny * ny);
+// 	printf("%f\n", p_c);
+// 	return (p_c);
+// }
+
 void	ft_draw(t_mlx *mlx)
 {
-	short ytop[W] = {0};
+	short ytop[W];
 	short ybottom[W];	
 	short rendered_sect[mlx->num_sec];
 	int i = -1;
 	while (++i < W)
+	{
+		ytop[i] = 0;
 		ybottom[i] = H - 1;
+	}
+
 	i = -1;
 	while (++i < mlx->num_sec)
 		rendered_sect[i] = 0;
@@ -54,7 +68,7 @@ void	ft_draw(t_mlx *mlx)
 	mlx->obj_i = 0;
 	mlx->trans_i = 0;
 	int f = 0;
-	while (mlx->head != mlx->tail)
+	while (mlx->head != mlx->tail || !f)
 	{
 		mlx->now = mlx->tail;
 		if (++mlx->tail == mlx->queue + MAX_QUEUE)
@@ -475,8 +489,9 @@ void	ft_draw(t_mlx *mlx)
 		}
 		f++;
 		++rendered_sect[mlx->now->sector_n];
-		ft_find_obj_sect(mlx, mlx->now->sector_n);
+		ft_sect_obj(mlx, mlx->now->sector_n);
 	}
 	// printf("drawsegs %d\n", mlx->seg_i);
 	// printf("\n__________________________________________________________\n\n");
+	// printf("segs %d\n", mlx->seg_i);
 }

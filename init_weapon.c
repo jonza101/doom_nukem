@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/30 12:49:39 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/19 18:35:22 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/20 18:34:01 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	ft_init_arifle_idle(t_mlx *mlx)
 void	ft_init_arifle(t_mlx *mlx)
 {
 	mlx->player->a_rifle = (t_weapon*)malloc(sizeof(t_weapon));
-	mlx->player->a_rifle->fire_delay = 2;
+	mlx->player->a_rifle->fire_delay = 1;
 	mlx->player->a_rifle->has_altfire = 0;
 	mlx->player->a_rifle->scaler = -0.62f;
 	mlx->player->a_rifle->x_offset = 0;

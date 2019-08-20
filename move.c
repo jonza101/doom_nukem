@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/11 15:06:15 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/19 14:29:20 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/20 20:14:24 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,37 @@ int		ft_trans_find(t_mlx *mlx, int sect, int s)
 			return (1);
 		trans = trans->next;
 	}
+	return (0);
+}
+
+int		ft_line_intersect_move(t_mlx *mlx, t_vec2 *p0, t_vec2 *p1, t_vec2 *v0, t_vec2 *v1)
+{
+	double	s1_x;
+	double	s1_y;
+	double	s2_x;
+	double	s2_y;
+
+	s1_x = p1->x - p0->x;
+	s1_y = p1->y - p0->y;
+	s2_x = v1->x - v0->x;
+	s2_y = v1->y - v0->y;
+
+	double 	s;
+	double	t;
+
+	s = (-s1_y * (p0->x - v0->x) + s1_x * (p0->y - v0->y)) / (-s2_x * s1_y + s1_x * s2_y);
+	t = (s2_x * (p0->y - v0->y) - s2_y * (p0->x - v0->x)) / (-s2_x * s1_y + s1_x * s2_y);
+
+	if (s >= 0 && s <= 1 && t >= 0 && t <= 1)
+		return (1);
+	return (0);
+}
+
+int		ft_box_collision(t_obj *obj, double px, double py)
+{
+	if (px > obj->specs->verts[0]->x && px < obj->specs->verts[2]->x
+			&& py > obj->specs->verts[0]->y && py < obj->specs->verts[2]->y)
+		return (1);
 	return (0);
 }
 
@@ -94,6 +125,40 @@ void	ft_collision(t_mlx *mlx)
 		int neighbor;
 
 		t_sector *sector = mlx->sect[mlx->player->sector];
+
+		// t_vec2 *p0 = (t_vec2*)malloc(sizeof(t_vec2));
+		// t_vec2 *p1 = (t_vec2*)malloc(sizeof(t_vec2));
+		// p0->x = px;
+		// p0->y = py;
+		// p1->x = px + dx;
+		// p1->y = py + dy;
+
+		// t_obj *obj = sector->obj_list;
+		// while (obj)
+		// {
+		// 	if (obj->specs->has_collider)
+		// 	{
+		// 		int v = -1;
+		// 		while (++v < 4)
+		// 		{
+		// 			if (ft_line_intersect_move(mlx, p0, p1, obj->specs->verts[v + 0], obj->specs->verts[v + 1])
+		// 					&& ft_point_side(p0->x, p1->y, obj->specs->verts[v + 0]->x, obj->specs->verts[v + 0]->y,
+		// 						obj->specs->verts[v + 1]->x, obj->specs->verts[v + 1]->y))
+		// 			{
+		// 				double xd = obj->specs->verts[v + 1]->x - obj->specs->verts[v + 0]->x;
+		// 				double yd = obj->specs->verts[v + 1]->y - obj->specs->verts[v + 0]->y;
+		// 				mlx->player->velocity->x = xd * (dx * xd + yd * dy) / (xd * xd + yd * yd);			//	mlx->player->velocity->x
+		// 				mlx->player->velocity->y = yd * (dx * xd + yd * dy) / (xd * xd + yd * yd);			//	mlx->player->velocity->y
+		// 				mlx->moving = 0;
+		// 			}
+		// 		}
+				
+		// 		// printf("\n");
+		// 	}
+		// 	obj = obj->next;
+		// }
+		// free(p0);
+		// free(p1);
 
 		int s = -1;
 		while (++s < sector->verts_count)

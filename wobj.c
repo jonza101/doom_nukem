@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/17 18:28:03 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/19 18:47:12 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/20 18:58:14 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,10 @@ void	ft_add_wobj(t_mlx *mlx, t_vec3 *pos, int sect, int side)
 {
 	if (mlx->sect_wobj[sect]->side[side] >= MAX_WSPRITES_ON_WALL)
 		return ;
+	// t_wobj *wobj = mlx->last_wobj->next;
+	// if (mlx->wobj_count <= 0)
 
-	mlx->last_wobj->next = (t_wobj*)malloc(sizeof(t_wobj));							//	CHECK IF NO WALL SPRITES
+	mlx->last_wobj->next = (t_wobj*)malloc(sizeof(t_wobj));							//	CHECK IF NO SPRITES ON THE WALL
 	mlx->last_wobj->next->sect = sect;
 	mlx->last_wobj->next->side = side;
 	mlx->last_wobj->next->pos = (t_vec3*)malloc(sizeof(t_vec3));
@@ -71,9 +73,6 @@ void	ft_wobj_pos_correct(t_mlx *mlx)
 		ft_line_intersect(mlx, p0, p1, mlx->sect[wobj->sect]->verts[wobj->side + 0], mlx->sect[wobj->sect]->verts[wobj->side + 1]);
 		wobj->pos->x = mlx->shoot_p->x;
 		wobj->pos->y = mlx->shoot_p->y;
-
-		wobj->p1 = (t_vec2*)malloc(sizeof(t_vec2));
-		wobj->p2 = (t_vec2*)malloc(sizeof(t_vec2));
 
 		double dx1 = mlx->sect[wobj->sect]->verts[wobj->side + 0]->x - wobj->pos->x;
 		double dy1 = mlx->sect[wobj->sect]->verts[wobj->side + 0]->y - wobj->pos->y;

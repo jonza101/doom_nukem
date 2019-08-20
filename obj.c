@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 15:17:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/18 16:26:34 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/20 17:51:18 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ int		ft_texture_sampling(t_img *img, double sample_x, double sample_y)
 		return (img->data[sy * img->w + sx]);
 }
 
-void	ft_obj_dist(t_mlx *mlx)
+void	ft_sect_obj_dist(t_mlx *mlx, int sect)
 {
-	t_obj *obj = mlx->obj_list;
+	t_obj *obj = mlx->sect[sect]->obj_list;
 	while (obj)
 	{
 		double dx = obj->specs->x - mlx->player->pos->x;
@@ -37,28 +37,28 @@ void	ft_obj_dist(t_mlx *mlx)
 	}
 }
 
-void	ft_obj_sort(t_mlx *mlx)
+void	ft_sect_obj_sort(t_mlx *mlx, int sect)
 {
-	if (mlx->obj_count <= 0)
-		return ;
-	t_obj *obj = mlx->obj_list;
-	ft_obj_dist(mlx);
-	while (mlx->obj_list)
+	if (mlx->sect[sect]->obj_count <= 0)
+		return;
+	t_obj *obj = mlx->sect[sect]->obj_list;
+	ft_sect_obj_dist(mlx, sect);
+	while (mlx->sect[sect]->obj_list)
 	{
-		t_obj *nxt = mlx->obj_list->next;
+		t_obj *nxt = mlx->sect[sect]->obj_list->next;
 		while (nxt)
 		{
-			if (mlx->obj_list->dist < nxt->dist)
+			if (mlx->sect[sect]->obj_list->dist < nxt->dist)
 			{
-				t_obj_specs *temp = mlx->obj_list->specs;
-				mlx->obj_list->specs = nxt->specs;
+				t_obj_specs *temp = mlx->sect[sect]->obj_list->specs;
+				mlx->sect[sect]->obj_list->specs = nxt->specs;
 				nxt->specs = temp;
 			}
 			nxt = nxt->next;
 		}
-		mlx->obj_list = mlx->obj_list->next;
+		mlx->sect[sect]->obj_list = mlx->sect[sect]->obj_list->next;
 	}
-	mlx->obj_list = obj;
+	mlx->sect[sect]->obj_list = obj;
 }
 
 void	ft_drawseg_sort(t_mlx *mlx)
@@ -84,7 +84,6 @@ void	ft_drawseg_clear(t_mlx *mlx)
 	int i = -1;
 	while (++i <= mlx->seg_i)
 	{
-
 		mlx->drawseg[i].seg_type = -1;
 		mlx->drawseg[i].x1 = -1;
 		mlx->drawseg[i].x2 = -1;
@@ -247,27 +246,22 @@ void	ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector)
 	mlx->obj_i++;
 }
 
-void	ft_find_obj_sect(t_mlx *mlx, int sector)
+void	ft_sect_obj(t_mlx *mlx, int sect)
 {
-	if (mlx->obj_count <= 0)
-		return ;
-	int i = -1;
-	t_obj *obj = mlx->obj_list;
-	while (++i < mlx->obj_count)
+	ft_sect_obj_sort(mlx, sect);
+	t_obj *obj = mlx->sect[sect]->obj_list;
+	while (obj)
 	{
 		if (mlx->obj_i >= MAX_VISSPRITES)
 			return ;
-		if (obj->specs->sect == sector)
-			ft_draw_sector_obj(mlx, obj, sector);
+		ft_draw_sector_obj(mlx, obj, sect);
 		obj = obj->next;
 	}
 }
 
-int		ft_explosive_obj(t_mlx *mlx, double p_dist)											//		TEST
+int		ft_explosive_obj(t_mlx *mlx, double p_dist, int sect)											//		TEST
 {
-	if (mlx->obj_count <= 0)
-		return (0);
-	t_obj *obj = mlx->obj_list;
+	t_obj *obj = mlx->sect[sect]->obj_list;
 	while (obj)
 	{
 		if (mlx->obj_l[obj->specs->obj_i]->expl == 1)
@@ -277,6 +271,14 @@ int		ft_explosive_obj(t_mlx *mlx, double p_dist)											//		TEST
 				if (obj->specs->obj_i == 3)
 					obj->specs->obj_i = 6;
 				obj->specs->expl_f = 1;
+				if (obj->specs->has_collider)
+				{
+					int i = -1;
+					while (++i < 4)
+						free(obj->specs->verts[i]);
+					free(obj->specs->verts);
+					obj->specs->has_collider = 0;
+				}
 				return (1);
 			}
 		}

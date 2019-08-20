@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:40:26 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/19 18:28:22 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/20 15:15:17 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int		ft_game_loop(t_mlx *mlx)
 {
 	clock_t start_time = clock();
 
-	ft_obj_sort(mlx);
+	// ft_obj_sort(mlx);
 	ft_drawseg_sort(mlx);
 
 	ft_collision(mlx);

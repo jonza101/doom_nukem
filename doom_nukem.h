@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/19 18:48:21 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/20 18:05:48 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,10 @@ typedef struct		s_obj_specs
 	int				del;
 
 	int				obj_i;
-	int				expl_f;
+	short			expl_f;
+
+	short			has_collider;
+	t_vec2			**verts;
 }					t_obj_specs;
 
 typedef	struct		s_wobj_specs
@@ -271,6 +274,7 @@ typedef struct		s_sector
 	double			floor;
 
 	t_vec2			**verts;
+	int				verts_count;
 
 	int				ceil_txt;
 	int				floor_txt;
@@ -280,7 +284,9 @@ typedef struct		s_sector
 	char			**neighbors;
 	int				neighbors_count;
 
-	int				verts_count;
+	t_obj			*obj_list;
+	t_obj			*obj_head;
+	int				obj_count;
 }					t_sector;
 
 typedef	struct		s_weapon
@@ -386,8 +392,6 @@ typedef	struct		s_mlx
 	t_anim_list		**trans;
 	t_img			*sky[SKY];
 
-	t_obj			*obj_list;
-	int				obj_count;
 	int				obj_i;
 
 	t_trans			*trans_list;
@@ -407,8 +411,6 @@ typedef	struct		s_mlx
 	int				seg;
 	short			**opening;
 	short			open_f;
-
-	double			dist;
 
 	double			fire_range;
 	t_vec2			*shoot_p;
@@ -494,7 +496,8 @@ int					ft_key_realese(int keycode, t_mlx *mlx);
 void				ft_opening_clear(t_mlx *mlx);
 void				ft_drawseg_clear(t_mlx *mlx);
 
-void				ft_obj_sort(t_mlx *mlx);
+void				ft_sect_obj_sort(t_mlx *mlx, int sect);
+void				ft_sect_obj(t_mlx *mlx, int sect);
 void				ft_drawseg_sort(t_mlx *mlx);
 
 void				ft_thread(t_mlx *mlx);
@@ -511,7 +514,7 @@ void				ft_bzero(void *s, size_t n);
 void				ft_obj_anim(t_mlx *mlx, t_obj *obj);
 void				ft_wobj_anim(t_mlx *mlx, t_wobj *wobj);
 
-int					ft_explosive_obj(t_mlx *mlx, double p_dist);
+int					ft_explosive_obj(t_mlx *mlx, double p_dist, int sect);
 
 void				ft_shoot(t_mlx *mlx);
 
