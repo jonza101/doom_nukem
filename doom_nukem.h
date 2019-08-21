@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/20 18:05:48 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/21 21:25:32 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@
 
 
 #define TXT 3
-#define OBJ 9													//	3 -> 6 -> 8 -> 7 (CANISTER)
+#define OBJ 10													//	3 -> 6 -> 8 -> 7 (CANISTER)
 #define WOBJ 8
 #define TRANSPARENT 4
 #define SKY 1
@@ -129,6 +129,8 @@ typedef struct		s_obj_specs
 	double			y;
 	int				sect;
 
+	double			pov;
+
 	int				x1;
 	int				x2;
 	int				y1;
@@ -165,6 +167,10 @@ typedef struct		s_anim_list
 	double			aspect_scaler;
 
 	int				expl;
+	double			col_w;
+
+	int				can_rotate;
+	t_img			**rot;
 
 	t_wobj_specs	*wobj_specs;
 }					t_anim_list;
@@ -439,8 +445,8 @@ void				ft_load_map(t_mlx *mlx, char *map_file);
 double				ft_min(double a, double b);
 double				ft_max(double a, double b);
 double				ft_clamp(double a, double min, double max);
-int					ft_overlap(int a0, int a1, int b0, int b1);
-int					ft_intersect_box(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3);
+int					ft_overlap(double a0, double a1, double b0, double b1);
+int					ft_intersect_box(double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3);
 double				ft_vec_cross_prod(double x0, double y0, double x1, double y1);
 int					ft_point_side(double px, double py, double x0, double y0, double x1, double y1);
 void				ft_intersect(t_vec2 *p, double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4);

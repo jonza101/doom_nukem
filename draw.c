@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/27 13:56:20 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/20 12:05:10 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/21 15:19:15 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	ft_gun_anim(t_mlx *mlx, t_weapon *gun, int delay, int cont_delay)
 			mlx->gun_fire_i++;
 			mlx->gun_delay = 0;
 		}
-		else if (mlx->gun_fire_i >= altfire_n)
+		if (mlx->gun_fire_i >= altfire_n)
 		{
 			mlx->gun_fire_i = 0;
 			mlx->gun_delay = 0;

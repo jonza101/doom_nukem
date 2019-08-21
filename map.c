@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/20 18:32:22 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/21 21:25:28 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,37 +40,33 @@ int		ft_find_sect_mirror_side(t_mlx *mlx, int sector, int side, int sect_to_find
 	return (-1);
 }
 
-void	ft_set_obj_collider(t_obj *obj)
+void	ft_set_obj_collider(t_mlx *mlx, t_obj *obj)
 {
 	obj->specs->verts = (t_vec2**)malloc(sizeof(t_vec2*) * 5);
 	int f = -1;
 	while (++f < 5)
 		obj->specs->verts[f] = (t_vec2*)malloc(sizeof(t_vec2));
 	obj->specs->has_collider = 1;
-	obj->specs->verts[0]->x = obj->specs->x + 1.25f;
-	obj->specs->verts[0]->y = obj->specs->y + 1.25f;
-	obj->specs->verts[1]->x = obj->specs->x - 1.25f;
-	obj->specs->verts[1]->y = obj->specs->y + 1.25f;
-	obj->specs->verts[2]->x = obj->specs->x - 1.25f;
-	obj->specs->verts[2]->y = obj->specs->y - 1.25f;
-	obj->specs->verts[3]->x = obj->specs->x + 1.25f;
-	obj->specs->verts[3]->y = obj->specs->y - 1.25f;
-	obj->specs->verts[4]->x = obj->specs->x + 1.25f;
-	obj->specs->verts[4]->y = obj->specs->y + 1.25f;
 
-	// obj->specs->verts[0]->x = obj->specs->x - 1.25f;
-	// obj->specs->verts[0]->y = obj->specs->y - 1.25f;
-	// obj->specs->verts[1]->x = obj->specs->x + 1.25f;
-	// obj->specs->verts[1]->y = obj->specs->y - 1.25f;
-	// obj->specs->verts[2]->x = obj->specs->x + 1.25f;
-	// obj->specs->verts[2]->y = obj->specs->y + 1.25f;
-	// obj->specs->verts[3]->x = obj->specs->x - 1.25f;
-	// obj->specs->verts[3]->y = obj->specs->y + 1.25f;
+	obj->specs->verts[0]->x = obj->specs->x - mlx->obj_l[obj->specs->obj_i]->col_w;
+	obj->specs->verts[0]->y = obj->specs->y + mlx->obj_l[obj->specs->obj_i]->col_w;
+
+	obj->specs->verts[1]->x = obj->specs->x - mlx->obj_l[obj->specs->obj_i]->col_w;
+	obj->specs->verts[1]->y = obj->specs->y - mlx->obj_l[obj->specs->obj_i]->col_w;
+
+	obj->specs->verts[2]->x = obj->specs->x + mlx->obj_l[obj->specs->obj_i]->col_w;
+	obj->specs->verts[2]->y = obj->specs->y - mlx->obj_l[obj->specs->obj_i]->col_w;
+
+	obj->specs->verts[3]->x = obj->specs->x + mlx->obj_l[obj->specs->obj_i]->col_w;
+	obj->specs->verts[3]->y = obj->specs->y + mlx->obj_l[obj->specs->obj_i]->col_w;
+
+	obj->specs->verts[4]->x = obj->specs->x - mlx->obj_l[obj->specs->obj_i]->col_w;
+	obj->specs->verts[4]->y = obj->specs->y + mlx->obj_l[obj->specs->obj_i]->col_w;
 }
 
 int		ft_obj_index_check(int index)
 {
-	if (index == 0 || index == 3 || index == 4)
+	if (index == 0 || index == 3)
 		return (1);
 	return (0);
 }
@@ -364,7 +360,10 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				sect->obj_list->next->specs->obj_i = ft_atoi(temp[3]);
 				sect->obj_list->next->specs->has_collider = 0;
 				if (ft_obj_index_check(sect->obj_list->next->specs->obj_i))
-					ft_set_obj_collider(sect->obj_list->next);
+					ft_set_obj_collider(mlx, sect->obj_list->next);
+
+				sect->obj_list->next->specs->pov = 0.0f;
+
 				sect->obj_list->next->specs->frame = mlx->obj_l[sect->obj_list->next->specs->obj_i]->anim[0];
 				sect->obj_list->next->specs->del = 0;
 				sect->obj_list->next->specs->anim_i = 0;
@@ -382,7 +381,10 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				sect->obj_list->specs->obj_i = ft_atoi(temp[3]);
 				sect->obj_list->specs->has_collider = 0;
 				if (ft_obj_index_check(sect->obj_list->specs->obj_i))
-					ft_set_obj_collider(sect->obj_list);
+					ft_set_obj_collider(mlx, sect->obj_list);
+
+				sect->obj_list->specs->pov = 0.0f;
+
 				sect->obj_list->specs->frame = mlx->obj_l[sect->obj_list->specs->obj_i]->anim[0];
 				sect->obj_list->specs->del = 0;
 				sect->obj_list->specs->anim_i = 0;

@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:38 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/18 18:29:22 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/21 16:16:23 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,12 +40,12 @@ int		ft_sign(double val)
 	return (0);
 }
 
-int		ft_overlap(int a0, int a1, int b0, int b1)
+int		ft_overlap(double a0, double a1, double b0, double b1)
 {
 	return(ft_min(a0, a1) <= ft_max(b0, b1) && ft_min(b0, b1) <= ft_max(a0, a1));
 }
 
-int		ft_intersect_box(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3)
+int		ft_intersect_box(double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3)
 {
 	return (ft_overlap(x0, x1, x2, x3) && ft_overlap(y0, y1, y2, y3));
 }

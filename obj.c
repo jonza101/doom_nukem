@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 15:17:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/20 17:51:18 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/21 21:26:42 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,31 +102,54 @@ void	ft_opening_clear(t_mlx *mlx)
 	}
 }
 
+void	ft_obj_angle(t_mlx *mlx, t_obj *obj)
+{
+	double dx = obj->specs->x - mlx->player->pos->x;
+	double dy = obj->specs->y - mlx->player->pos->y;
+
+	double eye_y = mlx->player->sin_angle;
+	double eye_x = mlx->player->cos_angle;
+	double obj_angle = atan2f(dy, dx);
+	if (obj_angle < -3.14159f)
+		obj_angle += (2 * 3.14159f);
+	if (obj_angle > 3.14159f)
+		obj_angle -= (2 * 3.14159f);
+	printf("%f\n", obj_angle);
+	printf("%f\n\n", obj_angle * 180 / M_PI);
+
+	// double obj_angle = obj_angle * 180 / M_PI;
+
+	if (obj_angle >= -0.3839724f && obj_angle < 0.3839724f)
+		obj->specs->frame = mlx->obj_l[obj->specs->obj_i]->rot[0];
+	else if (obj_angle >= 0.3839724f && obj_angle < 1.169371f)
+		obj->specs->frame = mlx->obj_l[obj->specs->obj_i]->rot[7];
+	else if (obj_angle >= 1.169371f && obj_angle < 1.9547688f)
+		obj->specs->frame = mlx->obj_l[obj->specs->obj_i]->rot[6];
+	else if (obj_angle >= 1.9547688f && obj_angle < 2.7401669f)
+		obj->specs->frame = mlx->obj_l[obj->specs->obj_i]->rot[5];
+	else if ((obj_angle >= 2.7401669f && obj_angle <= 3.14159f) || (obj_angle <= -2.7401669f && obj_angle >= -3.14159f))
+		obj->specs->frame = mlx->obj_l[obj->specs->obj_i]->rot[4];
+	else if (obj_angle > -2.7401669f && obj_angle <= -1.9547688f)
+		obj->specs->frame = mlx->obj_l[obj->specs->obj_i]->rot[3];
+	else if (obj_angle > -1.9547688f && obj_angle <= -1.169371f)
+		obj->specs->frame = mlx->obj_l[obj->specs->obj_i]->rot[2];
+	else if (obj_angle > -1.169371f && obj_angle <= -0.3839724f)
+		obj->specs->frame = mlx->obj_l[obj->specs->obj_i]->rot[1];
+}
+
 void	ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector)
 {
 	ft_drawseg_sort(mlx);
 	double px = mlx->player->pos->x;
 	double py = mlx->player->pos->y;
 
-	// double dx = obj->specs->x - px;
-	// double dy = obj->specs->y - py;
-
-	// double obj_dist = sqrtf(dx * dx + dy * dy);
-
-	double eye_y = mlx->player->sin_angle;
-	double eye_x = mlx->player->cos_angle;
-	// double obj_angle = atan2f(dy, dx) - atan2f(eye_y, eye_x);
-	// if (obj_angle < -3.14159f)
-	// 	obj_angle += (2 * 3.14159f);
-	// if (obj_angle > 3.14159f)
-	// 	obj_angle -= (2 * 3.14159f);
-	// obj_angle *= ((double)H / (double)W);
-	// int inf_fov = (fabs(obj_angle) <= 0.83f) ? 1 : 0;
+	t_img *frame = obj->specs->frame;
 
 	if (mlx->obj_l[obj->specs->obj_i]->anim_n > 1)
 		ft_obj_anim(mlx, obj);
 
-	t_img *frame = obj->specs->frame;
+	if (mlx->obj_l[obj->specs->obj_i]->can_rotate)
+		ft_obj_angle(mlx, obj);
 
 	double obj_aspect_ratio = (double)frame->h / (double)frame->w;
 
@@ -217,7 +240,7 @@ void	ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector)
 		}
 	}
 
-	if (x1 < -W || x1 > 2 * W || x2 < -W || x2 > 2 * W || obj->dist < 1.0f)
+	if (x1 < -W || x1 > 2 * W || x2 < -W || x2 > 2 * W || obj->dist < 0.25f)
 		return ;
 	int ox = -1;
 	while (++ox < obj_w)

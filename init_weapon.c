@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/30 12:49:39 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/20 18:34:01 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/21 15:22:59 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -268,7 +268,7 @@ void	ft_init_revolver(t_mlx *mlx)
 {
 	mlx->player->revolver = (t_weapon*)malloc(sizeof(t_weapon));
 	mlx->player->revolver->fire_delay = 3;
-	mlx->player->revolver->altfire_delay = 3;
+	mlx->player->revolver->altfire_delay = 2;
 	mlx->player->revolver->altfire_cont_delay = 2;
 	mlx->player->revolver->has_altfire = 1;
 	mlx->player->revolver->scaler = 0.0f;
