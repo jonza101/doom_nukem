@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 15:17:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/21 21:26:42 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/22 15:54:36 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,15 +109,13 @@ void	ft_obj_angle(t_mlx *mlx, t_obj *obj)
 
 	double eye_y = mlx->player->sin_angle;
 	double eye_x = mlx->player->cos_angle;
-	double obj_angle = atan2f(dy, dx);
+	double obj_angle = atan2f(dy, dx) + obj->specs->pov;
 	if (obj_angle < -3.14159f)
 		obj_angle += (2 * 3.14159f);
 	if (obj_angle > 3.14159f)
 		obj_angle -= (2 * 3.14159f);
-	printf("%f\n", obj_angle);
-	printf("%f\n\n", obj_angle * 180 / M_PI);
-
-	// double obj_angle = obj_angle * 180 / M_PI;
+	// printf("%f\n", obj_angle);
+	// printf("%f\n\n", obj_angle * 180 / M_PI);
 
 	if (obj_angle >= -0.3839724f && obj_angle < 0.3839724f)
 		obj->specs->frame = mlx->obj_l[obj->specs->obj_i]->rot[0];
@@ -259,6 +257,8 @@ void	ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector)
 				{
 					if ((mlx->opening[yc][xc] == obj->specs->sect || mlx->opening[yc][xc] == -1))
 					{
+						if (mlx->sect[mlx->now->sector_n]->light == 0)
+							color = ft_color_convert(color, mlx->sect[mlx->now->sector_n]->lum);
 						mlx->data[yc * W + xc] = color;
 						mlx->opening[yc][xc] = obj->specs->sect;
 					}

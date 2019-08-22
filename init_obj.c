@@ -6,11 +6,64 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/11 13:43:09 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/21 21:26:21 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/22 12:46:11 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doom_nukem.h"
+
+void	ft_init_hog(t_mlx *mlx)
+{
+	int fd;
+	char *line;
+	int id = 10;
+	char *hog[8] = { "textures/obj/rotatable/hog/hog0.xpm", "textures/obj/rotatable/hog/hog45.xpm", "textures/obj/rotatable/hog/hog90.xpm",
+						"textures/obj/rotatable/hog/hog135.xpm", "textures/obj/rotatable/hog/hog180.xpm", "textures/obj/rotatable/hog/hog225.xpm",
+						"textures/obj/rotatable/hog/hog270.xpm", "textures/obj/rotatable/hog/hog315.xpm" };
+	mlx->obj_l[id] = (t_anim_list*)malloc(sizeof(t_anim_list));
+	mlx->obj_l[id]->anim_n = 1;
+	mlx->obj_l[id]->expl = 0;
+
+	mlx->obj_l[id]->anim = (t_img**)malloc(sizeof(t_img*));
+	mlx->obj_l[id]->anim[0] = (t_img*)malloc(sizeof(t_img));
+	fd = open(hog[0], O_RDONLY);
+	int j = -1;
+	while (++j < 4)
+	{
+		get_next_line(fd, &line);
+		(j < 3) ? ft_strdel(&line) : 1;
+	}
+	char **tmp = ft_strsplit(line, ' ');
+	mlx->obj_l[id]->anim[0]->w = ft_atoi(&tmp[0][1]);
+	mlx->obj_l[id]->anim[0]->h = ft_atoi(tmp[1]);
+	mlx->obj_l[id]->anim[0]->img = mlx_xpm_file_to_image(mlx->mlx, hog[0], &mlx->obj_l[id]->anim[0]->w, &mlx->obj_l[id]->anim[0]->h);
+	mlx->obj_l[id]->anim[0]->data = (int*)mlx_get_data_addr(mlx->obj_l[id]->anim[0]->img, &mlx->obj_l[id]->anim[0]->bpp, &mlx->obj_l[id]->anim[0]->size_line, &mlx->obj_l[id]->anim[0]->endian);
+	ft_strsplit_free(tmp);
+	close(fd);
+	ft_strdel(&line);
+
+	mlx->obj_l[id]->rot = (t_img**)malloc(sizeof(t_img*) * 8);
+	int i = -1;
+	while (++i < 8)
+	{
+		fd = open(hog[i], O_RDONLY);
+		int j = -1;
+		while (++j < 4)
+		{
+			get_next_line(fd, &line);
+			(j < 3) ? ft_strdel(&line) : 1;
+		}
+		tmp = ft_strsplit(line, ' ');
+		mlx->obj_l[id]->rot[i] = (t_img*)malloc(sizeof(t_img));
+		mlx->obj_l[id]->rot[i]->w = ft_atoi(&tmp[0][1]);
+		mlx->obj_l[id]->rot[i]->h = ft_atoi(tmp[1]);
+		mlx->obj_l[id]->rot[i]->img = mlx_xpm_file_to_image(mlx->mlx, hog[i], &mlx->obj_l[id]->rot[i]->w, &mlx->obj_l[id]->rot[i]->h);
+		mlx->obj_l[id]->rot[i]->data = (int*)mlx_get_data_addr(mlx->obj_l[id]->rot[i]->img, &mlx->obj_l[id]->rot[i]->bpp, &mlx->obj_l[id]->rot[i]->size_line, &mlx->obj_l[id]->rot[i]->endian);
+		ft_strsplit_free(tmp);
+		close(fd);
+		ft_strdel(&line);
+	}
+}
 
 void	ft_init_chair(t_mlx *mlx)
 {
@@ -68,6 +121,7 @@ void	ft_init_chair(t_mlx *mlx)
 void	ft_init_rot_obj(t_mlx *mlx)
 {
 	ft_init_chair(mlx);
+	ft_init_hog(mlx);
 }
 
 void	ft_init_explosion(t_mlx *mlx)
@@ -303,6 +357,7 @@ void	ft_init_obj_specs(t_mlx *mlx)
 	mlx->obj_l[7]->scaler = 2.5;
 	mlx->obj_l[8]->scaler = -1.0f;
 	mlx->obj_l[9]->scaler = 3.5f;
+	mlx->obj_l[10]->scaler = -1.0f;
 
 	mlx->obj_l[0]->aspect_scaler = 1.0f;
 	mlx->obj_l[1]->aspect_scaler = 0.95f;
@@ -314,6 +369,7 @@ void	ft_init_obj_specs(t_mlx *mlx)
 	mlx->obj_l[7]->aspect_scaler = 1.5f;
 	mlx->obj_l[8]->aspect_scaler = 1.0f;
 	mlx->obj_l[9]->aspect_scaler = 1.0f;
+	mlx->obj_l[10]->aspect_scaler = 1.0f;
 
 	mlx->obj_l[0]->col_w = 1.0f;
 	mlx->obj_l[3]->col_w = 0.75f;
@@ -330,6 +386,7 @@ void	ft_init_obj_specs(t_mlx *mlx)
 	mlx->obj_l[7]->can_rotate = 0;
 	mlx->obj_l[8]->can_rotate = 0;
 	mlx->obj_l[9]->can_rotate = 1;
+	mlx->obj_l[10]->can_rotate = 1;
 }
 
 void	ft_init_obj(t_mlx *mlx)

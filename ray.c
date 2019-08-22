@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/12 17:10:17 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/20 15:23:44 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/22 15:24:33 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,91 @@ int		ft_poly_intersect(t_mlx *mlx, t_sector *sector, t_vec2 *p0, t_vec2 *p1)
 	ft_memdel((void**)&v0);
 	ft_memdel((void**)&v1);
 	return (-1);
+}
+
+void	ft_interact(t_mlx *mlx)
+{
+	double px = mlx->player->pos->x;
+	double py = mlx->player->pos->y;
+	double pz = mlx->player->pos->z;// + mlx->sect[mlx->player->sector]->floor;
+	double angle_xy = atan2f(mlx->player->sin_angle, mlx->player->cos_angle);
+	double angle_z = atanf(-mlx->player->yaw);
+	double dx = INTERACT_RANGE * cosf(angle_xy) + px;
+	double dy = INTERACT_RANGE * sinf(angle_xy) + py;
+
+	printf("\npx %f		py %f		pz %f\n", px, py, pz);
+	printf("dx %f		dy %f\n", dx, dy);
+
+	t_vec2 *p1 = (t_vec2*)malloc(sizeof(t_vec2));
+
+	mlx->shoot_p->x = px;
+	mlx->shoot_p->y = py;
+	p1->x = dx;
+	p1->y = dy;
+
+	t_sector *sector = mlx->sect[mlx->player->sector];
+	mlx->now->sector_n = mlx->player->sector;
+
+	int hit = 0;
+	while (!hit)
+	{
+		int s = ft_poly_intersect(mlx, sector, mlx->shoot_p, p1);
+		if (s != -1)
+		{
+			int neighbor = ft_atoi(sector->neighbors[s]);
+
+			double dxx = mlx->shoot_p->x - px;
+			double dyy = mlx->shoot_p->y - py;
+			double p_dist = sqrtf(dxx * dxx + dyy * dyy);
+			double sz = p_dist * tanf(angle_z) + pz;
+
+			double p_sect_f = mlx->sect[mlx->player->sector]->floor;
+			double p_sect_c = mlx->sect[mlx->player->sector]->ceiling;
+
+			t_vec3 *pos = (t_vec3*)malloc(sizeof(t_vec3));
+			pos->x = mlx->shoot_p->x;
+			pos->y = mlx->shoot_p->y;
+			pos->z = sz;
+
+			if (neighbor >= 0)
+			{
+				double n_sect_f = mlx->sect[neighbor]->floor;
+				double n_sect_c = mlx->sect[neighbor]->ceiling;
+
+				if (n_sect_f != p_sect_f || n_sect_c != p_sect_c)
+				{
+					if (sz > p_sect_f && sz < n_sect_f)
+					{
+						ft_interact_check(mlx, mlx->now->sector_n, s, pos);
+
+						free(p1);
+						free(pos);
+						return ;
+					}
+					else if (sz <= p_sect_c && sz >= n_sect_c)
+					{
+						ft_interact_check(mlx, mlx->now->sector_n, s, pos);
+
+						free(p1);
+						free(pos);
+						return ;
+					}
+				}
+				sector = mlx->sect[neighbor];
+				mlx->now->sector_n = neighbor;
+			}
+			else
+			{
+				ft_interact_check(mlx, mlx->now->sector_n, s, pos);
+
+				free(p1);
+				free(pos);
+				return ;
+			}
+		}
+		else
+			return;
+	}
 }
 
 void	ft_shoot(t_mlx *mlx)

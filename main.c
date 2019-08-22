@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/20 17:12:59 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/22 13:46:24 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,6 +132,8 @@ void	ft_init(t_mlx *mlx)
 		while (++x < W)
 			mlx->opening[y][x] = -1;
 	}
+
+	mlx->rgb = (t_rgb*)malloc(sizeof(t_rgb));
 }
 
 int		main()

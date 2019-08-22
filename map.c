@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/21 21:25:28 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/22 16:01:27 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,6 +261,10 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->sect[s - 1]->obj_list = NULL;
 				mlx->sect[s - 1]->obj_count = 0;
 
+				mlx->sect[s - 1]->light = 1;
+				mlx->sect[s - 1]->lum = 0.5f;
+				mlx->sect[s - 1]->has_switcher = 0;
+
 				ft_strsplit_free(t);
 			}
 			else
@@ -315,6 +319,10 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->sect[0]->obj_list = NULL;
 				mlx->sect[0]->obj_count = 0;
 
+				mlx->sect[0]->light = 1;
+				mlx->sect[0]->lum = 0.5f;
+				mlx->sect[0]->has_switcher = 0;
+
 				ft_strsplit_free(t);
 			}
 			ft_strsplit_free(temp);
@@ -362,7 +370,10 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				if (ft_obj_index_check(sect->obj_list->next->specs->obj_i))
 					ft_set_obj_collider(mlx, sect->obj_list->next);
 
-				sect->obj_list->next->specs->pov = 0.0f;
+				if (temp[4])
+					sect->obj_list->next->specs->pov = ft_atof(temp[4]);
+				else
+					sect->obj_list->specs->pov = 0.0f;
 
 				sect->obj_list->next->specs->frame = mlx->obj_l[sect->obj_list->next->specs->obj_i]->anim[0];
 				sect->obj_list->next->specs->del = 0;
@@ -383,7 +394,10 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				if (ft_obj_index_check(sect->obj_list->specs->obj_i))
 					ft_set_obj_collider(mlx, sect->obj_list);
 
-				sect->obj_list->specs->pov = 0.0f;
+				if (temp[4])
+					sect->obj_list->specs->pov = ft_atof(temp[4]);
+				else
+					sect->obj_list->specs->pov = 0.0f;
 
 				sect->obj_list->specs->frame = mlx->obj_l[sect->obj_list->specs->obj_i]->anim[0];
 				sect->obj_list->specs->del = 0;
@@ -459,7 +473,22 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 			char **w_pos = ft_strsplit(temp[3], ' ');
 			int w_i = ft_atoi(temp[4]);
 
-			if (w > 1)
+			short swtch = 1;
+			if (w_i == 8 && mlx->sect[w_sect]->has_switcher)
+				swtch = 0;
+
+			if (w_i == 8)
+			{
+				if (temp[5])
+				{
+					double lum = ft_atof(temp[5]);
+					if (lum >= 0.1f && lum <= 0.95f)
+						mlx->sect[w_sect]->lum = lum;
+				}
+				mlx->sect[w_sect]->has_switcher = 1;
+			}
+
+			if (w > 1 && swtch)
 			{
 				mlx->wobj_list->next = (t_wobj*)malloc(sizeof(t_wobj));
 				mlx->wobj_list->next->sect = w_sect;
@@ -473,15 +502,18 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->wobj_list->next->pos->x = ft_atof(w_pos[0]);
 				mlx->wobj_list->next->pos->y = ft_atof(w_pos[1]);
 				mlx->wobj_list->next->pos->z = ft_atof(w_pos[2]);
-				
+
 				mlx->wobj_list->next->p1 = (t_vec2*)malloc(sizeof(t_vec2));
 				mlx->wobj_list->next->p2 = (t_vec2*)malloc(sizeof(t_vec2));
 
 				mlx->wobj_list = mlx->wobj_list->next;
 
 				mlx->last_wobj = mlx->wobj_list;
+
+				w++;
+				mlx->wobj_count++;
 			}
-			else
+			else if (w <= 1 && swtch)
 			{
 				mlx->wobj_list = (t_wobj*)malloc(sizeof(t_wobj));
 				mlx->wobj_list->sect = w_sect;
@@ -501,14 +533,13 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 
 				temp_wobj = mlx->wobj_list;
 				mlx->last_wobj = mlx->wobj_list;
+
+				w++;
+				mlx->wobj_count++;
 			}
-			
 
 			ft_strsplit_free(w_pos);
 			ft_strsplit_free(temp);
-
-			mlx->wobj_count++;
-			w++;
 		}
 		if (line[0] == 'p' && line[1] == '|')
 		{
@@ -570,20 +601,6 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 		if (mlx->sect[i]->obj_count > 0)
 			mlx->sect[i]->obj_list = mlx->sect[i]->obj_head;
 	}
-
-	// int k = -1;
-	// while (++k < mlx->num_sec)
-	// {
-	// 	t_obj *obj = mlx->sect[k]->obj_list;
-	// 	while (obj)
-	// 	{
-	// 		printf("sect %d			index %d\n", obj->specs->sect, obj->specs->obj_i);
-	// 		printf("x %f		y %f\n\n", obj->specs->x, obj->specs->y);
-
-	// 		obj = obj->next;
-	// 	}
-	// 	printf("------------------------------\n");
-	// }
 
 	t_wobj *wobj = mlx->wobj_list;
 	while (wobj)

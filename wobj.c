@@ -6,15 +6,43 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/17 18:28:03 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/21 21:08:48 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/22 15:51:19 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doom_nukem.h"
 
+void	ft_interact_check(t_mlx *mlx, int sect, int side, t_vec3 *pos)
+{
+	t_wobj *wobj = mlx->wobj_list;
+	while (wobj)
+	{
+		double down_z = wobj->pos->z - mlx->wobj_l[wobj->wobj_i]->wobj_specs->abs_h / 2.0f;
+		double up_z = wobj->pos->z + mlx->wobj_l[wobj->wobj_i]->wobj_specs->abs_h / 2.0f;
+		printf("wx %f		wy %f		wz %f\n", wobj->pos->x, wobj->pos->y, wobj->pos->z);
+		printf("px %f		py %f		pz %f\n", pos->x, pos->y, pos->z);
+		printf("x1 %f		y %f\n", wobj->p1->x, wobj->p1->y);
+		printf("x2 %f		y2 %f\n\n", wobj->p2->x, wobj->p2->y);
+		double x1 = ft_min(wobj->p1->x, wobj->p2->x) - 0.15f;
+		double x2 = ft_max(wobj->p1->x, wobj->p2->x) + 0.15f;
+		double y1 = ft_min(wobj->p1->y, wobj->p2->y) - 0.15f;
+		double y2 = ft_max(wobj->p1->y, wobj->p2->y) + 0.15f;
+		if (wobj->wobj_i == 8 && wobj->sect == sect && wobj->side == side
+				&& pos->x >= x1 && pos->x <= x2
+				&& pos->y >= y1 && pos->y <= y2
+				&& pos->z >= down_z && pos->z <= up_z)
+		{
+			wobj->frame = (wobj->frame == mlx->wobj_l[wobj->wobj_i]->anim[0]) ? mlx->wobj_l[wobj->wobj_i]->anim[1] : mlx->wobj_l[wobj->wobj_i]->anim[0];
+			mlx->sect[sect]->light = !mlx->sect[sect]->light;
+			return;
+		}
+		wobj = wobj->next;
+	}
+}
+
 void	ft_add_wobj(t_mlx *mlx, t_vec3 *pos, int sect, int side)
 {
-	if (mlx->sect_wobj[sect]->side[side] >= MAX_WSPRITES_ON_WALL)
+	if ((mlx->sect_wobj[sect]->side[side] >= MAX_WSPRITES_ON_WALL) || (mlx->last_wobj->pos->x == pos->x && mlx->last_wobj->pos->y == pos->y && mlx->last_wobj->pos->z == pos->z))
 		return ;
 	// t_wobj *wobj = mlx->last_wobj->next;
 	// if (mlx->wobj_count <= 0)
@@ -237,7 +265,7 @@ void	ft_wobj_specs_calc(t_mlx *mlx, t_sector *sector, int s, int w_count)
 			ft_scaler_init(mlx->rend_wobj[w]->wyb_int, mlx->rend_wobj[w]->wx1, mlx->rend_wobj[w]->wbeginx, mlx->rend_wobj[w]->wx2, mlx->rend_wobj[w]->wy1b, mlx->rend_wobj[w]->wy2b);
 		}
 
-		if (mlx->wobj_l[mlx->rend_wobj[w]->wobj->wobj_i]->anim_n > 1)
+		if (mlx->wobj_l[mlx->rend_wobj[w]->wobj->wobj_i]->anim_n > 1 && mlx->wobj_l[mlx->rend_wobj[w]->wobj->wobj_i]->wobj_specs->is_switcher == 0)
 			ft_wobj_anim(mlx, mlx->rend_wobj[w]->wobj);
 	}
 }

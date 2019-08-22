@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/21 21:25:32 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/22 15:52:01 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,8 @@
 
 
 #define TXT 3
-#define OBJ 10													//	3 -> 6 -> 8 -> 7 (CANISTER)
-#define WOBJ 8
+#define OBJ 11													//	3 -> 6 -> 8 -> 7 (CANISTER)
+#define WOBJ 9
 #define TRANSPARENT 4
 #define SKY 1
 
@@ -82,6 +82,14 @@
 
 #define FIRE_RANGE 10000
 #define MELEE_RANGE 1
+#define INTERACT_RANGE 2.5
+
+typedef	struct		s_rgb
+{
+	int				r;
+	int				g;
+	int				b;
+}					t_rgb;
 
 typedef struct		s_vec2
 {
@@ -149,6 +157,8 @@ typedef struct		s_obj_specs
 
 typedef	struct		s_wobj_specs
 {
+	short			is_switcher;
+
 	double			abs_w;
 	double			abs_h;
 	double			aspect_ratio;
@@ -289,6 +299,10 @@ typedef struct		s_sector
 
 	char			**neighbors;
 	int				neighbors_count;
+
+	short			light;
+	double			lum;
+	short			has_switcher;
 
 	t_obj			*obj_list;
 	t_obj			*obj_head;
@@ -435,6 +449,8 @@ typedef	struct		s_mlx
 	short			gun_delay;
 	short			altfire;
 	short			del;
+
+	t_rgb			*rgb;
 }					t_mlx;
 
 void				ft_image(t_mlx *mlx, int x, int y, int color);
@@ -529,5 +545,10 @@ void				ft_wobj_specs_calc(t_mlx *mlx, t_sector *sector, int s, int w_count);
 void				ft_add_wobj(t_mlx *mlx, t_vec3 *pos, int sect, int side);
 
 int					ft_line_intersect(t_mlx *mlx, t_vec2 *p0, t_vec2 *p1, t_vec2 *v0, t_vec2 *v1);
+
+int					ft_color_convert(int color, double lum);
+
+void				ft_interact(t_mlx *mlx);
+void				ft_interact_check(t_mlx *mlx, int sect, int side, t_vec3 *pos);
 
 #endif

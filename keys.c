@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:41:19 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/19 18:29:15 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/22 14:38:16 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,9 @@ int		ft_key_realese(int keycode, t_mlx *mlx)
 		mlx->gun_fire_i = 0;
 		mlx->gun_delay = 0;
 	}
+
+	if (keycode == MAC_E)
+		ft_interact(mlx);
 	return (0);
 }
 
@@ -183,6 +186,27 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 	{
 		mlx->sect[mlx->player->sector]->floor += 0.5f;
 		printf("floor %f\n", mlx->sect[mlx->player->sector]->floor);
+	}
+
+	if (keycode == MAC_NUM_ONE)
+	{
+		mlx->wobj_l[8]->wobj_specs->u0--;
+		printf("u0 %d\n", mlx->wobj_l[8]->wobj_specs->u0);
+	}
+	if (keycode == MAC_NUM_TWO)
+	{
+		mlx->wobj_l[8]->wobj_specs->u0++;
+		printf("u0 %d\n", mlx->wobj_l[8]->wobj_specs->u0);
+	}
+	if (keycode == MAC_NUM_FOUR)
+	{
+		mlx->wobj_l[8]->wobj_specs->u1--;
+		printf("u1 %d\n", mlx->wobj_l[8]->wobj_specs->u1);
+	}
+	if (keycode == MAC_NUM_FIVE)
+	{
+		mlx->wobj_l[8]->wobj_specs->u1++;
+		printf("u1 %d\n", mlx->wobj_l[8]->wobj_specs->u1);
 	}
 
 	return (0);

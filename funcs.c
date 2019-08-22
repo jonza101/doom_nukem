@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:38 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/21 16:16:23 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/22 15:54:29 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,6 @@ double	ft_yaw(double y, double z, double p_yaw)
 
 void	ft_scaler_init(t_scaler *scaler, int a, int b, int c, int d, int f)
 {
-	if (c == a)
-		printf("exception\n");
 	scaler->result = d + (b - 1 - a) * (f - d) / (c - a);
 	scaler->bop = ((f < d) ^ (c < a)) ? -1 : 1;
 	scaler->fd = abs(f - d);
@@ -97,10 +95,26 @@ int		ft_scaler_next(t_scaler *scaler)
 	return (scaler->result);
 }
 
+int		ft_color_convert(int color, double lum)
+{
+	int r = ((color >> 16) & 0xFF) * lum;
+	int g = ((color >> 8) & 0xFF) * lum;
+	int b = (color & 0xFF) * lum;
+
+	return (((r & 0xFF) << 16) + ((g & 0xFF) << 8) + ((b & 0xFF)));
+}
+
 void	ft_draw_vline(t_mlx *mlx, int x, int y1,int y2, int top_color,int middle_color, int bottom_color)
 {
 	y1 = ft_clamp(y1, 0, H - 1);
 	y2 = ft_clamp(y2, 0, H - 1);
+
+	if (mlx->sect[mlx->now->sector_n]->light == 0)
+	{
+		top_color = ft_color_convert(top_color, mlx->sect[mlx->now->sector_n]->lum);
+		middle_color = ft_color_convert(middle_color, mlx->sect[mlx->now->sector_n]->lum);
+		bottom_color = ft_color_convert(bottom_color, mlx->sect[mlx->now->sector_n]->lum);
+	}
 
 	if (y1 == y2)
 	{
@@ -170,12 +184,16 @@ void	ft_draw_tvline(t_mlx *mlx, int x, int y1, int y2, unsigned txtx, t_img *tex
 		int color = texture->data[txty % texture->h * texture->w + txtx % texture->w];
 		if (rend_i == 0 && mlx->opening[y][x] == -1)
 		{
+			if (mlx->sect[mlx->now->sector_n]->light == 0)
+				color = ft_color_convert(color, mlx->sect[mlx->now->sector_n]->lum);
 			mlx->data[x + y * W] = color;
 			if (mlx->open_f)
 				mlx->opening[y][x] = mlx->now->sector_n;
 		}
 		else if (rend_i == 1 && (mlx->opening[y][x] == -1 || mlx->opening[y][x] == mlx->now->sector_n) && color != IGNORE_COLOR && color != IGNORE_COLOR1)
 		{
+			if (mlx->sect[mlx->now->sector_n]->light == 0)
+				color = ft_color_convert(color, mlx->sect[mlx->now->sector_n]->lum);
 			mlx->data[x + y * W] = color;
 			if (mlx->open_f)
 				mlx->opening[y][x] = mlx->now->sector_n;
