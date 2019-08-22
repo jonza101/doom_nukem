@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:40:26 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/20 15:15:17 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/22 21:45:35 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ int		ft_game_loop(t_mlx *mlx)
 {
 	clock_t start_time = clock();
 
-	// ft_obj_sort(mlx);
 	ft_drawseg_sort(mlx);
 
 	ft_collision(mlx);
@@ -26,12 +25,18 @@ int		ft_game_loop(t_mlx *mlx)
 	ft_reset_image(mlx);
 	ft_draw(mlx);
 	ft_weapon_state(mlx);
+
 	if (mlx->player->weapon_state == 1)
 		ft_gun_anim(mlx, mlx->player->weapon, mlx->player->weapon->fire_delay, 0);
 	else if (mlx->player->weapon_state == 2)
 		ft_gun_anim(mlx, mlx->player->weapon, mlx->player->weapon->altfire_delay, mlx->player->weapon->altfire_cont_delay);
+	else if (mlx->player->weapon_state == 3 || mlx->player->weapon_state == 4)
+		ft_gun_anim(mlx, mlx->player->weapon, mlx->player->weapon->reloading_delay, 0);
+
+
 	ft_draw_player(mlx);
 	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
+	printf("ammo %d\n", mlx->player->weapon->ammo);
 	// printf("loop\n");
 	// printf("state %d\n", mlx->player->weapon_state);
 	// printf("altfire %d\n", mlx->altfire);

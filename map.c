@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/22 16:01:27 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/22 19:10:40 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -507,6 +507,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->wobj_list->next->p2 = (t_vec2*)malloc(sizeof(t_vec2));
 
 				mlx->wobj_list = mlx->wobj_list->next;
+				mlx->wobj_list->next = NULL;
 
 				mlx->last_wobj = mlx->wobj_list;
 
@@ -531,6 +532,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->wobj_list->p1 = (t_vec2*)malloc(sizeof(t_vec2));
 				mlx->wobj_list->p2 = (t_vec2*)malloc(sizeof(t_vec2));
 
+				mlx->wobj_list->next = NULL;
 				temp_wobj = mlx->wobj_list;
 				mlx->last_wobj = mlx->wobj_list;
 

@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/22 15:52:01 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/22 21:15:43 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@
 #define IGNORE_COLOR1 0x001000
 #define IGNORE_COLOR2 0x0
 
+#define ARIFLE_AMMO 30
+
 #define THREAD 16
 
 //	OBJ	|	0 - BARREL	|	1 - BACKPACK	|	2 - CACODEMON	|	3 - CANISTER	|	4 - FIRE_POT	|	5 - WATER	|	6 - CANISTER_EXPL	|	7 - FIRE	|	8 - EXPLOSION	|
@@ -69,27 +71,9 @@
 #define TRANSPARENT 4
 #define SKY 1
 
-#define REV_IDLE 1
-#define REV_FIRE 6
-#define REV_ALTFIRE 9
-#define REV_ALTFIRE_CONTINUE 6
-
-#define SHOTGUN_IDLE 1
-#define SHOTGUN_FIRE 13
-
-#define ARIFLE_IDLE 1
-#define ARIFLE_FIRE 4
-
 #define FIRE_RANGE 10000
 #define MELEE_RANGE 1
 #define INTERACT_RANGE 2.5
-
-typedef	struct		s_rgb
-{
-	int				r;
-	int				g;
-	int				b;
-}					t_rgb;
 
 typedef struct		s_vec2
 {
@@ -315,18 +299,27 @@ typedef	struct		s_weapon
 	t_img			**idle;
 	t_img			**altfire;
 	t_img			**altfire_cont;
-	// t_img			**reloading;
 
-	int				has_altfire;
+	t_img			**reloading;
+	short			reloading_n;
+	short			reloading_delay;
 
-	int				fire_n;
-	int				altfire_n;
-	int				altfire_cont_n;
+	short			has_reload_ptt;
+	t_img			**reloading_ptt;
+	short			reloading_ptt_n;
 
-	int				fire_delay;
-	int				altfire_delay;
-	int				altfire_cont_delay;
-	int				after_fire_delay;
+	int				ammo;
+	int				mag_ammo_count;
+
+	short			has_altfire;
+
+	short			fire_n;
+	short			altfire_n;
+	short			altfire_cont_n;
+
+	short			fire_delay;
+	short			altfire_delay;
+	short			altfire_cont_delay;
 
 	double			scaler;
 	int				x_offset;
@@ -353,7 +346,7 @@ typedef	struct		s_player
 	int				down;
 	int				jump;
 
-	int				weapon_state;		//		IDLE - 0	|	FIRE - 1	|	ALTFIRE - 2
+	int				weapon_state;		//		IDLE - 0	|	FIRE - 1	|	ALTFIRE - 2		|	RELOADING - 3	|	RELOADING_PTT - 4	|
 
 	t_img			*frame;
 	t_weapon		*weapon;
@@ -449,8 +442,6 @@ typedef	struct		s_mlx
 	short			gun_delay;
 	short			altfire;
 	short			del;
-
-	t_rgb			*rgb;
 }					t_mlx;
 
 void				ft_image(t_mlx *mlx, int x, int y, int color);

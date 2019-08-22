@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/17 18:28:03 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/22 15:51:19 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/22 19:34:54 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,12 @@ void	ft_interact_check(t_mlx *mlx, int sect, int side, t_vec3 *pos)
 	t_wobj *wobj = mlx->wobj_list;
 	while (wobj)
 	{
-		double down_z = wobj->pos->z - mlx->wobj_l[wobj->wobj_i]->wobj_specs->abs_h / 2.0f;
-		double up_z = wobj->pos->z + mlx->wobj_l[wobj->wobj_i]->wobj_specs->abs_h / 2.0f;
-		printf("wx %f		wy %f		wz %f\n", wobj->pos->x, wobj->pos->y, wobj->pos->z);
-		printf("px %f		py %f		pz %f\n", pos->x, pos->y, pos->z);
-		printf("x1 %f		y %f\n", wobj->p1->x, wobj->p1->y);
-		printf("x2 %f		y2 %f\n\n", wobj->p2->x, wobj->p2->y);
+		double down_z = wobj->pos->z - mlx->wobj_l[wobj->wobj_i]->wobj_specs->abs_h / 2.0f - 0.15f;
+		double up_z = wobj->pos->z + mlx->wobj_l[wobj->wobj_i]->wobj_specs->abs_h / 2.0f + 0.15f;
+		// printf("wx %f		wy %f		wz %f\n", wobj->pos->x, wobj->pos->y, wobj->pos->z);
+		// printf("px %f		py %f		pz %f\n", pos->x, pos->y, pos->z);
+		// printf("x1 %f		y %f\n", wobj->p1->x, wobj->p1->y);
+		// printf("x2 %f		y2 %f\n\n", wobj->p2->x, wobj->p2->y);
 		double x1 = ft_min(wobj->p1->x, wobj->p2->x) - 0.15f;
 		double x2 = ft_max(wobj->p1->x, wobj->p2->x) + 0.15f;
 		double y1 = ft_min(wobj->p1->y, wobj->p2->y) - 0.15f;
@@ -40,14 +40,57 @@ void	ft_interact_check(t_mlx *mlx, int sect, int side, t_vec3 *pos)
 	}
 }
 
+void	ft_add_first_wobj(t_mlx *mlx, t_vec3 *pos, int sect, int side)
+{
+	mlx->wobj_list = (t_wobj*)malloc(sizeof(t_wobj));
+	mlx->wobj_list->sect = sect;
+	mlx->wobj_list->side = side;
+
+	mlx->wobj_list->pos = (t_vec3*)malloc(sizeof(t_vec3));
+	mlx->wobj_list->pos->x = pos->x;
+	mlx->wobj_list->pos->y = pos->y;
+	mlx->wobj_list->pos->z = pos->z;
+	mlx->wobj_list->wobj_i = 4;
+	mlx->wobj_list->rendered = 0;
+
+	mlx->wobj_list->del = 0;
+	mlx->wobj_list->anim_i = 0;
+	mlx->wobj_list->frame = mlx->wobj_l[mlx->wobj_list->wobj_i]->anim[0];
+
+	mlx->wobj_list->p1 = (t_vec2*)malloc(sizeof(t_vec2));
+	mlx->wobj_list->p2 = (t_vec2*)malloc(sizeof(t_vec2));
+
+	double dx1 = mlx->sect[sect]->verts[side + 0]->x - mlx->wobj_list->pos->x;
+	double dy1 = mlx->sect[sect]->verts[side + 0]->y - mlx->wobj_list->pos->y;
+	double dx2 = mlx->wobj_list->pos->x - mlx->sect[sect]->verts[side + 1]->x;
+	double dy2 = mlx->wobj_list->pos->y - mlx->sect[sect]->verts[side + 1]->y;
+	double dist1 = sqrtf(dx1 * dx1 + dy1 * dy1);
+	double dist2 = sqrtf(dx2 * dx2 + dy2 * dy2);
+
+	double half_w = (double)mlx->wobj_l[mlx->wobj_list->wobj_i]->wobj_specs->abs_w / 2.0f;
+
+	mlx->wobj_list->p1->x = mlx->wobj_list->pos->x - ((half_w * (mlx->wobj_list->pos->x - mlx->sect[sect]->verts[side + 0]->x)) / dist1);
+	mlx->wobj_list->p1->y = mlx->wobj_list->pos->y - ((half_w * (mlx->wobj_list->pos->y - mlx->sect[sect]->verts[side + 0]->y)) / dist1);
+
+	mlx->wobj_list->p2->x = mlx->wobj_list->pos->x - ((half_w * (mlx->wobj_list->pos->x - mlx->sect[sect]->verts[side + 1]->x)) / dist2);
+	mlx->wobj_list->p2->y = mlx->wobj_list->pos->y - ((half_w * (mlx->wobj_list->pos->y - mlx->sect[sect]->verts[side + 1]->y)) / dist2);
+
+	mlx->wobj_list->next = NULL;
+	mlx->last_wobj = mlx->wobj_list;
+	mlx->wobj_count++;
+}
+
 void	ft_add_wobj(t_mlx *mlx, t_vec3 *pos, int sect, int side)
 {
+	if (mlx->wobj_count <= 0)
+	{
+		ft_add_first_wobj(mlx, pos, sect, side);
+		return;
+	}
 	if ((mlx->sect_wobj[sect]->side[side] >= MAX_WSPRITES_ON_WALL) || (mlx->last_wobj->pos->x == pos->x && mlx->last_wobj->pos->y == pos->y && mlx->last_wobj->pos->z == pos->z))
 		return ;
-	// t_wobj *wobj = mlx->last_wobj->next;
-	// if (mlx->wobj_count <= 0)
 
-	mlx->last_wobj->next = (t_wobj*)malloc(sizeof(t_wobj));							//	CHECK IF NO SPRITES ON THE WALL
+	mlx->last_wobj->next = (t_wobj*)malloc(sizeof(t_wobj));
 	mlx->last_wobj->next->sect = sect;
 	mlx->last_wobj->next->side = side;
 	mlx->last_wobj->next->pos = (t_vec3*)malloc(sizeof(t_vec3));

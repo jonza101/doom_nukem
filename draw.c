@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/27 13:56:20 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/22 15:55:47 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/22 21:47:49 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,13 @@
 
 void	ft_gun_anim(t_mlx *mlx, t_weapon *gun, int delay, int cont_delay)
 {
-	if (mlx->player->weapon_state == 1)
+	if (mlx->player->weapon_state == 1 && gun->ammo > 0)
 	{
 		if (mlx->gun_delay == 0 && mlx->gun_fire_i == 0)
+		{
+			gun->ammo--;
 			ft_shoot(mlx);
+		}
 		mlx->gun_delay++;
 		if (mlx->gun_delay >= delay)
 		{
@@ -50,13 +53,33 @@ void	ft_gun_anim(t_mlx *mlx, t_weapon *gun, int delay, int cont_delay)
 			mlx->gun_delay = 0;
 			if (mlx->altfire == 0)
 				mlx->altfire = 1;
+			gun->ammo--;
 			ft_shoot(mlx);
+		}
+	}
+	else if (mlx->player->weapon_state == 3 || mlx->player->weapon_state == 4)
+	{
+		mlx->gun_delay++;
+		int anim_n = (mlx->player->weapon_state == 3) ? gun->reloading_n : gun->reloading_ptt_n;
+		if (mlx->gun_delay >= delay)
+		{
+			mlx->player->frame = (mlx->player->weapon_state == 3) ? gun->reloading[mlx->gun_fire_i] : gun->reloading_ptt[mlx->gun_fire_i];
+			mlx->gun_fire_i++;
+			mlx->gun_delay = 0;
+		}
+		if (mlx->gun_fire_i >= anim_n)
+		{
+			gun->ammo = gun->mag_ammo_count;
+			mlx->player->weapon_state = 0;
+			mlx->gun_fire_i = 0;
 		}
 	}
 }
 
 void	ft_weapon_state(t_mlx *mlx)
 {
+	if (mlx->player->weapon->ammo == 0 && mlx->player->weapon_state != 3 && mlx->player->weapon_state != 4)
+		mlx->player->weapon_state = 0;
 	if (mlx->player->weapon_state == 0)
 		mlx->player->frame = mlx->player->weapon->idle[0];
 }

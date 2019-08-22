@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/11 15:06:15 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/22 11:44:12 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/22 18:29:40 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,15 +227,15 @@ void	ft_collision(t_mlx *mlx)
 					{
 						double xd = sector->verts[s + 1]->x - sector->verts[s + 0]->x;
 						double yd = sector->verts[s + 1]->y - sector->verts[s + 0]->y;
-						mlx->player->velocity->x = xd * (dx * xd + yd * dy) / (xd * xd + yd * yd);			//	mlx->player->velocity->x
-						mlx->player->velocity->y = yd * (dx * xd + yd * dy) / (xd * xd + yd * yd);			//	mlx->player->velocity->y
+						mlx->player->velocity->x = xd * (dx * xd + yd * dy) / (xd * xd + yd * yd);
+						mlx->player->velocity->y = yd * (dx * xd + yd * dy) / (xd * xd + yd * yd);
 						mlx->moving = 0;
 					}
 				}
 			}
 		}
 		if (!stop)
-			ft_move_player(mlx, mlx->player->velocity->x, mlx->player->velocity->y);		//	mlx->player->velocity->x	//	mlx->player->velocity->y
+			ft_move_player(mlx, mlx->player->velocity->x, mlx->player->velocity->y);
 		mlx->falling = 1;
 	}
 }
