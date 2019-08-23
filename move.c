@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/11 15:06:15 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/22 18:29:40 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/23 18:43:54 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,8 @@ void	ft_move_player(t_mlx *mlx, double dx, double dy)
 	mlx->player->cos_angle = cosf(mlx->player->angle);
 	mlx->player->pos->x += dx;
 	mlx->player->pos->y += dy;
+
+	ft_obj_search(mlx);
 }
 
 void	ft_collision(t_mlx *mlx)

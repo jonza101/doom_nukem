@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/28 21:24:48 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/15 12:43:49 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/23 18:37:31 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	ft_init_sky(t_mlx *mlx)
 {
 	int fd;
 	char *line;
-	char *sky[SKY] = { "textures/sky/skybox.xpm" };
+	char *sky[SKY] = { "textures/sky/skybox1.xpm" };
 	int i = -1;
 	while (++i < SKY)
 	{

@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/19 15:19:18 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/22 13:35:08 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/23 16:45:02 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,6 +180,12 @@ void	ft_init_wobj_specs(t_mlx *mlx)
 	mlx->wobj_l[4]->wobj_specs->u0 = 0;
 	mlx->wobj_l[4]->wobj_specs->u1 = 60;
 	mlx->wobj_l[4]->wobj_specs->is_switcher = 0;
+
+	mlx->wobj_l[5]->wobj_specs->abs_w = 0.1;
+	mlx->wobj_l[5]->wobj_specs->abs_h = 0.35;
+	mlx->wobj_l[5]->wobj_specs->u0 = 0;
+	mlx->wobj_l[5]->wobj_specs->u1 = 60;
+	mlx->wobj_l[5]->wobj_specs->is_switcher = 0;
 
 	mlx->wobj_l[6]->wobj_specs->abs_w = 2.0f;
 	mlx->wobj_l[6]->wobj_specs->abs_h = 5.0;

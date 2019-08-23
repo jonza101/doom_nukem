@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:40:26 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/22 21:45:35 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/23 20:23:33 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ int		ft_game_loop(t_mlx *mlx)
 	ft_move_calc(mlx);
 	ft_reset_image(mlx);
 	ft_draw(mlx);
+
 	ft_weapon_state(mlx);
 
 	if (mlx->player->weapon_state == 1)
@@ -33,8 +34,8 @@ int		ft_game_loop(t_mlx *mlx)
 	else if (mlx->player->weapon_state == 3 || mlx->player->weapon_state == 4)
 		ft_gun_anim(mlx, mlx->player->weapon, mlx->player->weapon->reloading_delay, 0);
 
-
 	ft_draw_player(mlx);
+
 	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
 	printf("ammo %d\n", mlx->player->weapon->ammo);
 	// printf("loop\n");

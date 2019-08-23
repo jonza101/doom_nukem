@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/22 21:02:58 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/23 20:30:40 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -285,10 +285,14 @@ void	ft_draw(t_mlx *mlx)
 						ft_screenpoint_to_mappoint(mlx, h, x, y);
 						unsigned txtx = (mlx->map_x * 32);
 						unsigned txtz = (mlx->map_z * 32);
+
+						// unsigned sky_txtx = (1 * ((W - 1 - x) * 1) + 256 * ((x - 1) * 1)) / ((W - 1 - x) * 1 + (x - 1) * 1);
+
 						//	RENDER CEILING TXT
 						if (y < mlx->cya && ceil_f && mlx->opening[y][x] == -1)
 						{
 							mlx->data[y * W + x] = mlx->txt[ceil_t]->data[txtz % mlx->txt[ceil_t]->h * mlx->txt[ceil_t]->w + txtx % mlx->txt[ceil_t]->w];
+							// mlx->data[y * W + x] = mlx->sky[0]->data[y * mlx->sky[0]->w + x];
 							if (mlx->cya != mlx->cnya && neighbor >= 0)
 								mlx->opening[y][x] = mlx->now->sector_n;
 						}

@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 15:17:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/22 15:54:36 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/23 20:24:36 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -282,6 +282,37 @@ void	ft_sect_obj(t_mlx *mlx, int sect)
 	}
 }
 
+void	ft_obj_search(t_mlx *mlx)
+{
+	if (mlx->sect[mlx->player->sector]->obj_count <= 0)
+		return;
+	t_obj *obj = mlx->sect[mlx->player->sector]->obj_list;
+	if (mlx->sect[mlx->player->sector]->obj_count == 1)
+	{
+		if (obj->specs->obj_i == 1 && ft_overlap(mlx->player->pos->x, mlx->player->pos->x, obj->specs->x - 0.5f, obj->specs->x + 0.5f)
+			&& ft_overlap(mlx->player->pos->y, mlx->player->pos->y, obj->specs->y - 0.5f, obj->specs->y + 0.5f))
+		{
+			printf("collect!\n");
+			free(obj->specs);
+			free(obj);
+			return;
+		}
+	}
+	while (obj->next)
+	{
+		if (obj->next->specs->obj_i == 1 && ft_overlap(mlx->player->pos->x, mlx->player->pos->x, obj->next->specs->x - 0.5f, obj->next->specs->x + 0.5f)
+			&& ft_overlap(mlx->player->pos->y, mlx->player->pos->y, obj->next->specs->y - 0.5f, obj->next->specs->y + 0.5f))
+		{
+			printf("collect!\n");
+			free(obj->next->specs);
+			free(obj->next);
+			obj->next = obj->next->next;
+			return;
+		}
+		obj = obj->next;
+	}
+}
+
 int		ft_explosive_obj(t_mlx *mlx, double p_dist, int sect)											//		TEST
 {
 	t_obj *obj = mlx->sect[sect]->obj_list;
@@ -297,7 +328,7 @@ int		ft_explosive_obj(t_mlx *mlx, double p_dist, int sect)											//		TEST
 				if (obj->specs->has_collider)
 				{
 					int i = -1;
-					while (++i < 4)
+					while (++i < 5)
 						free(obj->specs->verts[i]);
 					free(obj->specs->verts);
 					obj->specs->has_collider = 0;

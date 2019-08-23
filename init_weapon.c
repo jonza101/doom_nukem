@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/30 12:49:39 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/22 21:40:51 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/23 17:49:11 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ void	ft_init_arifle_reload_ptt(t_mlx *mlx)
 								"textures/weapons/a_rifle/reloading/pt2/a_rifle_rr05.xpm", "textures/weapons/a_rifle/reloading/pt2/a_rifle_rr06.xpm", "textures/weapons/a_rifle/reloading/pt2/a_rifle_rr01.xpm" };
 	mlx->player->a_rifle->reloading_ptt = (t_img**)malloc(sizeof(t_img*) * 24);
 	mlx->player->a_rifle->reloading_ptt_n = 24;
-	mlx->player->a_rifle->reloading_delay = 4;
 	int i = -1;
 	while (++i < 24)
 	{
@@ -61,7 +60,7 @@ void	ft_init_arifle_reload(t_mlx *mlx)
 								"textures/weapons/a_rifle/reloading/pt1/a_rifle_r16.xpm", "textures/weapons/a_rifle/reloading/pt1/a_rifle_r17.xpm" };
 	mlx->player->a_rifle->reloading = (t_img**)malloc(sizeof(t_img*) * 17);
 	mlx->player->a_rifle->reloading_n = 17;
-	mlx->player->a_rifle->reloading_delay = 4;
+	mlx->player->a_rifle->reloading_delay = 3;
 	int i = -1;
 	while (++i < 17)
 	{
@@ -160,10 +159,10 @@ void	ft_init_shotgun_fire(t_mlx *mlx)
 	int fd;
 	char *line;
 	char *shotgun_fire[13] = { "textures/weapons/shotgun/fire/shotgun_fire1.xpm", "textures/weapons/shotgun/fire/shotgun_fire2.xpm", "textures/weapons/shotgun/fire/shotgun_fire3.xpm",
-									"textures/weapons/shotgun/fire/shotgun_fire4.xpm", "textures/weapons/shotgun/fire/shotgun_fire5.xpm", "textures/weapons/shotgun/fire/shotgun_fire6.xpm",
-									"textures/weapons/shotgun/fire/shotgun_fire7.xpm", "textures/weapons/shotgun/fire/shotgun_fire8.xpm", "textures/weapons/shotgun/fire/shotgun_fire9.xpm",
-									"textures/weapons/shotgun/fire/shotgun_fire8.xpm", "textures/weapons/shotgun/fire/shotgun_fire7.xpm", "textures/weapons/shotgun/fire/shotgun_fire6.xpm",
-									"textures/weapons/shotgun/fire/shotgun_fire5.xpm" };
+								"textures/weapons/shotgun/fire/shotgun_fire4.xpm", "textures/weapons/shotgun/fire/shotgun_fire5.xpm", "textures/weapons/shotgun/fire/shotgun_fire6.xpm",
+								"textures/weapons/shotgun/fire/shotgun_fire7.xpm", "textures/weapons/shotgun/fire/shotgun_fire8.xpm", "textures/weapons/shotgun/fire/shotgun_fire9.xpm",
+								"textures/weapons/shotgun/fire/shotgun_fire8.xpm", "textures/weapons/shotgun/fire/shotgun_fire7.xpm", "textures/weapons/shotgun/fire/shotgun_fire6.xpm",
+								"textures/weapons/shotgun/fire/shotgun_fire5.xpm" };
 	mlx->player->shotgun->fire = (t_img**)malloc(sizeof(t_img*) * 13);
 	mlx->player->shotgun->fire_n = 13;
 	int i = -1;
@@ -219,11 +218,48 @@ void	ft_init_shotgun(t_mlx *mlx)
 	mlx->player->shotgun->fire_delay = 4;
 	mlx->player->shotgun->has_altfire = 0;
 	mlx->player->shotgun->has_reload_ptt = 0;
-	mlx->player->shotgun->ammo = 8;
+	mlx->player->shotgun->ammo = SHOTGUN_AMMO;
+	mlx->player->shotgun->mag_ammo_count = SHOTGUN_AMMO;
 	mlx->player->shotgun->scaler = 0.80f;
 	mlx->player->shotgun->x_offset = 18;
 	ft_init_shotgun_idle(mlx);
 	ft_init_shotgun_fire(mlx);
+}
+
+void	ft_init_revolver_reload(t_mlx *mlx)
+{
+	int fd;
+	char *line;
+	char *rev_reload[19] = { "textures/weapons/revolver/reloading/rev_reload01.xpm", "textures/weapons/revolver/reloading/rev_reload02.xpm", "textures/weapons/revolver/reloading/rev_reload03.xpm",
+								"textures/weapons/revolver/reloading/rev_reload04.xpm", "textures/weapons/revolver/reloading/rev_reload05.xpm", "textures/weapons/revolver/reloading/rev_reload06.xpm",
+								"textures/weapons/revolver/reloading/rev_reload07.xpm", "textures/weapons/revolver/reloading/rev_reload08.xpm", "textures/weapons/revolver/reloading/rev_reload09.xpm",
+								"textures/weapons/revolver/reloading/rev_reload10.xpm", "textures/weapons/revolver/reloading/rev_reload11.xpm", "textures/weapons/revolver/reloading/rev_reload12.xpm",
+								"textures/weapons/revolver/reloading/rev_reload13.xpm", "textures/weapons/revolver/reloading/rev_reload06.xpm", "textures/weapons/revolver/reloading/rev_reload04.xpm",
+								"textures/weapons/revolver/reloading/rev_reload03.xpm", "textures/weapons/revolver/reloading/rev_reload02.xpm", "textures/weapons/revolver/reloading/rev_reload01.xpm",
+								"textures/weapons/revolver/reloading/rev_reload05.xpm" };
+	mlx->player->revolver->reloading = (t_img**)malloc(sizeof(t_img*) * 19);
+	mlx->player->revolver->reloading_n = 19;
+	mlx->player->revolver->reloading_delay = 3;
+	int i = -1;
+	while (++i < 19)
+	{
+		fd = open(rev_reload[i], O_RDONLY);
+		int j = -1;
+		while (++j < 4)
+		{
+			get_next_line(fd, &line);
+			(j < 3) ? ft_strdel(&line) : 1;
+		}
+		char **tmp = ft_strsplit(line, ' ');
+		mlx->player->revolver->reloading[i] = (t_img*)malloc(sizeof(t_img));
+		mlx->player->revolver->reloading[i]->w = ft_atoi(&tmp[0][1]);
+		mlx->player->revolver->reloading[i]->h = ft_atoi(tmp[1]);
+		mlx->player->revolver->reloading[i]->img = mlx_xpm_file_to_image(mlx->mlx, rev_reload[i], &mlx->player->revolver->reloading[i]->w, &mlx->player->revolver->reloading[i]->h);
+		mlx->player->revolver->reloading[i]->data = (int*)mlx_get_data_addr(mlx->player->revolver->reloading[i]->img, &mlx->player->revolver->reloading[i]->bpp, &mlx->player->revolver->reloading[i]->size_line, &mlx->player->revolver->reloading[i]->endian);
+		ft_strsplit_free(tmp);
+		close(fd);
+		ft_strdel(&line);
+	}
 }
 
 void	ft_init_revolver_altfire_cont(t_mlx *mlx)
@@ -350,7 +386,8 @@ void	ft_init_revolver(t_mlx *mlx)
 	mlx->player->revolver->altfire_delay = 2;
 	mlx->player->revolver->altfire_cont_delay = 2;
 	mlx->player->revolver->has_reload_ptt = 0;
-	mlx->player->revolver->ammo = 6;
+	mlx->player->revolver->ammo = REVOLVER_AMMO;
+	mlx->player->revolver->mag_ammo_count = REVOLVER_AMMO;
 	mlx->player->revolver->has_altfire = 1;
 	mlx->player->revolver->scaler = 0.0f;
 	mlx->player->revolver->x_offset = 0;
@@ -358,4 +395,5 @@ void	ft_init_revolver(t_mlx *mlx)
 	ft_init_revolver_fire(mlx);
 	ft_init_revolver_altfire(mlx);
 	ft_init_revolver_altfire_cont(mlx);
+	ft_init_revolver_reload(mlx);
 }

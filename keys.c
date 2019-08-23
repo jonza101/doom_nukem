@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:41:19 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/22 21:39:06 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/23 17:08:36 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ int		ft_key_realese(int keycode, t_mlx *mlx)
 		mlx->player->weapon_state = 0;
 		mlx->gun_fire_i = 0;
 		mlx->gun_delay = 0;
+		mlx->altfire = 0;
 	}
 	if (keycode == MAC_SHIFT_R && mlx->player->weapon_state == 2 && mlx->player->weapon == mlx->player->revolver)
 	{
@@ -47,6 +48,7 @@ int		ft_key_realese(int keycode, t_mlx *mlx)
 		mlx->altfire = 0;
 		mlx->gun_fire_i = 0;
 		mlx->gun_delay = 0;
+		mlx->altfire = 0;
 	}
 
 	if (keycode == MAC_E)
@@ -142,13 +144,16 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 
 	if (keycode == MAC_SHIFT_R && mlx->player->weapon_state == 0 && mlx->player->weapon->has_altfire && mlx->player->weapon->ammo > 0)
 		mlx->player->weapon_state = 2;
-	
-	if (keycode == MAC_R && mlx->player->weapon_state == 0 && mlx->player->weapon == mlx->player->a_rifle)		//	!!!
+
+	if (keycode == MAC_R && mlx->player->weapon_state == 0 && mlx->player->weapon != mlx->player->shotgun)		//	!!!
 	{
-		if (mlx->player->weapon->ammo < ARIFLE_AMMO && mlx->player->weapon->ammo > 0)
-			mlx->player->weapon_state = 3;
-		if (mlx->player->weapon->ammo == 0)
+		if (mlx->player->weapon->ammo == 0 && mlx->player->weapon->has_reload_ptt)
 			mlx->player->weapon_state = 4;
+		else if (mlx->player->weapon->ammo < mlx->player->weapon->mag_ammo_count && mlx->player->weapon->ammo >= 0)
+			mlx->player->weapon_state = 3;
+		mlx->gun_fire_i = 0;
+		mlx->gun_delay = 0;
+		mlx->altfire = 0;
 	}
 
 	if (keycode == MAC_ONE && mlx->player->weapon_state == 0)
@@ -157,6 +162,7 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 		mlx->fire_range = FIRE_RANGE;
 		mlx->gun_fire_i = 0;
 		mlx->gun_delay = 0;
+		mlx->altfire = 0;
 	}
 	if (keycode == MAC_TWO && mlx->player->weapon_state == 0)
 	{
@@ -164,6 +170,7 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 		mlx->fire_range = FIRE_RANGE;
 		mlx->gun_fire_i = 0;
 		mlx->gun_delay = 0;
+		mlx->altfire = 0;
 	}
 	if (keycode == MAC_THREE && mlx->player->weapon_state == 0)
 	{
@@ -171,6 +178,7 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 		mlx->fire_range = FIRE_RANGE;
 		mlx->gun_fire_i = 0;
 		mlx->gun_delay = 0;
+		mlx->altfire = 0;
 	}
 
 	if (keycode == MAC_O)

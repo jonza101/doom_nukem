@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/27 13:56:20 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/22 21:47:49 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/23 18:21:46 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,10 @@
 
 void	ft_gun_anim(t_mlx *mlx, t_weapon *gun, int delay, int cont_delay)
 {
-	if (mlx->player->weapon_state == 1 && gun->ammo > 0)
+	if (mlx->player->weapon_state == 1)
 	{
 		if (mlx->gun_delay == 0 && mlx->gun_fire_i == 0)
-		{
-			gun->ammo--;
 			ft_shoot(mlx);
-		}
 		mlx->gun_delay++;
 		if (mlx->gun_delay >= delay)
 		{
@@ -33,6 +30,9 @@ void	ft_gun_anim(t_mlx *mlx, t_weapon *gun, int delay, int cont_delay)
 			if (mlx->player->weapon != mlx->player->a_rifle)
 				mlx->player->weapon_state = 0;
 			mlx->gun_fire_i = 0;
+			mlx->gun_delay = 0;
+			if (gun != mlx->player->shotgun)
+				gun->ammo--;
 		}
 	}
 	else if (mlx->player->weapon_state == 2)
@@ -51,7 +51,7 @@ void	ft_gun_anim(t_mlx *mlx, t_weapon *gun, int delay, int cont_delay)
 		{
 			mlx->gun_fire_i = 0;
 			mlx->gun_delay = 0;
-			if (mlx->altfire == 0)
+			if (!mlx->altfire)
 				mlx->altfire = 1;
 			gun->ammo--;
 			ft_shoot(mlx);
@@ -72,6 +72,7 @@ void	ft_gun_anim(t_mlx *mlx, t_weapon *gun, int delay, int cont_delay)
 			gun->ammo = gun->mag_ammo_count;
 			mlx->player->weapon_state = 0;
 			mlx->gun_fire_i = 0;
+			mlx->gun_delay = 0;
 		}
 	}
 }
@@ -97,7 +98,15 @@ void	ft_draw_cross(t_mlx *mlx)
 void	ft_draw_player(t_mlx *mlx)
 {
 	double w_aspect_ratio = (double)mlx->player->frame->h / (double)mlx->player->frame->w;
-	double w_ya = (double)(H / 2.0f) + (H / 4.0f * mlx->player->weapon->scaler);
+	double scaler = (mlx->player->weapon == mlx->player->revolver && mlx->player->weapon_state == 3) ? 0.25f : mlx->player->weapon->scaler;
+	if (mlx->player->weapon == mlx->player->shotgun && mlx->player->weapon_state > 2)
+	{
+		if ((mlx->gun_fire_i >= 3 && mlx->gun_fire_i <= 7) || (mlx->gun_fire_i >= 17 && mlx->gun_delay <= 18))
+			scaler = 1.5f;
+		else
+			scaler = 1.05f;
+	}
+	double w_ya = (double)(H / 2.0f) + (H / 4.0f * scaler);
 	double w_yb = H;
 	double w_h = w_yb - w_ya;
 	double w_w = w_h / (double)w_aspect_ratio;

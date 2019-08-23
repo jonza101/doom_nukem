@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/22 19:10:40 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/23 20:16:21 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -602,6 +602,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 
 		if (mlx->sect[i]->obj_count > 0)
 			mlx->sect[i]->obj_list = mlx->sect[i]->obj_head;
+			mlx->sect[i]->obj_head = NULL;
 	}
 
 	t_wobj *wobj = mlx->wobj_list;

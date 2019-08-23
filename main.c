@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/22 16:03:41 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/23 16:51:44 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	ft_init_graphics(t_mlx *mlx)
 	ft_init_obj(mlx);
 	ft_init_wobj(mlx);
 	ft_init_transparent(mlx);
-	// ft_init_sky(mlx);
+	ft_init_sky(mlx);
 
 	ft_init_revolver(mlx);
 	ft_init_shotgun(mlx);

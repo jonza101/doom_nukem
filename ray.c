@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/12 17:10:17 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/22 21:04:53 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/23 20:20:07 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,6 +134,7 @@ void	ft_interact(t_mlx *mlx)
 						return ;
 					}
 				}
+				free(pos);
 				sector = mlx->sect[neighbor];
 				mlx->now->sector_n = neighbor;
 			}
@@ -147,7 +148,10 @@ void	ft_interact(t_mlx *mlx)
 			}
 		}
 		else
+		{
+			free(p1);
 			return;
+		}
 	}
 }
 
@@ -251,6 +255,7 @@ void	ft_shoot(t_mlx *mlx)
 						return ;
 					}
 				}
+				free(pos);
 				sector = mlx->sect[neighbor];
 				mlx->now->sector_n = neighbor;
 			}
@@ -267,6 +272,9 @@ void	ft_shoot(t_mlx *mlx)
 			}
 		}
 		else
-			return ;
+		{
+			free(p1);
+			return;
+		}
 	}
 }

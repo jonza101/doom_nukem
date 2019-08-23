@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/22 21:15:43 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/23 20:14:43 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@
 #define IGNORE_COLOR1 0x001000
 #define IGNORE_COLOR2 0x0
 
+#define REVOLVER_AMMO 6
+#define SHOTGUN_AMMO 8
 #define ARIFLE_AMMO 30
 
 #define THREAD 16
@@ -185,7 +187,7 @@ typedef	struct		s_obj
 	t_obj_specs		*specs;
 	double			dist;
 	struct s_obj	*next;
-	struct s_obj	*prev;
+	// struct s_obj	*prev;
 }					t_obj;
 
 typedef	struct		s_wobj
@@ -541,5 +543,7 @@ int					ft_color_convert(int color, double lum);
 
 void				ft_interact(t_mlx *mlx);
 void				ft_interact_check(t_mlx *mlx, int sect, int side, t_vec3 *pos);
+
+void				ft_obj_search(t_mlx *mlx);
 
 #endif
