@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:40:26 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/23 20:23:33 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/24 19:18:29 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int		ft_game_loop(t_mlx *mlx)
 	ft_draw_player(mlx);
 
 	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
-	printf("ammo %d\n", mlx->player->weapon->ammo);
+	printf("%d / %d\n", mlx->player->weapon->mag_ammo, mlx->player->weapon->ammo_count);
 	// printf("loop\n");
 	// printf("state %d\n", mlx->player->weapon_state);
 	// printf("altfire %d\n", mlx->altfire);

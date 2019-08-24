@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/23 20:16:21 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/24 13:33:33 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,9 +261,18 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->sect[s - 1]->obj_list = NULL;
 				mlx->sect[s - 1]->obj_count = 0;
 
-				mlx->sect[s - 1]->light = 1;
-				mlx->sect[s - 1]->lum = 0.5f;
-				mlx->sect[s - 1]->has_switcher = 0;
+				if (temp[4])
+				{
+					mlx->sect[s - 1]->light = 0;
+					mlx->sect[s - 1]->lum = ft_clamp(ft_atof(temp[4]), 0.25f, 0.95f);
+					mlx->sect[s - 1]->has_switcher = 1;
+				}
+				else
+				{
+					mlx->sect[s - 1]->light = 1;
+					mlx->sect[s - 1]->lum = 0.5f;
+					mlx->sect[s - 1]->has_switcher = 0;
+				}
 
 				ft_strsplit_free(t);
 			}
@@ -319,9 +328,18 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->sect[0]->obj_list = NULL;
 				mlx->sect[0]->obj_count = 0;
 
-				mlx->sect[0]->light = 1;
-				mlx->sect[0]->lum = 0.5f;
-				mlx->sect[0]->has_switcher = 0;
+				if (temp[4])
+				{
+					mlx->sect[0]->light = 0;
+					mlx->sect[0]->lum = ft_clamp(ft_atof(temp[4]), 0.25f, 0.95f);
+					mlx->sect[0]->has_switcher = 1;
+				}
+				else
+				{
+					mlx->sect[0]->light = 1;
+					mlx->sect[0]->lum = 0.5f;
+					mlx->sect[0]->has_switcher = 0;
+				}
 
 				ft_strsplit_free(t);
 			}
@@ -482,7 +500,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				if (temp[5])
 				{
 					double lum = ft_atof(temp[5]);
-					if (lum >= 0.1f && lum <= 0.95f)
+					if (lum >= 0.25f && lum <= 0.95f)
 						mlx->sect[w_sect]->lum = lum;
 				}
 				mlx->sect[w_sect]->has_switcher = 1;

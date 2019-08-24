@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/30 12:49:39 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/23 17:49:11 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/24 16:06:11 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,8 @@ void	ft_init_arifle(t_mlx *mlx)
 	mlx->player->a_rifle->fire_delay = 1;
 	mlx->player->a_rifle->has_altfire = 0;
 	mlx->player->a_rifle->has_reload_ptt = 1;
-	mlx->player->a_rifle->ammo = ARIFLE_AMMO;
+	mlx->player->a_rifle->mag_ammo = ARIFLE_AMMO;
+	mlx->player->a_rifle->ammo_count = ARIFLE_AMMO * 3;
 	mlx->player->a_rifle->mag_ammo_count = ARIFLE_AMMO;
 	mlx->player->a_rifle->scaler = -0.62f;
 	mlx->player->a_rifle->x_offset = 0;
@@ -218,7 +219,8 @@ void	ft_init_shotgun(t_mlx *mlx)
 	mlx->player->shotgun->fire_delay = 4;
 	mlx->player->shotgun->has_altfire = 0;
 	mlx->player->shotgun->has_reload_ptt = 0;
-	mlx->player->shotgun->ammo = SHOTGUN_AMMO;
+	mlx->player->shotgun->mag_ammo = SHOTGUN_AMMO;
+	mlx->player->shotgun->ammo_count = SHOTGUN_AMMO * 3;
 	mlx->player->shotgun->mag_ammo_count = SHOTGUN_AMMO;
 	mlx->player->shotgun->scaler = 0.80f;
 	mlx->player->shotgun->x_offset = 18;
@@ -386,7 +388,8 @@ void	ft_init_revolver(t_mlx *mlx)
 	mlx->player->revolver->altfire_delay = 2;
 	mlx->player->revolver->altfire_cont_delay = 2;
 	mlx->player->revolver->has_reload_ptt = 0;
-	mlx->player->revolver->ammo = REVOLVER_AMMO;
+	mlx->player->revolver->mag_ammo = REVOLVER_AMMO;
+	mlx->player->revolver->ammo_count = REVOLVER_AMMO * 3;
 	mlx->player->revolver->mag_ammo_count = REVOLVER_AMMO;
 	mlx->player->revolver->has_altfire = 1;
 	mlx->player->revolver->scaler = 0.0f;

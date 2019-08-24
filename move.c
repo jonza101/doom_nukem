@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/11 15:06:15 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/23 18:43:54 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/24 16:54:57 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,8 +159,8 @@ void	ft_collision(t_mlx *mlx)
 			}
 			obj = obj->next;
 		}
-		free(p0);
-		free(p1);
+		// free(p0);
+		// free(p1);
 
 		int s = -1;
 		while (++s < sector->verts_count)
@@ -236,6 +236,10 @@ void	ft_collision(t_mlx *mlx)
 				}
 			}
 		}
+
+		free(p0);
+		free(p1);
+
 		if (!stop)
 			ft_move_player(mlx, mlx->player->velocity->x, mlx->player->velocity->y);
 		mlx->falling = 1;

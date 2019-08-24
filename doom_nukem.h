@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/23 20:14:43 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/24 17:16:11 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,14 +61,8 @@
 
 #define THREAD 16
 
-//	OBJ	|	0 - BARREL	|	1 - BACKPACK	|	2 - CACODEMON	|	3 - CANISTER	|	4 - FIRE_POT	|	5 - WATER	|	6 - CANISTER_EXPL	|	7 - FIRE	|	8 - EXPLOSION	|
-
-
-//	WOBJ	|	0 - PUPPY_PICTURE	|
-
-
 #define TXT 3
-#define OBJ 11													//	3 -> 6 -> 8 -> 7 (CANISTER)
+#define OBJ 16
 #define WOBJ 9
 #define TRANSPARENT 4
 #define SKY 1
@@ -162,7 +156,8 @@ typedef struct		s_anim_list
 	double			scaler;
 	double			aspect_scaler;
 
-	int				expl;
+	short			expl;
+	short			is_collectable;
 	double			col_w;
 
 	int				can_rotate;
@@ -310,7 +305,8 @@ typedef	struct		s_weapon
 	t_img			**reloading_ptt;
 	short			reloading_ptt_n;
 
-	int				ammo;
+	int				mag_ammo;
+	int				ammo_count;
 	int				mag_ammo_count;
 
 	short			has_altfire;

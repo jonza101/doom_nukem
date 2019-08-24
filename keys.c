@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:41:19 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/23 17:08:36 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/24 15:24:59 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,17 +139,17 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 	// 	}
 	// }
 
-	if (keycode == MAC_CTRL_R && mlx->player->weapon_state == 0 && mlx->player->weapon->ammo > 0)
+	if (keycode == MAC_CTRL_R && mlx->player->weapon_state == 0 && mlx->player->weapon->mag_ammo > 0)
 		mlx->player->weapon_state = 1;
 
-	if (keycode == MAC_SHIFT_R && mlx->player->weapon_state == 0 && mlx->player->weapon->has_altfire && mlx->player->weapon->ammo > 0)
+	if (keycode == MAC_SHIFT_R && mlx->player->weapon_state == 0 && mlx->player->weapon->has_altfire && mlx->player->weapon->mag_ammo > 0)
 		mlx->player->weapon_state = 2;
 
-	if (keycode == MAC_R && mlx->player->weapon_state == 0 && mlx->player->weapon != mlx->player->shotgun)		//	!!!
+	if (keycode == MAC_R && mlx->player->weapon_state == 0 && mlx->player->weapon->mag_ammo < mlx->player->weapon->mag_ammo_count && mlx->player->weapon->ammo_count > 0 && mlx->player->weapon != mlx->player->shotgun)
 	{
-		if (mlx->player->weapon->ammo == 0 && mlx->player->weapon->has_reload_ptt)
+		if (mlx->player->weapon->mag_ammo == 0 && mlx->player->weapon->has_reload_ptt)
 			mlx->player->weapon_state = 4;
-		else if (mlx->player->weapon->ammo < mlx->player->weapon->mag_ammo_count && mlx->player->weapon->ammo >= 0)
+		else if (mlx->player->weapon->mag_ammo < mlx->player->weapon->mag_ammo_count && mlx->player->weapon->mag_ammo >= 0)
 			mlx->player->weapon_state = 3;
 		mlx->gun_fire_i = 0;
 		mlx->gun_delay = 0;

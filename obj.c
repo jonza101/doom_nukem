@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 15:17:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/23 20:24:36 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/24 17:28:16 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -289,10 +289,27 @@ void	ft_obj_search(t_mlx *mlx)
 	t_obj *obj = mlx->sect[mlx->player->sector]->obj_list;
 	if (mlx->sect[mlx->player->sector]->obj_count == 1)
 	{
-		if (obj->specs->obj_i == 1 && ft_overlap(mlx->player->pos->x, mlx->player->pos->x, obj->specs->x - 0.5f, obj->specs->x + 0.5f)
-			&& ft_overlap(mlx->player->pos->y, mlx->player->pos->y, obj->specs->y - 0.5f, obj->specs->y + 0.5f))
+		if (mlx->obj_l[obj->specs->obj_i]->is_collectable && ft_overlap(mlx->player->pos->x, mlx->player->pos->x, obj->specs->x - 0.6f, obj->specs->x + 0.6f)
+			&& ft_overlap(mlx->player->pos->y, mlx->player->pos->y, obj->specs->y - 0.6f, obj->specs->y + 0.6f))
 		{
 			printf("collect!\n");
+			if (obj->specs->obj_i == 1)
+			{
+				mlx->player->a_rifle->ammo_count += 30;
+				mlx->player->revolver->ammo_count += 6;
+			}
+			else if (obj->specs->obj_i == 12)
+			{
+				mlx->player->a_rifle->ammo_count += 60;
+				mlx->player->shotgun->ammo_count += 16;
+				mlx->player->revolver->ammo_count += 12;
+			}
+			else if (obj->specs->obj_i == 13)
+				mlx->player->revolver->ammo_count += 12;
+			else if (obj->specs->obj_i == 14)
+				mlx->player->a_rifle->ammo_count += 60;
+			else if (obj->specs->obj_i == 15)
+				mlx->player->shotgun->ammo_count += 16;
 			free(obj->specs);
 			free(obj);
 			return;
@@ -300,10 +317,27 @@ void	ft_obj_search(t_mlx *mlx)
 	}
 	while (obj->next)
 	{
-		if (obj->next->specs->obj_i == 1 && ft_overlap(mlx->player->pos->x, mlx->player->pos->x, obj->next->specs->x - 0.5f, obj->next->specs->x + 0.5f)
-			&& ft_overlap(mlx->player->pos->y, mlx->player->pos->y, obj->next->specs->y - 0.5f, obj->next->specs->y + 0.5f))
+		if (mlx->obj_l[obj->next->specs->obj_i]->is_collectable && ft_overlap(mlx->player->pos->x, mlx->player->pos->x, obj->next->specs->x - 0.6f, obj->next->specs->x + 0.6f)
+			&& ft_overlap(mlx->player->pos->y, mlx->player->pos->y, obj->next->specs->y - 0.6f, obj->next->specs->y + 0.6f))
 		{
 			printf("collect!\n");
+			if (obj->next->specs->obj_i == 1)
+			{
+				mlx->player->a_rifle->ammo_count += 30;
+				mlx->player->revolver->ammo_count += 6;
+			}
+			else if (obj->next->specs->obj_i == 12)
+			{
+				mlx->player->a_rifle->ammo_count += 60;
+				mlx->player->shotgun->ammo_count += 16;
+				mlx->player->revolver->ammo_count += 12;
+			}
+			else if (obj->next->specs->obj_i == 13)
+				mlx->player->revolver->ammo_count += 12;
+			else if (obj->next->specs->obj_i == 14)
+				mlx->player->a_rifle->ammo_count += 60;
+			else if (obj->next->specs->obj_i == 15)
+				mlx->player->shotgun->ammo_count += 16;
 			free(obj->next->specs);
 			free(obj->next);
 			obj->next = obj->next->next;

@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/27 13:56:20 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/23 18:21:46 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/24 16:48:30 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	ft_gun_anim(t_mlx *mlx, t_weapon *gun, int delay, int cont_delay)
 			mlx->gun_fire_i = 0;
 			mlx->gun_delay = 0;
 			if (gun != mlx->player->shotgun)
-				gun->ammo--;
+				gun->mag_ammo--;
 		}
 	}
 	else if (mlx->player->weapon_state == 2)
@@ -53,7 +53,7 @@ void	ft_gun_anim(t_mlx *mlx, t_weapon *gun, int delay, int cont_delay)
 			mlx->gun_delay = 0;
 			if (!mlx->altfire)
 				mlx->altfire = 1;
-			gun->ammo--;
+			gun->mag_ammo--;
 			ft_shoot(mlx);
 		}
 	}
@@ -69,7 +69,11 @@ void	ft_gun_anim(t_mlx *mlx, t_weapon *gun, int delay, int cont_delay)
 		}
 		if (mlx->gun_fire_i >= anim_n)
 		{
-			gun->ammo = gun->mag_ammo_count;
+			int need_ammo = (gun->mag_ammo_count - gun->mag_ammo);
+			int check_ammo = ft_clamp(gun->ammo_count - need_ammo, 0, gun->ammo_count);
+			int poss_ammo = gun->ammo_count - check_ammo;
+			gun->mag_ammo += poss_ammo;
+			gun->ammo_count -= poss_ammo;
 			mlx->player->weapon_state = 0;
 			mlx->gun_fire_i = 0;
 			mlx->gun_delay = 0;
@@ -79,7 +83,7 @@ void	ft_gun_anim(t_mlx *mlx, t_weapon *gun, int delay, int cont_delay)
 
 void	ft_weapon_state(t_mlx *mlx)
 {
-	if (mlx->player->weapon->ammo == 0 && mlx->player->weapon_state != 3 && mlx->player->weapon_state != 4)
+	if (mlx->player->weapon->mag_ammo == 0 && mlx->player->weapon_state != 3 && mlx->player->weapon_state != 4)
 		mlx->player->weapon_state = 0;
 	if (mlx->player->weapon_state == 0)
 		mlx->player->frame = mlx->player->weapon->idle[0];
