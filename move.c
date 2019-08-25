@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/11 15:06:15 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/24 16:54:57 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/25 17:22:14 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -278,23 +278,23 @@ void	ft_move_calc(t_mlx *mlx)
 	double move_vec[2] = { 0.0f, 0.0f };
 	if (mlx->player->wsad[0])
 	{
-		move_vec[0] += mlx->player->cos_angle * 0.2f;
-		move_vec[1] += mlx->player->sin_angle * 0.2f;
+		move_vec[0] += mlx->player->cos_angle * mlx->player->speed;
+		move_vec[1] += mlx->player->sin_angle * mlx->player->speed;
 	}
 	if (mlx->player->wsad[1])
 	{
-		move_vec[0] -= mlx->player->cos_angle * 0.2f;
-		move_vec[1] -= mlx->player->sin_angle * 0.2f;
+		move_vec[0] -= mlx->player->cos_angle * mlx->player->speed;
+		move_vec[1] -= mlx->player->sin_angle * mlx->player->speed;
 	}
 	if (mlx->player->wsad[2])
 	{
-		move_vec[0] += mlx->player->sin_angle * 0.2f;
-		move_vec[1] -= mlx->player->cos_angle * 0.2f;
+		move_vec[0] += mlx->player->sin_angle * mlx->player->speed;
+		move_vec[1] -= mlx->player->cos_angle * mlx->player->speed;
 	}
 	if (mlx->player->wsad[3])
 	{
-		move_vec[0] -= mlx->player->sin_angle * 0.2f;
-		move_vec[1] += mlx->player->cos_angle * 0.2f;
+		move_vec[0] -= mlx->player->sin_angle * mlx->player->speed;
+		move_vec[1] += mlx->player->cos_angle * mlx->player->speed;
 	}
 
 	int pushing = mlx->player->wsad[0] || mlx->player->wsad[1] || mlx->player->wsad[2] || mlx->player->wsad[3];

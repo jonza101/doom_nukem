@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/24 17:16:11 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/25 20:12:40 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@
 #define THREAD 16
 
 #define TXT 3
-#define OBJ 16
+#define OBJ 17
 #define WOBJ 9
 #define TRANSPARENT 4
 #define SKY 1
@@ -70,6 +70,7 @@
 #define FIRE_RANGE 10000
 #define MELEE_RANGE 1
 #define INTERACT_RANGE 2.5
+#define SPEED_BOOST_DUR 20
 
 typedef struct		s_vec2
 {
@@ -162,6 +163,9 @@ typedef struct		s_anim_list
 
 	int				can_rotate;
 	t_img			**rot;
+
+	short			boost_i;
+	short			boost_dur;
 
 	t_wobj_specs	*wobj_specs;
 }					t_anim_list;
@@ -308,6 +312,7 @@ typedef	struct		s_weapon
 	int				mag_ammo;
 	int				ammo_count;
 	int				mag_ammo_count;
+	int				max_ammo_count;
 
 	short			has_altfire;
 
@@ -338,11 +343,18 @@ typedef	struct		s_player
 	int				sector;
 
 	int				wsad[4];
+	double			speed;
 	int				left;
 	int				right;
 	int				up;
 	int				down;
 	int				jump;
+
+	int				hp;
+
+	short			boost_speed;
+	time_t			speed_begin;
+	time_t			speed_curr;
 
 	int				weapon_state;		//		IDLE - 0	|	FIRE - 1	|	ALTFIRE - 2		|	RELOADING - 3	|	RELOADING_PTT - 4	|
 
@@ -402,6 +414,15 @@ typedef	struct		s_mlx
 	t_anim_list		**wobj_l;
 	t_anim_list		**trans;
 	t_img			*sky[SKY];
+	t_img			*font[12];
+
+	int				hud_x;
+	short			hud_r;
+	short			r_i;
+	short			r_i_d;
+
+	short			speed_boost_i;
+	t_img			*speed_boost_frame;
 
 	int				obj_i;
 
@@ -474,6 +495,7 @@ void				ft_init_obj(t_mlx *mlx);
 void				ft_init_wobj(t_mlx *mlx);
 void				ft_init_transparent(t_mlx *mlx);
 void				ft_init_sky(t_mlx *mlx);
+void				ft_init_font(t_mlx *mlx);
 
 void				ft_init_anim_obj(t_mlx *mlx);
 
@@ -481,7 +503,7 @@ void				ft_init_revolver(t_mlx *mlx);
 void				ft_init_shotgun(t_mlx *mlx);
 void				ft_init_arifle(t_mlx *mlx);
 
-void				ft_draw_player(t_mlx *mlx);
+void				ft_draw_weapon(t_mlx *mlx);
 void				ft_weapon_state(t_mlx *mlx);
 void				ft_gun_anim(t_mlx *mlx, t_weapon *gun, int delay, int cont_delay);
 
@@ -541,5 +563,7 @@ void				ft_interact(t_mlx *mlx);
 void				ft_interact_check(t_mlx *mlx, int sect, int side, t_vec3 *pos);
 
 void				ft_obj_search(t_mlx *mlx);
+
+void				ft_boost_check(t_mlx *mlx);
 
 #endif

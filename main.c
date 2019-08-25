@@ -6,29 +6,15 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/24 14:55:53 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/25 20:11:39 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doom_nukem.h"
 
-void	ft_image(t_mlx *mlx, int x, int y, int color)
-{
-	// nahooy this check
-	//if (x >= 0 && x < W && y >= 0 && y < H)
-	//TODO вынести это нахуй из функции? Можно получить прирост в производительности
-	mlx->data[y * W + x] = mlx_get_color_value(mlx->mlx, color);
-}
-
 void	ft_reset_image(t_mlx *mlx)
 {
-	// with this bzero thing it works 2 times faster
-	// you can check it with fps counter below
 	ft_bzero(mlx->data, W * H * 4);
-	// mlx_destroy_image(mlx->mlx, mlx->img);
-	// mlx->img = mlx_new_image(mlx->mlx, W, H);
-	// mlx->data = (int *)mlx_get_data_addr(mlx->img, &mlx->bpp, &mlx->size_line, &mlx->endian);
-	// mlx_clear_window(mlx->mlx, mlx->win);
 }
 
 int		ft_close(int i)
@@ -61,6 +47,7 @@ void	ft_init_graphics(t_mlx *mlx)
 	ft_init_wobj(mlx);
 	ft_init_transparent(mlx);
 	ft_init_sky(mlx);
+	ft_init_font(mlx);
 
 	ft_init_revolver(mlx);
 	ft_init_shotgun(mlx);
@@ -85,6 +72,11 @@ void	ft_init(t_mlx *mlx)
 	mlx->player->up = 0;
 	mlx->player->down = 0;
 	mlx->player->jump = 0;
+	mlx->player->speed = 0.2f;
+	mlx->player->boost_speed = 0;
+	mlx->speed_boost_i = 0;
+	mlx->speed_boost_frame = mlx->obj_l[16]->anim[0];
+	mlx->player->hp = 100;
 	int i = -1;
 	while (++i < 4)
 		mlx->player->wsad[i] = 0;
@@ -120,6 +112,10 @@ void	ft_init(t_mlx *mlx)
 	mlx->c1 = 128;
 
 	mlx->s = 0;
+
+	mlx->hud_r = 0;
+	mlx->r_i = 0;
+	mlx->r_i_d = 0;
 
 	mlx->seg = 0;
 	mlx->seg_i = 0;

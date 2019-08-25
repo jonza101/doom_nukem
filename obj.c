@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 15:17:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/24 17:28:16 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/25 19:55:27 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -282,36 +282,67 @@ void	ft_sect_obj(t_mlx *mlx, int sect)
 	}
 }
 
+void	ft_boost_check(t_mlx *mlx)
+{
+	if (mlx->player->boost_speed)
+	{
+		mlx->player->speed_curr = time(NULL);
+		double diff = difftime(mlx->player->speed_curr, mlx->player->speed_begin);
+		printf("%f\n", diff);
+		if (diff >= SPEED_BOOST_DUR)
+		{
+			mlx->player->boost_speed = 0;
+			mlx->player->speed = 0.2f;
+		}
+	}
+}
+
+void	ft_collect(t_mlx *mlx, int obj_i, short *check)
+{
+	if (obj_i == 1)
+	{
+		mlx->player->a_rifle->ammo_count += 30;
+		mlx->player->revolver->ammo_count += 6;
+	}
+	else if (obj_i == 12)
+	{
+		mlx->player->a_rifle->ammo_count += 60;
+		mlx->player->shotgun->ammo_count += 16;
+		mlx->player->revolver->ammo_count += 12;
+	}
+	else if (obj_i == 13)
+		mlx->player->revolver->ammo_count += 12;
+	else if (obj_i == 14)
+		mlx->player->a_rifle->ammo_count += 60;
+	else if (obj_i == 15)
+		mlx->player->shotgun->ammo_count += 16;
+	else if (obj_i == 16 && !mlx->player->boost_speed)
+	{
+		mlx->player->speed = 0.35f;
+		mlx->player->boost_speed = 1;
+		mlx->player->speed_begin = time(NULL);
+	}
+	else
+		*check = 0;
+}
+
 void	ft_obj_search(t_mlx *mlx)
 {
 	if (mlx->sect[mlx->player->sector]->obj_count <= 0)
 		return;
+	short check = 1;
 	t_obj *obj = mlx->sect[mlx->player->sector]->obj_list;
 	if (mlx->sect[mlx->player->sector]->obj_count == 1)
 	{
 		if (mlx->obj_l[obj->specs->obj_i]->is_collectable && ft_overlap(mlx->player->pos->x, mlx->player->pos->x, obj->specs->x - 0.6f, obj->specs->x + 0.6f)
 			&& ft_overlap(mlx->player->pos->y, mlx->player->pos->y, obj->specs->y - 0.6f, obj->specs->y + 0.6f))
 		{
-			printf("collect!\n");
-			if (obj->specs->obj_i == 1)
+			ft_collect(mlx, obj->specs->obj_i, &check);
+			if (check)
 			{
-				mlx->player->a_rifle->ammo_count += 30;
-				mlx->player->revolver->ammo_count += 6;
+				free(obj->specs);
+				free(obj);
 			}
-			else if (obj->specs->obj_i == 12)
-			{
-				mlx->player->a_rifle->ammo_count += 60;
-				mlx->player->shotgun->ammo_count += 16;
-				mlx->player->revolver->ammo_count += 12;
-			}
-			else if (obj->specs->obj_i == 13)
-				mlx->player->revolver->ammo_count += 12;
-			else if (obj->specs->obj_i == 14)
-				mlx->player->a_rifle->ammo_count += 60;
-			else if (obj->specs->obj_i == 15)
-				mlx->player->shotgun->ammo_count += 16;
-			free(obj->specs);
-			free(obj);
 			return;
 		}
 	}
@@ -320,34 +351,20 @@ void	ft_obj_search(t_mlx *mlx)
 		if (mlx->obj_l[obj->next->specs->obj_i]->is_collectable && ft_overlap(mlx->player->pos->x, mlx->player->pos->x, obj->next->specs->x - 0.6f, obj->next->specs->x + 0.6f)
 			&& ft_overlap(mlx->player->pos->y, mlx->player->pos->y, obj->next->specs->y - 0.6f, obj->next->specs->y + 0.6f))
 		{
-			printf("collect!\n");
-			if (obj->next->specs->obj_i == 1)
+			ft_collect(mlx, obj->next->specs->obj_i, &check);
+			if (check)
 			{
-				mlx->player->a_rifle->ammo_count += 30;
-				mlx->player->revolver->ammo_count += 6;
+				free(obj->next->specs);
+				free(obj->next);
+				obj->next = obj->next->next;
 			}
-			else if (obj->next->specs->obj_i == 12)
-			{
-				mlx->player->a_rifle->ammo_count += 60;
-				mlx->player->shotgun->ammo_count += 16;
-				mlx->player->revolver->ammo_count += 12;
-			}
-			else if (obj->next->specs->obj_i == 13)
-				mlx->player->revolver->ammo_count += 12;
-			else if (obj->next->specs->obj_i == 14)
-				mlx->player->a_rifle->ammo_count += 60;
-			else if (obj->next->specs->obj_i == 15)
-				mlx->player->shotgun->ammo_count += 16;
-			free(obj->next->specs);
-			free(obj->next);
-			obj->next = obj->next->next;
 			return;
 		}
 		obj = obj->next;
 	}
 }
 
-int		ft_explosive_obj(t_mlx *mlx, double p_dist, int sect)											//		TEST
+int		ft_explosive_obj(t_mlx *mlx, double p_dist, int sect)
 {
 	t_obj *obj = mlx->sect[sect]->obj_list;
 	while (obj)

@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/27 13:56:20 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/24 16:48:30 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/25 20:15:20 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,10 @@ void	ft_gun_anim(t_mlx *mlx, t_weapon *gun, int delay, int cont_delay)
 			mlx->player->weapon_state = 0;
 			mlx->gun_fire_i = 0;
 			mlx->gun_delay = 0;
+
+			mlx->hud_r = 0;
+			mlx->r_i = 0;
+			mlx->r_i_d = 0;
 		}
 	}
 }
@@ -99,7 +103,80 @@ void	ft_draw_cross(t_mlx *mlx)
 		mlx->data[ W / 2 + i * W] = 0xFFFFFF;
 }
 
-void	ft_draw_player(t_mlx *mlx)
+void	ft_draw_chr(t_mlx *mlx, t_img *chr, int x, int y, int d_h)
+{
+	double aspect_ratio = (double)chr->h / (double)chr->w;
+	int ya = y - (d_h / 2.0f);
+	double h = (y + d_h / 2.0f) - ya;
+	double w = (double)h / (double)aspect_ratio;
+	int _x = -1;
+	while (++_x < w)
+	{
+		int _y = -1;
+		while (++_y < h)
+		{
+			double sample_x = (double)_x / (double)w;
+			double sample_y = (double)_y / (double)h;
+			int color = ft_texture_sampling(chr, sample_x, sample_y);
+			int xc = (int)(x - (w / 2.0f) + _x);
+			int yc = (int)ya + (int)_y;
+			if (color != IGNORE_COLOR)
+				mlx->data[yc * W + xc] = color;
+		}
+	}
+}
+
+void	ft_hud_ammo(t_mlx *mlx, int ammo, int x, int d_h, int x_offset, int y_offset)
+{
+	if (!ammo)
+	{
+		ft_draw_chr(mlx, mlx->font[0], x, 660 + y_offset, d_h);
+		mlx->hud_x = x;
+	}
+	int i = 0;
+	while (ammo)
+	{
+		int digit = ammo % 10;
+		ft_draw_chr(mlx, mlx->font[digit], x - i * x_offset, 660 + y_offset, d_h);
+		mlx->hud_x = x - i * x_offset;
+		ammo /= 10;
+		i++;
+	}
+}
+
+void	ft_r(t_mlx *mlx)
+{
+	if (mlx->hud_r && mlx->r_i < 25)
+	{
+		ft_draw_chr(mlx, mlx->font[10], mlx->hud_x - 60, 665, 30);
+		mlx->r_i++;
+	}
+	if (mlx->r_i >= 25)
+	{
+		mlx->r_i_d++;
+		mlx->hud_r = 0;
+	}
+	if (mlx->r_i_d >= 45)
+	{
+		mlx->r_i = 0;
+		mlx->hud_r = 1;
+		mlx->r_i_d = 0;
+	}
+}
+
+void	ft_hud_hp(t_mlx *mlx, int hp)
+{
+	int i = -1;
+	while (++i < 3)
+	{
+		int digit = hp % 10;
+		ft_draw_chr(mlx, mlx->font[digit], 190 - i * 35, 660, 45);
+		hp /= 10;
+	}
+	ft_draw_chr(mlx, mlx->font[11], 70, 653, 65);
+}
+
+void	ft_draw_weapon(t_mlx *mlx)
 {
 	double w_aspect_ratio = (double)mlx->player->frame->h / (double)mlx->player->frame->w;
 	double scaler = (mlx->player->weapon == mlx->player->revolver && mlx->player->weapon_state == 3) ? 0.25f : mlx->player->weapon->scaler;
@@ -135,4 +212,14 @@ void	ft_draw_player(t_mlx *mlx)
 		}
 	}
 	ft_draw_cross(mlx);
+	ft_hud_hp(mlx, mlx->player->hp);
+	ft_hud_ammo(mlx, mlx->player->weapon->ammo_count, 1200, 25, 20, 9);
+	ft_hud_ammo(mlx, mlx->player->weapon->mag_ammo, mlx->hud_x - 40, 45, 35, 0);
+	ft_r(mlx);
+	// int i = -1;
+	// while (++i < W)
+	// {
+	// 	mlx->data[682 * W + i] = 0xFFFF00;
+	// 	mlx->data[637 * W + i] = 0xFFFF00;
+	// }
 }

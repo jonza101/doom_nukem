@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:41:19 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/24 15:24:59 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/25 19:38:17 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,21 +124,6 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 		printf("s %d\n", mlx->s);
 	}
 
-	// if (keycode == MAC_FIVE)
-	// {
-	// 	extern char **environ;
-    //     int i;
-    //     char *av[] = {"/bin/bash", "-c", "afplay click.mp3", NULL};
-    //     i = fork();
-    //     if (i == 0)
-	// 	{
-	// 		extern char **environ;
-	// 		char *av[] = {"/bin/bash", "-c", "afplay click.mp3", NULL};
-    //         execve("/bin/bash", av, environ);
-	// 		exit(0);
-	// 	}
-	// }
-
 	if (keycode == MAC_CTRL_R && mlx->player->weapon_state == 0 && mlx->player->weapon->mag_ammo > 0)
 		mlx->player->weapon_state = 1;
 
@@ -156,6 +141,11 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 		mlx->altfire = 0;
 	}
 
+	if (keycode == MAC_CTRL_R && !mlx->player->weapon->mag_ammo && mlx->player->weapon->ammo_count)
+		mlx->hud_r = 1;
+	if (keycode == MAC_SHIFT_R && mlx->player->weapon->has_altfire && !mlx->player->weapon->mag_ammo && mlx->player->weapon->ammo_count)
+		mlx->hud_r = 1;
+
 	if (keycode == MAC_ONE && mlx->player->weapon_state == 0)
 	{
 		mlx->player->weapon = mlx->player->revolver;
@@ -163,6 +153,10 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 		mlx->gun_fire_i = 0;
 		mlx->gun_delay = 0;
 		mlx->altfire = 0;
+
+		mlx->hud_r = 0;
+		mlx->r_i = 0;
+		mlx->r_i_d = 0;
 	}
 	if (keycode == MAC_TWO && mlx->player->weapon_state == 0)
 	{
@@ -171,6 +165,10 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 		mlx->gun_fire_i = 0;
 		mlx->gun_delay = 0;
 		mlx->altfire = 0;
+
+		mlx->hud_r = 0;
+		mlx->r_i = 0;
+		mlx->r_i_d = 0;
 	}
 	if (keycode == MAC_THREE && mlx->player->weapon_state == 0)
 	{
@@ -179,6 +177,10 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 		mlx->gun_fire_i = 0;
 		mlx->gun_delay = 0;
 		mlx->altfire = 0;
+
+		mlx->hud_r = 0;
+		mlx->r_i = 0;
+		mlx->r_i_d = 0;
 	}
 
 	if (keycode == MAC_O)
@@ -201,6 +203,11 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 		mlx->sect[mlx->player->sector]->floor += 0.5f;
 		printf("floor %f\n", mlx->sect[mlx->player->sector]->floor);
 	}
+
+	if (keycode == MAC_NUM_ONE && mlx->player->hp > 1)
+		mlx->player->hp--;
+	if (keycode == MAC_NUM_TWO && mlx->player->hp < 100)
+		mlx->player->hp++;
 
 	return (0);
 }
