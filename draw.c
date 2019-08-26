@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/27 13:56:20 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/25 20:15:20 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/26 20:20:26 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,6 +132,7 @@ void	ft_hud_ammo(t_mlx *mlx, int ammo, int x, int d_h, int x_offset, int y_offse
 	{
 		ft_draw_chr(mlx, mlx->font[0], x, 660 + y_offset, d_h);
 		mlx->hud_x = x;
+		return;
 	}
 	int i = 0;
 	while (ammo)
@@ -176,6 +177,35 @@ void	ft_hud_hp(t_mlx *mlx, int hp)
 	ft_draw_chr(mlx, mlx->font[11], 70, 653, 65);
 }
 
+void	ft_boost_time(t_mlx *mlx, int time, int y_offset)
+{
+	if (time > 30)
+		return ;
+	int i = -1;
+	while (++i < 2)
+	{
+		int digit = time % 10;
+		ft_draw_chr(mlx, mlx->font[digit], 115 - i * 14, 570 - y_offset, 15);
+		time /= 10;
+	}
+}
+
+void	ft_boost_anim(t_mlx *mlx, t_boost *boost)
+{
+	boost->del++;
+	if (boost->del >= mlx->obj_l[boost->boost_i]->delay)
+	{
+		boost->frame = mlx->obj_l[boost->boost_i]->anim[boost->anim_i];
+		boost->anim_i++;
+		boost->del = 0;
+	}
+	if (boost->anim_i >= mlx->obj_l[boost->boost_i]->anim_n)
+	{
+		boost->del = 0;
+		boost->anim_i = 0;
+	}
+}
+
 void	ft_draw_weapon(t_mlx *mlx)
 {
 	double w_aspect_ratio = (double)mlx->player->frame->h / (double)mlx->player->frame->w;
@@ -216,6 +246,19 @@ void	ft_draw_weapon(t_mlx *mlx)
 	ft_hud_ammo(mlx, mlx->player->weapon->ammo_count, 1200, 25, 20, 9);
 	ft_hud_ammo(mlx, mlx->player->weapon->mag_ammo, mlx->hud_x - 40, 45, 35, 0);
 	ft_r(mlx);
+
+	if (mlx->player->speed_boost)
+	{
+		ft_boost_anim(mlx, mlx->boost[0]);
+		ft_draw_chr(mlx, mlx->boost[0]->frame, 70, 517, 55);
+		ft_boost_time(mlx, (int)mlx->player->speed_diff, 50);
+	}
+	if (mlx->player->hp_boost)
+	{
+		ft_boost_anim(mlx, mlx->boost[1]);
+		ft_draw_chr(mlx, mlx->boost[1]->frame, 70, 570, 35);
+		ft_boost_time(mlx, (int)mlx->player->hp_diff, 0);
+	}
 	// int i = -1;
 	// while (++i < W)
 	// {

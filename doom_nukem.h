@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/25 20:12:40 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/26 19:44:17 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,15 +62,17 @@
 #define THREAD 16
 
 #define TXT 3
-#define OBJ 17
+#define OBJ 18
 #define WOBJ 9
 #define TRANSPARENT 4
 #define SKY 1
+#define BOOST 2
 
 #define FIRE_RANGE 10000
 #define MELEE_RANGE 1
 #define INTERACT_RANGE 2.5
-#define SPEED_BOOST_DUR 20
+#define SPEED_BOOST_DUR 30
+#define	HP_BOOST_DUR 30
 
 typedef struct		s_vec2
 {
@@ -164,8 +166,7 @@ typedef struct		s_anim_list
 	int				can_rotate;
 	t_img			**rot;
 
-	short			boost_i;
-	short			boost_dur;
+	short			is_boost;
 
 	t_wobj_specs	*wobj_specs;
 }					t_anim_list;
@@ -282,6 +283,8 @@ typedef struct		s_sector
 	char			**texts;
 	int				txt_count;
 
+	short			sky;
+
 	char			**neighbors;
 	int				neighbors_count;
 
@@ -312,7 +315,6 @@ typedef	struct		s_weapon
 	int				mag_ammo;
 	int				ammo_count;
 	int				mag_ammo_count;
-	int				max_ammo_count;
 
 	short			has_altfire;
 
@@ -327,6 +329,15 @@ typedef	struct		s_weapon
 	double			scaler;
 	int				x_offset;
 }					t_weapon;
+
+typedef	struct		s_boost
+{
+	int				boost_i;
+
+	t_img			*frame;
+	int				del;
+	int				anim_i;
+}					t_boost;
 
 typedef	struct		s_player
 {
@@ -351,10 +362,17 @@ typedef	struct		s_player
 	int				jump;
 
 	int				hp;
+	int				max_hp;
 
-	short			boost_speed;
+	short			speed_boost;
 	time_t			speed_begin;
 	time_t			speed_curr;
+	double			speed_diff;
+
+	short			hp_boost;
+	time_t			hp_begin;
+	time_t			hp_curr;
+	double			hp_diff;
 
 	int				weapon_state;		//		IDLE - 0	|	FIRE - 1	|	ALTFIRE - 2		|	RELOADING - 3	|	RELOADING_PTT - 4	|
 
@@ -421,8 +439,10 @@ typedef	struct		s_mlx
 	short			r_i;
 	short			r_i_d;
 
-	short			speed_boost_i;
-	t_img			*speed_boost_frame;
+	t_boost			*boost[BOOST];
+
+	int 			sky_offset_x;
+	int				sky_offset_y;
 
 	int				obj_i;
 
@@ -565,5 +585,6 @@ void				ft_interact_check(t_mlx *mlx, int sect, int side, t_vec3 *pos);
 void				ft_obj_search(t_mlx *mlx);
 
 void				ft_boost_check(t_mlx *mlx);
+void				ft_init_boost(t_mlx *mlx);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/25 17:14:59 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/26 18:42:07 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,32 @@ t_wobj	*ft_find_wobj(t_mlx *mlx, int sect, int side)
 // 	printf("%f\n", p_c);
 // 	return (p_c);
 // }
+
+void	ft_skybox_render(t_mlx *mlx, int x, int y1, int y2)
+{
+	int offset_x = x + mlx->sky_offset_x;
+	if (offset_x < 0)
+		offset_x = abs(W + offset_x) % W;
+	else if (offset_x > W - 1)
+		offset_x = (offset_x - W) % W;
+
+	int y = y1 - 1;
+	while (++y <= y2)
+	{
+		if (y < mlx->cya)
+		{
+			// int offset_y = y + mlx->sky_offset_y;
+			// if (offset_y < 0)
+			// 	offset_y = abs(offset_y);
+			// else if (offset_y > H - 1)	
+			// 	offset_y = (offset_y - H) % H;
+			double sx = (double)offset_x / (double)(W - 1);
+			double sy = (double)y / (double)(H - 1);
+			int color = ft_texture_sampling(mlx->sky[0], sx, sy);
+			mlx->data[y * W + x] = color;
+		}
+	}
+}
 
 void	ft_draw(t_mlx *mlx)
 {
@@ -81,7 +107,6 @@ void	ft_draw(t_mlx *mlx)
 		t_sector *sector = mlx->sect[mlx->now->sector_n];
 		mlx->seg = sector->verts_count;
 		int s = -1;
-		// printf("sect %d\n\n", mlx->now->sector_n);
 		while (++s < sector->verts_count)
 		{
 			mlx->open_f = 0;
@@ -286,13 +311,10 @@ void	ft_draw(t_mlx *mlx)
 						unsigned txtx = (mlx->map_x * 32);
 						unsigned txtz = (mlx->map_z * 32);
 
-						// unsigned sky_txtx = (1 * ((W - 1 - x) * 1) + 256 * ((x - 1) * 1)) / ((W - 1 - x) * 1 + (x - 1) * 1);
-
 						//	RENDER CEILING TXT
 						if (y < mlx->cya && ceil_f && mlx->opening[y][x] == -1)
 						{
-							// mlx->data[y * W + x] = mlx->txt[ceil_t]->data[txtz % mlx->txt[ceil_t]->h * mlx->txt[ceil_t]->w + txtx % mlx->txt[ceil_t]->w];
-							mlx->data[y * W + x] = mlx->sky[0]->data[y * mlx->sky[0]->w + x];
+							mlx->data[y * W + x] = mlx->txt[ceil_t]->data[txtz % mlx->txt[ceil_t]->h * mlx->txt[ceil_t]->w + txtx % mlx->txt[ceil_t]->w];
 							if (mlx->cya != mlx->cnya && neighbor >= 0)
 								mlx->opening[y][x] = mlx->now->sector_n;
 						}
@@ -319,6 +341,8 @@ void	ft_draw(t_mlx *mlx)
 					ft_draw_vline(mlx, x, (mlx->cyb), ybottom[x], LINE_COLOR, FLOOR_COLOR, LINE_COLOR);
 					mlx->open_f = 0;
 				}
+				if (mlx->now->sector_n == 0 || mlx->now->sector_n == 2)
+					ft_skybox_render(mlx, x, ytop[x], ybottom[x]);
 
 				mlx->open_f = 0;
 
@@ -326,12 +350,6 @@ void	ft_draw(t_mlx *mlx)
 				if (neighbor >= 0)
 				{
 					mlx->open_f = 1;
-					// int nya = ft_scaler_next(mlx->nya_int);
-					// int nyb = ft_scaler_next(mlx->nyb_int);
-
-                    // mlx->cnya = ft_clamp(nya, ytop[x], ybottom[x]);
-                    // mlx->cnyb = ft_clamp(nyb, ytop[x], ybottom[x]);
-
 					if (sector->txt_count > 0)
 					{
 						char **tmp = ft_strsplit(sector->texts[s], '/');

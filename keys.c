@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:41:19 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/25 19:38:17 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/26 18:59:53 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,7 +206,7 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 
 	if (keycode == MAC_NUM_ONE && mlx->player->hp > 1)
 		mlx->player->hp--;
-	if (keycode == MAC_NUM_TWO && mlx->player->hp < 100)
+	if (keycode == MAC_NUM_TWO && mlx->player->hp < mlx->player->max_hp)
 		mlx->player->hp++;
 
 	return (0);

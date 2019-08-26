@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/25 20:11:39 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/26 19:42:38 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ void	ft_init_graphics(t_mlx *mlx)
 	ft_init_transparent(mlx);
 	ft_init_sky(mlx);
 	ft_init_font(mlx);
+	ft_init_boost(mlx);
 
 	ft_init_revolver(mlx);
 	ft_init_shotgun(mlx);
@@ -72,11 +73,14 @@ void	ft_init(t_mlx *mlx)
 	mlx->player->up = 0;
 	mlx->player->down = 0;
 	mlx->player->jump = 0;
+
 	mlx->player->speed = 0.2f;
-	mlx->player->boost_speed = 0;
-	mlx->speed_boost_i = 0;
-	mlx->speed_boost_frame = mlx->obj_l[16]->anim[0];
+
+	mlx->player->speed_boost = 0;
+	mlx->player->hp_boost = 0;
+	
 	mlx->player->hp = 100;
+	mlx->player->max_hp = 100;
 	int i = -1;
 	while (++i < 4)
 		mlx->player->wsad[i] = 0;
@@ -128,6 +132,9 @@ void	ft_init(t_mlx *mlx)
 		while (++x < W)
 			mlx->opening[y][x] = -1;
 	}
+
+	mlx->sky_offset_x = 0;
+	mlx->sky_offset_y = 100;
 }
 
 int		main()

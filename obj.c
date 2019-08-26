@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 15:17:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/25 19:55:27 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/26 20:19:17 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -257,7 +257,7 @@ void	ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector)
 				{
 					if ((mlx->opening[yc][xc] == obj->specs->sect || mlx->opening[yc][xc] == -1))
 					{
-						if (mlx->sect[mlx->now->sector_n]->light == 0)
+						if (mlx->sect[mlx->now->sector_n]->light == 0 && !mlx->obj_l[obj->specs->obj_i]->is_boost)
 							color = ft_color_convert(color, mlx->sect[mlx->now->sector_n]->lum);
 						mlx->data[yc * W + xc] = color;
 						mlx->opening[yc][xc] = obj->specs->sect;
@@ -284,15 +284,26 @@ void	ft_sect_obj(t_mlx *mlx, int sect)
 
 void	ft_boost_check(t_mlx *mlx)
 {
-	if (mlx->player->boost_speed)
+	if (mlx->player->speed_boost)
 	{
 		mlx->player->speed_curr = time(NULL);
 		double diff = difftime(mlx->player->speed_curr, mlx->player->speed_begin);
-		printf("%f\n", diff);
+		mlx->player->speed_diff = SPEED_BOOST_DUR - diff;
 		if (diff >= SPEED_BOOST_DUR)
 		{
-			mlx->player->boost_speed = 0;
+			mlx->player->speed_boost = 0;
 			mlx->player->speed = 0.2f;
+		}
+	}
+	if (mlx->player->hp_boost)
+	{
+		mlx->player->hp_curr = time(NULL);
+		double diff = difftime(mlx->player->hp_curr, mlx->player->hp_begin);
+		mlx->player->hp_diff = HP_BOOST_DUR - diff;
+		if (diff >= HP_BOOST_DUR)
+		{
+			mlx->player->hp_boost = 0;
+			mlx->player->max_hp = 100;
 		}
 	}
 }
@@ -316,11 +327,17 @@ void	ft_collect(t_mlx *mlx, int obj_i, short *check)
 		mlx->player->a_rifle->ammo_count += 60;
 	else if (obj_i == 15)
 		mlx->player->shotgun->ammo_count += 16;
-	else if (obj_i == 16 && !mlx->player->boost_speed)
+	else if (obj_i == 16 && !mlx->player->speed_boost)
 	{
 		mlx->player->speed = 0.35f;
-		mlx->player->boost_speed = 1;
+		mlx->player->speed_boost = 1;
 		mlx->player->speed_begin = time(NULL);
+	}
+	else if (obj_i == 17 && !mlx->player->hp_boost)
+	{
+		mlx->player->max_hp = 200;
+		mlx->player->hp_boost = 1;
+		mlx->player->hp_begin = time(NULL);
 	}
 	else
 		*check = 0;
@@ -334,22 +351,24 @@ void	ft_obj_search(t_mlx *mlx)
 	t_obj *obj = mlx->sect[mlx->player->sector]->obj_list;
 	if (mlx->sect[mlx->player->sector]->obj_count == 1)
 	{
-		if (mlx->obj_l[obj->specs->obj_i]->is_collectable && ft_overlap(mlx->player->pos->x, mlx->player->pos->x, obj->specs->x - 0.6f, obj->specs->x + 0.6f)
-			&& ft_overlap(mlx->player->pos->y, mlx->player->pos->y, obj->specs->y - 0.6f, obj->specs->y + 0.6f))
+		if (mlx->obj_l[obj->specs->obj_i]->is_collectable && ft_overlap(mlx->player->pos->x, mlx->player->pos->x, obj->specs->x - 0.75f, obj->specs->x + 0.75f)
+			&& ft_overlap(mlx->player->pos->y, mlx->player->pos->y, obj->specs->y - 0.75f, obj->specs->y + 0.75f))
 		{
 			ft_collect(mlx, obj->specs->obj_i, &check);
 			if (check)
 			{
 				free(obj->specs);
 				free(obj);
+				mlx->sect[mlx->player->sector]->obj_list = NULL;
+				mlx->sect[mlx->player->sector]->obj_count--;
 			}
 			return;
 		}
 	}
 	while (obj->next)
 	{
-		if (mlx->obj_l[obj->next->specs->obj_i]->is_collectable && ft_overlap(mlx->player->pos->x, mlx->player->pos->x, obj->next->specs->x - 0.6f, obj->next->specs->x + 0.6f)
-			&& ft_overlap(mlx->player->pos->y, mlx->player->pos->y, obj->next->specs->y - 0.6f, obj->next->specs->y + 0.6f))
+		if (mlx->obj_l[obj->next->specs->obj_i]->is_collectable && ft_overlap(mlx->player->pos->x, mlx->player->pos->x, obj->next->specs->x - 0.75f, obj->next->specs->x + 0.75f)
+			&& ft_overlap(mlx->player->pos->y, mlx->player->pos->y, obj->next->specs->y - 0.75f, obj->next->specs->y + 0.75f))
 		{
 			ft_collect(mlx, obj->next->specs->obj_i, &check);
 			if (check)
@@ -357,6 +376,7 @@ void	ft_obj_search(t_mlx *mlx)
 				free(obj->next->specs);
 				free(obj->next);
 				obj->next = obj->next->next;
+				mlx->sect[mlx->player->sector]->obj_count--;
 			}
 			return;
 		}
