@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 15:17:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/26 20:19:17 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/26 20:27:42 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -293,6 +293,8 @@ void	ft_boost_check(t_mlx *mlx)
 		{
 			mlx->player->speed_boost = 0;
 			mlx->player->speed = 0.2f;
+			mlx->player->revolver->reloading_delay = 3;
+			mlx->player->a_rifle->reloading_delay = 3;
 		}
 	}
 	if (mlx->player->hp_boost)
@@ -331,6 +333,8 @@ void	ft_collect(t_mlx *mlx, int obj_i, short *check)
 	{
 		mlx->player->speed = 0.35f;
 		mlx->player->speed_boost = 1;
+		mlx->player->revolver->reloading_delay = 2;
+		mlx->player->a_rifle->reloading_delay = 2;
 		mlx->player->speed_begin = time(NULL);
 	}
 	else if (obj_i == 17 && !mlx->player->hp_boost)
