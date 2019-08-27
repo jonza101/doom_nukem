@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/11 15:06:15 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/26 18:39:32 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/27 21:21:57 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -267,18 +267,22 @@ void	ft_player_view(t_mlx *mlx)
 	if (mlx->player->up)
 	{
 		mlx->player->yaw -= 0.15f;
+		if (mlx->player->yaw > -5.0f)
+			mlx->sky_offset_y -= 20;
 		mlx->player->yaw = ft_clamp(mlx->player->yaw, -5, 5);
 
-		// mlx->sky_offset_y -= 5;
-		mlx->sky_offset_y = ft_clamp(mlx->sky_offset_y, -230, 230);
+		// mlx->sky_offset_y -= 25;
+		// mlx->sky_offset_y = ft_clamp(mlx->sky_offset_y, -1230, 1230);
 	}
 	if (mlx->player->down)
 	{
 		mlx->player->yaw += 0.15f;
+		if (mlx->player->yaw < 5.0f)
+			mlx->sky_offset_y += 20;
 		mlx->player->yaw = ft_clamp(mlx->player->yaw, -5, 5);
 
-		// mlx->sky_offset_y += 5;
-		mlx->sky_offset_y = ft_clamp(mlx->sky_offset_y, -230, 230);
+		// mlx->sky_offset_y += 25;
+		// mlx->sky_offset_y = ft_clamp(mlx->sky_offset_y, -1230, 1230);
 	}
 	// printf("yaw %f\n", mlx->player->yaw);
 }

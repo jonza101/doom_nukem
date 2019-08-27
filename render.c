@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/26 18:42:07 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/27 22:27:49 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,13 +52,13 @@ void	ft_skybox_render(t_mlx *mlx, int x, int y1, int y2)
 	{
 		if (y < mlx->cya)
 		{
-			// int offset_y = y + mlx->sky_offset_y;
-			// if (offset_y < 0)
-			// 	offset_y = abs(offset_y);
-			// else if (offset_y > H - 1)	
-			// 	offset_y = (offset_y - H) % H;
+			int offset_y = y + mlx->sky_offset_y;
+			if (offset_y < 0)
+				offset_y = abs(H - 1 + offset_y) % (H - 1);
+			else if (offset_y > H - 1)
+				offset_y = (offset_y - H) % H;
 			double sx = (double)offset_x / (double)(W - 1);
-			double sy = (double)y / (double)(H - 1);
+			double sy = (double)offset_y / (double)(H - 1);
 			int color = ft_texture_sampling(mlx->sky[0], sx, sy);
 			mlx->data[y * W + x] = color;
 		}
@@ -279,9 +279,9 @@ void	ft_draw(t_mlx *mlx)
 				int txtx = (u0 * ((x2 - x) * tz2) + u1 * ((x - x1) * tz1)) / ((x2 - x) * tz2 + (x - x1) * tz1);
 
 				//	ACQUIRE THE Y COORDINATES FOR OUR CEILING & FLOOR FOR THIS X COORDINATE. CLAMP THEM
-				int ya = ft_scaler_next(mlx->ya_int);
-				int yb = ft_scaler_next(mlx->yb_int);
-				
+				int ya = ft_scaler_next(mlx->ya_int);					//		 + x / 25
+				int yb = ft_scaler_next(mlx->yb_int);					//		 + x / 25
+
                 mlx->cya = ft_clamp(ya, ytop[x], ybottom[x]);
                 mlx->cyb = ft_clamp(yb, ytop[x], ybottom[x]);
 
@@ -513,7 +513,4 @@ void	ft_draw(t_mlx *mlx)
 		++rendered_sect[mlx->now->sector_n];
 		ft_sect_obj(mlx, mlx->now->sector_n);
 	}
-	// printf("drawsegs %d\n", mlx->seg_i);
-	// printf("\n__________________________________________________________\n\n");
-	// printf("segs %d\n", mlx->seg_i);
 }
