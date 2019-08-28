@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/27 13:56:20 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/27 22:05:41 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/28 15:22:56 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,7 +184,7 @@ void	ft_boost_time(t_mlx *mlx, int time, int y_offset)
 	int i = -1;
 	while (++i < 2)
 	{
-		int digit = time % 10;
+		int digit = abs(time % 10);
 		ft_draw_chr(mlx, mlx->font[digit], 115 - i * 14, 570 - y_offset, 15);
 		time /= 10;
 	}

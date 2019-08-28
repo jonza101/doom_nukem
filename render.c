@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/27 22:27:49 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/28 20:43:20 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	ft_skybox_render(t_mlx *mlx, int x, int y1, int y2)
 	int y = y1 - 1;
 	while (++y <= y2)
 	{
-		if (y < mlx->cya)
+		if (y < mlx->cya && mlx->opening[y][x] == -1)
 		{
 			int offset_y = y + mlx->sky_offset_y;
 			if (offset_y < 0)
@@ -312,7 +312,7 @@ void	ft_draw(t_mlx *mlx)
 						unsigned txtz = (mlx->map_z * 32);
 
 						//	RENDER CEILING TXT
-						if (y < mlx->cya && ceil_f && mlx->opening[y][x] == -1)
+						if (y < mlx->cya && ceil_f && mlx->opening[y][x] == -1 && !sector->sky)
 						{
 							mlx->data[y * W + x] = mlx->txt[ceil_t]->data[txtz % mlx->txt[ceil_t]->h * mlx->txt[ceil_t]->w + txtx % mlx->txt[ceil_t]->w];
 							if (mlx->cya != mlx->cnya && neighbor >= 0)
@@ -326,8 +326,7 @@ void	ft_draw(t_mlx *mlx)
 						}
 					}
 				}
-				mlx->open_f = 0;
-				if (!ceil_f)
+				if (!ceil_f && !sector->sky)
 				{
 					if (mlx->cya != mlx->cnya && neighbor >= 0)
 						mlx->open_f = 1;
@@ -341,10 +340,8 @@ void	ft_draw(t_mlx *mlx)
 					ft_draw_vline(mlx, x, (mlx->cyb), ybottom[x], LINE_COLOR, FLOOR_COLOR, LINE_COLOR);
 					mlx->open_f = 0;
 				}
-				if (mlx->now->sector_n == 0 || mlx->now->sector_n == 2)
+				if (sector->sky)
 					ft_skybox_render(mlx, x, ytop[x], ybottom[x]);
-
-				mlx->open_f = 0;
 
 				// RENDER NEIGHBORS
 				if (neighbor >= 0)

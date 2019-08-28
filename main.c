@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/27 21:22:54 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/28 21:25:54 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,10 @@ void	ft_init(t_mlx *mlx)
 	mlx->player->up = 0;
 	mlx->player->down = 0;
 	mlx->player->jump = 0;
+	mlx->player->shift = 0;
+	mlx->player->jetpack = 0;
+	mlx->player->j_up = 0;
+	mlx->player->j_down = 0;
 
 	mlx->player->speed = 0.2f;
 

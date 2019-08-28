@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:41:19 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/26 18:59:53 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/28 19:15:35 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,16 @@ int		ft_key_realese(int keycode, t_mlx *mlx)
 	if (keycode == MAC_DOWN)
 		mlx->player->down = 0;
 
-	if (keycode == MAC_SPACE)
+	if (keycode == MAC_SPACE && !mlx->player->jetpack)
 		mlx->player->jump = 0;
+
+	if (keycode == MAC_SHIFT_L)
+		mlx->player->shift = 0;
+
+	if (keycode == MAC_SPACE && mlx->player->jetpack)
+		mlx->player->j_up = 0;
+	if (keycode == MAC_CTRL_L && mlx->player->jetpack)
+		mlx->player->j_down = 0;
 
 	if (keycode == MAC_W)
 		mlx->player->wsad[0] = 0;
@@ -70,7 +78,7 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 		mlx->player->down = 1;
 	if (keycode == MAC_CTRL_L)
 	{
-		if (mlx->crouching)
+		if (mlx->crouching && !mlx->player->jetpack)
 		{
 			if (mlx->sect[mlx->player->sector]->ceiling >= mlx->player->pos->z + (EYE_H - CROUCH_H))
 			{
@@ -78,15 +86,17 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 				mlx->falling = 1;
 			}
 		}
-		else
+		else if (!mlx->crouching && !mlx->player->jetpack)
 		{
 			mlx->crouching = 1;
 			mlx->falling = 1;
 		}
-		
 	}
 	if (keycode == MAC_SPACE && mlx->ground && !mlx->crouching)
 		mlx->player->jump = 1;
+
+	if (keycode == MAC_SHIFT_L && !mlx->crouching)
+		mlx->player->shift = 1;
 
 	if (keycode == MAC_W)
 		mlx->player->wsad[0] = 1;
@@ -116,12 +126,6 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 	{
 		mlx->u0 -= 32;
 		printf("u0 %d\n", mlx->u0);
-	}
-
-	if (keycode == MAC_DOT)
-	{
-		mlx->s = !mlx->s;
-		printf("s %d\n", mlx->s);
 	}
 
 	if (keycode == MAC_CTRL_R && mlx->player->weapon_state == 0 && mlx->player->weapon->mag_ammo > 0)
@@ -208,6 +212,16 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 		mlx->player->hp--;
 	if (keycode == MAC_NUM_TWO && mlx->player->hp < mlx->player->max_hp)
 		mlx->player->hp++;
+
+	if (keycode == MAC_J)
+	{
+		mlx->player->jetpack = !mlx->player->jetpack;
+		mlx->falling = 1;
+	}
+	if (keycode == MAC_SPACE && mlx->player->jetpack)
+		mlx->player->j_up = 1;
+	if (keycode == MAC_CTRL_L && mlx->player->jetpack)
+		mlx->player->j_down = 1;
 
 	return (0);
 }

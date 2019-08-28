@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/24 13:33:33 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/28 21:25:40 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,9 +75,12 @@ void	ft_strsplit_free(char **temp)
 {
 	int i;
 
-	i = -1;
-	while (temp[++i])
+	i = 0;
+	while (temp[i])
+	{
 		free(temp[i]);
+		i++;
+	}
 	free(temp);
 }
 
@@ -130,13 +133,11 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 	
 	char **temp;
 
-	t_vec2 **verts, **tmp_v;
+	t_vec2 **verts = NULL, **tmp_v = NULL;
 
-	t_sector **tmp_s;
+	t_sector **tmp_s = NULL;
 
-	t_img **tmp_t;
-
-	t_obj *temp_obj, *prev;
+	t_obj *temp_obj = NULL;
 
 	t_trans *temp_trans = NULL, *trans_prev = NULL;
 	mlx->trans_list = NULL;
@@ -176,6 +177,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				verts[v - 1] = (t_vec2*)malloc(sizeof(t_vec2));
 				verts[v - 1]->x = (double)ft_atof(temp[2]);
 				verts[v - 1]->y = (double)ft_atof(temp[1]);
+				v++;
 			}
 			else
 			{
@@ -184,9 +186,9 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				verts[0]->x = (double)ft_atof(temp[2]);
 				verts[0]->y = (double)ft_atof(temp[1]);
 				int j = 0;
+				v++;
 			}
 			ft_strsplit_free(temp);
-			v++;
 		}
 		if (line[0] == 's' && line[1] == '|')
 		{
@@ -274,6 +276,8 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 					mlx->sect[s - 1]->has_switcher = 0;
 				}
 
+				mlx->sect[s - 1]->sky = 0;
+
 				ft_strsplit_free(t);
 			}
 			else
@@ -341,6 +345,8 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 					mlx->sect[0]->has_switcher = 0;
 				}
 
+				mlx->sect[0]->sky = 0;
+
 				ft_strsplit_free(t);
 			}
 			ft_strsplit_free(temp);
@@ -366,8 +372,14 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 			mlx->sect[tmp]->floor_txt = ft_atoi(tmp_t[0]);
 			mlx->sect[tmp]->ceil_txt = ft_atoi(tmp_t[1]);
 
-			ft_strsplit_free(temp);
+			if (ft_strcmp(tmp_t[1], "sky") == 0)
+			{
+				mlx->sect[tmp]->sky = 1;
+				mlx->sect[tmp]->ceil_txt = -1;
+			}
+
 			ft_strsplit_free(tmp_t);
+			ft_strsplit_free(temp);
 		}
 		if (line[0] == 'o' && line[1] == '|')
 		{
@@ -383,6 +395,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				sect->obj_list->next->specs->sect = sect_n;
 				sect->obj_list->next->specs->x = ft_atof(tmp_t[0]);
 				sect->obj_list->next->specs->y = ft_atof(tmp_t[1]);
+				sect->obj_list->next->specs->z = mlx->sect[sect_n]->floor;
 				sect->obj_list->next->specs->obj_i = ft_atoi(temp[3]);
 				sect->obj_list->next->specs->has_collider = 0;
 				if (ft_obj_index_check(sect->obj_list->next->specs->obj_i))
@@ -407,6 +420,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				sect->obj_list->specs->sect = sect_n;
 				sect->obj_list->specs->x = ft_atof(tmp_t[0]);
 				sect->obj_list->specs->y = ft_atof(tmp_t[1]);
+				sect->obj_list->specs->z = mlx->sect[sect_n]->floor;
 				sect->obj_list->specs->obj_i = ft_atoi(temp[3]);
 				sect->obj_list->specs->has_collider = 0;
 				if (ft_obj_index_check(sect->obj_list->specs->obj_i))
@@ -506,7 +520,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->sect[w_sect]->has_switcher = 1;
 			}
 
-			if (w > 1 && swtch)
+			if (mlx->wobj_count > 0 && swtch)
 			{
 				mlx->wobj_list->next = (t_wobj*)malloc(sizeof(t_wobj));
 				mlx->wobj_list->next->sect = w_sect;
@@ -529,10 +543,9 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 
 				mlx->last_wobj = mlx->wobj_list;
 
-				w++;
 				mlx->wobj_count++;
 			}
-			else if (w <= 1 && swtch)
+			else if (mlx->wobj_count == 0 && swtch)
 			{
 				mlx->wobj_list = (t_wobj*)malloc(sizeof(t_wobj));
 				mlx->wobj_list->sect = w_sect;
@@ -554,7 +567,6 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				temp_wobj = mlx->wobj_list;
 				mlx->last_wobj = mlx->wobj_list;
 
-				w++;
 				mlx->wobj_count++;
 			}
 
@@ -577,6 +589,8 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 			mlx->player->pos->x = (double)ft_atof(t[0]);
 			mlx->player->pos->y = (double)ft_atof(t[1]);
 			mlx->player->pos->z = (double)mlx->sect[mlx->player->sector]->floor + mlx->player->eye_h;
+
+			mlx->player->jetpack = 0;
 
 			ft_strsplit_free(t);
 			ft_strsplit_free(temp);

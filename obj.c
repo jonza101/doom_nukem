@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 15:17:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/26 20:27:42 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/28 19:08:36 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -331,7 +331,7 @@ void	ft_collect(t_mlx *mlx, int obj_i, short *check)
 		mlx->player->shotgun->ammo_count += 16;
 	else if (obj_i == 16 && !mlx->player->speed_boost)
 	{
-		mlx->player->speed = 0.35f;
+		mlx->player->speed = 0.3f;
 		mlx->player->speed_boost = 1;
 		mlx->player->revolver->reloading_delay = 2;
 		mlx->player->a_rifle->reloading_delay = 2;
@@ -342,6 +342,16 @@ void	ft_collect(t_mlx *mlx, int obj_i, short *check)
 		mlx->player->max_hp = 200;
 		mlx->player->hp_boost = 1;
 		mlx->player->hp_begin = time(NULL);
+	}
+	else if (obj_i == 18 && mlx->player->hp < mlx->player->max_hp)
+	{
+		mlx->player->hp += 45;
+		mlx->player->hp = (mlx->player->hp > mlx->player->max_hp) ? mlx->player->max_hp : mlx->player->hp;
+	}
+	else if (obj_i == 19 && mlx->player->hp < mlx->player->max_hp)
+	{
+		mlx->player->hp += 15;
+		mlx->player->hp = (mlx->player->hp > mlx->player->max_hp) ? mlx->player->max_hp : mlx->player->hp;
 	}
 	else
 		*check = 0;
@@ -356,7 +366,7 @@ void	ft_obj_search(t_mlx *mlx)
 	if (mlx->sect[mlx->player->sector]->obj_count == 1)
 	{
 		if (mlx->obj_l[obj->specs->obj_i]->is_collectable && ft_overlap(mlx->player->pos->x, mlx->player->pos->x, obj->specs->x - 0.75f, obj->specs->x + 0.75f)
-			&& ft_overlap(mlx->player->pos->y, mlx->player->pos->y, obj->specs->y - 0.75f, obj->specs->y + 0.75f))
+			&& ft_overlap(mlx->player->pos->y, mlx->player->pos->y, obj->specs->y - 0.75f, obj->specs->y + 0.75f) && obj->specs->z == (mlx->player->pos->z - mlx->player->eye_h))
 		{
 			ft_collect(mlx, obj->specs->obj_i, &check);
 			if (check)
@@ -372,7 +382,7 @@ void	ft_obj_search(t_mlx *mlx)
 	while (obj->next)
 	{
 		if (mlx->obj_l[obj->next->specs->obj_i]->is_collectable && ft_overlap(mlx->player->pos->x, mlx->player->pos->x, obj->next->specs->x - 0.75f, obj->next->specs->x + 0.75f)
-			&& ft_overlap(mlx->player->pos->y, mlx->player->pos->y, obj->next->specs->y - 0.75f, obj->next->specs->y + 0.75f))
+			&& ft_overlap(mlx->player->pos->y, mlx->player->pos->y, obj->next->specs->y - 0.75f, obj->next->specs->y + 0.75f) && obj->next->specs->z == (mlx->player->pos->z - mlx->player->eye_h))
 		{
 			ft_collect(mlx, obj->next->specs->obj_i, &check);
 			if (check)

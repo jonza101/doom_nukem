@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/26 19:44:17 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/28 20:43:27 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@
 #define THREAD 16
 
 #define TXT 3
-#define OBJ 18
+#define OBJ 20
 #define WOBJ 9
 #define TRANSPARENT 4
 #define SKY 1
@@ -118,6 +118,7 @@ typedef struct		s_obj_specs
 {
 	double			x;
 	double			y;
+	double			z;
 	int				sect;
 
 	double			pov;
@@ -186,8 +187,8 @@ typedef	struct		s_obj
 {
 	t_obj_specs		*specs;
 	double			dist;
+
 	struct s_obj	*next;
-	// struct s_obj	*prev;
 }					t_obj;
 
 typedef	struct		s_wobj
@@ -353,13 +354,16 @@ typedef	struct		s_player
 
 	int				sector;
 
-	int				wsad[4];
+	short			wsad[4];
 	double			speed;
-	int				left;
-	int				right;
-	int				up;
-	int				down;
-	int				jump;
+	short			left;
+	short			right;
+	short			up;
+	short			down;
+	short			jump;
+	short			shift;
+	short			j_up;
+	short			j_down;
 
 	int				hp;
 	int				max_hp;
@@ -374,7 +378,9 @@ typedef	struct		s_player
 	time_t			hp_curr;
 	double			hp_diff;
 
-	int				weapon_state;		//		IDLE - 0	|	FIRE - 1	|	ALTFIRE - 2		|	RELOADING - 3	|	RELOADING_PTT - 4	|
+	short			jetpack;
+
+	short			weapon_state;		//		IDLE - 0	|	FIRE - 1	|	ALTFIRE - 2		|	RELOADING - 3	|	RELOADING_PTT - 4	|
 
 	t_img			*frame;
 	t_weapon		*weapon;

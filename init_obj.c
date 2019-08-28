@@ -6,11 +6,46 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/11 13:43:09 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/26 20:11:34 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/28 16:37:13 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doom_nukem.h"
+
+void	ft_init_speed_boost(t_mlx *mlx)
+{
+	int fd;
+	char *line;
+	int id = 17;
+	char *boost[7] = { "textures/obj/speed_boost/speed_boost01.xpm", "textures/obj/speed_boost/speed_boost02.xpm", "textures/obj/speed_boost/speed_boost03.xpm",
+						"textures/obj/speed_boost/speed_boost04.xpm", "textures/obj/speed_boost/speed_boost03.xpm", "textures/obj/speed_boost/speed_boost02.xpm",
+						"textures/obj/speed_boost/speed_boost01.xpm" };
+	mlx->obj_l[id] = (t_anim_list*)malloc(sizeof(t_anim_list));
+	mlx->obj_l[id]->anim = (t_img**)malloc(sizeof(t_img*) * 7);
+	mlx->obj_l[id]->anim_n = 7;
+	mlx->obj_l[id]->delay = 13;
+	mlx->obj_l[id]->expl = 0;
+	int i = -1;
+	while (++i < 7)
+	{
+		fd = open(boost[i], O_RDONLY);
+		int j = -1;
+		while (++j < 4)
+		{
+			get_next_line(fd, &line);
+			(j < 3) ? ft_strdel(&line) : 1;
+		}
+		char **tmp = ft_strsplit(line, ' ');
+		mlx->obj_l[id]->anim[i] = (t_img*)malloc(sizeof(t_img));
+		mlx->obj_l[id]->anim[i]->w = ft_atoi(&tmp[0][1]);
+		mlx->obj_l[id]->anim[i]->h = ft_atoi(tmp[1]);
+		mlx->obj_l[id]->anim[i]->img = mlx_xpm_file_to_image(mlx->mlx, boost[i], &mlx->obj_l[id]->anim[i]->w, &mlx->obj_l[id]->anim[i]->h);
+		mlx->obj_l[id]->anim[i]->data = (int*)mlx_get_data_addr(mlx->obj_l[id]->anim[i]->img, &mlx->obj_l[id]->anim[i]->bpp, &mlx->obj_l[id]->anim[i]->size_line, &mlx->obj_l[id]->anim[i]->endian);
+		ft_strsplit_free(tmp);
+		close(fd);
+		ft_strdel(&line);
+	}
+}
 
 void	ft_init_hp_boost(t_mlx *mlx)
 {
@@ -32,41 +67,6 @@ void	ft_init_hp_boost(t_mlx *mlx)
 	mlx->obj_l[id]->expl = 0;
 	int i = -1;
 	while (++i < 23)
-	{
-		fd = open(boost[i], O_RDONLY);
-		int j = -1;
-		while (++j < 4)
-		{
-			get_next_line(fd, &line);
-			(j < 3) ? ft_strdel(&line) : 1;
-		}
-		char **tmp = ft_strsplit(line, ' ');
-		mlx->obj_l[id]->anim[i] = (t_img*)malloc(sizeof(t_img));
-		mlx->obj_l[id]->anim[i]->w = ft_atoi(&tmp[0][1]);
-		mlx->obj_l[id]->anim[i]->h = ft_atoi(tmp[1]);
-		mlx->obj_l[id]->anim[i]->img = mlx_xpm_file_to_image(mlx->mlx, boost[i], &mlx->obj_l[id]->anim[i]->w, &mlx->obj_l[id]->anim[i]->h);
-		mlx->obj_l[id]->anim[i]->data = (int*)mlx_get_data_addr(mlx->obj_l[id]->anim[i]->img, &mlx->obj_l[id]->anim[i]->bpp, &mlx->obj_l[id]->anim[i]->size_line, &mlx->obj_l[id]->anim[i]->endian);
-		ft_strsplit_free(tmp);
-		close(fd);
-		ft_strdel(&line);
-	}
-}
-
-void	ft_init_speed_boost(t_mlx *mlx)
-{
-	int fd;
-	char *line;
-	int id = 17;
-	char *boost[7] = { "textures/obj/speed_boost/speed_boost01.xpm", "textures/obj/speed_boost/speed_boost02.xpm", "textures/obj/speed_boost/speed_boost03.xpm",
-						"textures/obj/speed_boost/speed_boost04.xpm", "textures/obj/speed_boost/speed_boost03.xpm", "textures/obj/speed_boost/speed_boost02.xpm",
-						"textures/obj/speed_boost/speed_boost01.xpm" };
-	mlx->obj_l[id] = (t_anim_list*)malloc(sizeof(t_anim_list));
-	mlx->obj_l[id]->anim = (t_img**)malloc(sizeof(t_img*) * 7);
-	mlx->obj_l[id]->anim_n = 7;
-	mlx->obj_l[id]->delay = 13;
-	mlx->obj_l[id]->expl = 0;
-	int i = -1;
-	while (++i < 7)
 	{
 		fd = open(boost[i], O_RDONLY);
 		int j = -1;
@@ -440,7 +440,38 @@ void	ft_init_firepot(t_mlx *mlx)
 	}
 }
 
-void	ft_init_static_obj_next(t_mlx *mlx)
+void	ft_init_static_obj_medkit(t_mlx *mlx)
+{
+	int fd;
+	char *line;
+	char *objs[2] = { "textures/obj/static/medkit.xpm", "textures/obj/static/s_medkit.xpm" };
+	int i = 17;
+	while (++i < 20)
+	{
+		fd = open(objs[i - 18], O_RDONLY);
+		int j = -1;
+		while (++j < 4)
+		{
+			get_next_line(fd, &line);
+			(j < 3) ? ft_strdel(&line) : 1;
+		}
+		char **tmp = ft_strsplit(line, ' ');
+		mlx->obj_l[i] = (t_anim_list*)malloc(sizeof(t_anim_list));
+		mlx->obj_l[i]->anim = (t_img**)malloc(sizeof(t_img*));
+		mlx->obj_l[i]->anim[0] = (t_img*)malloc(sizeof(t_img));
+		mlx->obj_l[i]->anim[0]->w = ft_atoi(&tmp[0][1]);
+		mlx->obj_l[i]->anim[0]->h = ft_atoi(tmp[1]);
+		mlx->obj_l[i]->anim[0]->img = mlx_xpm_file_to_image(mlx->mlx, objs[i - 18], &mlx->obj_l[i]->anim[0]->w, &mlx->obj_l[i]->anim[0]->h);
+		mlx->obj_l[i]->anim[0]->data = (int*)mlx_get_data_addr(mlx->obj_l[i]->anim[0]->img, &mlx->obj_l[i]->anim[0]->bpp, &mlx->obj_l[i]->anim[0]->size_line, &mlx->obj_l[i]->anim[0]->endian);
+		mlx->obj_l[i]->anim_n = 1;
+		mlx->obj_l[i]->expl = 0;
+		ft_strsplit_free(tmp);
+		close(fd);
+		ft_strdel(&line);
+	}
+}
+
+void	ft_init_static_obj_ammo(t_mlx *mlx)
 {
 	int fd;
 	char *line;
@@ -523,6 +554,8 @@ void	ft_init_obj_specs(t_mlx *mlx)
 	mlx->obj_l[15]->scaler = 6.0f;
 	mlx->obj_l[16]->scaler = 4.5f;
 	mlx->obj_l[17]->scaler = 5.5f;
+	mlx->obj_l[18]->scaler = 5.0f;
+	mlx->obj_l[19]->scaler = 5.75f;
 
 	mlx->obj_l[0]->aspect_scaler = 1.0f;
 	mlx->obj_l[1]->aspect_scaler = 0.95f;
@@ -542,6 +575,8 @@ void	ft_init_obj_specs(t_mlx *mlx)
 	mlx->obj_l[15]->aspect_scaler = 1.0f;
 	mlx->obj_l[16]->aspect_scaler = 1.0f;
 	mlx->obj_l[17]->aspect_scaler = 1.0f;
+	mlx->obj_l[18]->aspect_scaler = 1.0f;
+	mlx->obj_l[19]->aspect_scaler = 1.0f;
 
 	mlx->obj_l[0]->col_w = 1.0f;
 	mlx->obj_l[3]->col_w = 0.75f;
@@ -566,6 +601,8 @@ void	ft_init_obj_specs(t_mlx *mlx)
 	mlx->obj_l[15]->can_rotate = 0;
 	mlx->obj_l[16]->can_rotate = 0;
 	mlx->obj_l[17]->can_rotate = 0;
+	mlx->obj_l[18]->can_rotate = 0;
+	mlx->obj_l[19]->can_rotate = 0;
 
 	mlx->obj_l[0]->is_collectable = 0;
 	mlx->obj_l[1]->is_collectable = 1;
@@ -585,9 +622,11 @@ void	ft_init_obj_specs(t_mlx *mlx)
 	mlx->obj_l[15]->is_collectable = 1;
 	mlx->obj_l[16]->is_collectable = 1;
 	mlx->obj_l[17]->is_collectable = 1;
+	mlx->obj_l[18]->is_collectable = 1;
+	mlx->obj_l[19]->is_collectable = 1;
 
 	int i = -1;
-	while (++i < 16)
+	while (++i < OBJ)
 		mlx->obj_l[i]->is_boost = 0;
 	mlx->obj_l[16]->is_boost = 1;
 	mlx->obj_l[17]->is_boost = 1;
@@ -616,7 +655,8 @@ void	ft_init_obj(t_mlx *mlx)
 {
 	mlx->obj_l = (t_anim_list**)malloc(sizeof(t_anim_list*) * OBJ);
 	ft_init_static_obj(mlx);
-	ft_init_static_obj_next(mlx);
+	ft_init_static_obj_ammo(mlx);
+	ft_init_static_obj_medkit(mlx);
 	ft_init_anim_obj(mlx);
 	ft_init_rot_obj(mlx);
 	ft_init_obj_specs(mlx);

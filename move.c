@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/11 15:06:15 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/27 21:21:57 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/28 19:51:23 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,6 @@ int		ft_line_intersect_move(t_mlx *mlx, t_vec2 *p0, t_vec2 *p1, t_vec2 *v0, t_ve
 	return (0);
 }
 
-int		ft_box_collision(t_obj *obj, double px, double py)
-{
-	if (px > obj->specs->verts[0]->x && px < obj->specs->verts[2]->x
-			&& py > obj->specs->verts[0]->y && py < obj->specs->verts[2]->y)
-		return (1);
-	return (0);
-}
-
 void	ft_move_player(t_mlx *mlx, double dx, double dy)
 {
 	double px = mlx->player->pos->x;
@@ -92,10 +84,12 @@ void	ft_collision(t_mlx *mlx)
 {
 	//	VERTICAL COLLISION
 	double eye_h = mlx->crouching ? CROUCH_H : EYE_H;
+	mlx->player->eye_h = eye_h;
 	mlx->ground = !mlx->falling;
 	if (mlx->falling)
 	{
-		mlx->player->velocity->z -= 0.05f;
+		if (!mlx->player->jetpack)
+			mlx->player->velocity->z -= 0.05f;
 		double next_z = mlx->player->pos->z + mlx->player->velocity->z;
 		if (mlx->player->velocity->z < 0 && next_z < mlx->sect[mlx->player->sector]->floor + eye_h)
 		{
@@ -109,9 +103,15 @@ void	ft_collision(t_mlx *mlx)
 			mlx->player->velocity->z = 0;
 			mlx->falling = 1;
 		}
-		if (mlx->falling)
+		if (mlx->falling && !mlx->player->jetpack)
 		{
 			mlx->player->pos->z += mlx->player->velocity->z;
+			mlx->moving = 1;
+		}
+		if (mlx->falling && mlx->player->jetpack)
+		{
+			mlx->player->pos->z += mlx->player->velocity->z;
+			mlx->player->velocity->z = 0.0f;
 			mlx->moving = 1;
 		}
 	}
@@ -136,7 +136,7 @@ void	ft_collision(t_mlx *mlx)
 		p1->y = py + dy;
 
 		t_obj *obj = sector->obj_list;
-		while (obj)
+		while (obj && obj->specs->z == (mlx->player->pos->z - mlx->player->eye_h))
 		{
 			if (obj->specs->has_collider)
 			{
@@ -159,8 +159,8 @@ void	ft_collision(t_mlx *mlx)
 			}
 			obj = obj->next;
 		}
-		// free(p0);
-		// free(p1);
+		free(p0);
+		free(p1);
 
 		int s = -1;
 		while (++s < sector->verts_count)
@@ -237,9 +237,6 @@ void	ft_collision(t_mlx *mlx)
 			}
 		}
 
-		free(p0);
-		free(p1);
-
 		if (!stop)
 			ft_move_player(mlx, mlx->player->velocity->x, mlx->player->velocity->y);
 		mlx->falling = 1;
@@ -254,7 +251,7 @@ void	ft_player_view(t_mlx *mlx)
 		mlx->player->sin_angle = sinf(mlx->player->angle);
 		mlx->player->cos_angle = cosf(mlx->player->angle);
 
-		mlx->sky_offset_x -= 18;	//	18
+		mlx->sky_offset_x -= 18;
 	}
 	if (mlx->player->right)
 	{
@@ -262,29 +259,22 @@ void	ft_player_view(t_mlx *mlx)
 		mlx->player->sin_angle = sinf(mlx->player->angle);
 		mlx->player->cos_angle = cosf(mlx->player->angle);
 
-		mlx->sky_offset_x += 18;	//	18
+		mlx->sky_offset_x += 18;
 	}
 	if (mlx->player->up)
 	{
-		mlx->player->yaw -= 0.15f;
+		mlx->player->yaw -= 0.1f;
 		if (mlx->player->yaw > -5.0f)
 			mlx->sky_offset_y -= 20;
 		mlx->player->yaw = ft_clamp(mlx->player->yaw, -5, 5);
-
-		// mlx->sky_offset_y -= 25;
-		// mlx->sky_offset_y = ft_clamp(mlx->sky_offset_y, -1230, 1230);
 	}
 	if (mlx->player->down)
 	{
-		mlx->player->yaw += 0.15f;
+		mlx->player->yaw += 0.1f;
 		if (mlx->player->yaw < 5.0f)
 			mlx->sky_offset_y += 20;
 		mlx->player->yaw = ft_clamp(mlx->player->yaw, -5, 5);
-
-		// mlx->sky_offset_y += 25;
-		// mlx->sky_offset_y = ft_clamp(mlx->sky_offset_y, -1230, 1230);
 	}
-	// printf("yaw %f\n", mlx->player->yaw);
 }
 
 void	ft_move_calc(t_mlx *mlx)
@@ -292,27 +282,26 @@ void	ft_move_calc(t_mlx *mlx)
 	double move_vec[2] = { 0.0f, 0.0f };
 	if (mlx->player->wsad[0])
 	{
-		move_vec[0] += mlx->player->cos_angle * mlx->player->speed;
-		move_vec[1] += mlx->player->sin_angle * mlx->player->speed;
+		move_vec[0] += mlx->player->cos_angle * (mlx->player->speed + 0.1f * mlx->player->shift);
+		move_vec[1] += mlx->player->sin_angle * (mlx->player->speed + 0.1f * mlx->player->shift);
 	}
 	if (mlx->player->wsad[1])
 	{
-		move_vec[0] -= mlx->player->cos_angle * mlx->player->speed;
-		move_vec[1] -= mlx->player->sin_angle * mlx->player->speed;
+		move_vec[0] -= mlx->player->cos_angle * (mlx->player->speed + 0.1f * mlx->player->shift);
+		move_vec[1] -= mlx->player->sin_angle * (mlx->player->speed + 0.1f * mlx->player->shift);
 	}
 	if (mlx->player->wsad[2])
 	{
-		move_vec[0] += mlx->player->sin_angle * mlx->player->speed;
-		move_vec[1] -= mlx->player->cos_angle * mlx->player->speed;
+		move_vec[0] += mlx->player->sin_angle * (mlx->player->speed + 0.1f * mlx->player->shift);
+		move_vec[1] -= mlx->player->cos_angle * (mlx->player->speed + 0.1f * mlx->player->shift);
 	}
 	if (mlx->player->wsad[3])
 	{
-		move_vec[0] -= mlx->player->sin_angle * mlx->player->speed;
-		move_vec[1] += mlx->player->cos_angle * mlx->player->speed;
+		move_vec[0] -= mlx->player->sin_angle * (mlx->player->speed + 0.1f * mlx->player->shift);
+		move_vec[1] += mlx->player->cos_angle * (mlx->player->speed + 0.1f * mlx->player->shift);
 	}
 
 	int pushing = mlx->player->wsad[0] || mlx->player->wsad[1] || mlx->player->wsad[2] || mlx->player->wsad[3];
-	// double acceleration = (pushing) ? 0.35f : 0.35f;
 
 	mlx->player->velocity->x = mlx->player->velocity->x * (1 - 0.35f) + move_vec[0] * 0.35f;
 	mlx->player->velocity->y = mlx->player->velocity->y * (1 - 0.35f) + move_vec[1] * 0.35f;
@@ -320,9 +309,14 @@ void	ft_move_calc(t_mlx *mlx)
 	if (pushing)
 		mlx->moving = 1;
 
-	if (mlx->player->jump && mlx->ground && !mlx->crouching)
+	if (mlx->player->jump && mlx->ground && !mlx->crouching && !mlx->player->jetpack)
 	{
 		mlx->player->velocity->z += JUMP_H;
 		mlx->falling = 1;
 	}
+
+	if (mlx->player->j_up && mlx->player->jetpack)
+		mlx->player->velocity->z += 0.25f;
+	if (mlx->player->j_down && mlx->player->jetpack)
+		mlx->player->velocity->z -= 0.25f;
 }
