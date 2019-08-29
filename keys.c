@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   keys.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:41:19 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/28 19:15:35 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/29 22:32:38 by lsandor-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,35 +14,21 @@
 
 int		ft_key_realese(int keycode, t_mlx *mlx)
 {
-	if (keycode == MAC_LEFT)
-		mlx->player->left = 0;
-	if (keycode == MAC_RIGHT)
-		mlx->player->right = 0;
-	if (keycode == MAC_UP)
-		mlx->player->up = 0;
-	if (keycode == MAC_DOWN)
-		mlx->player->down = 0;
-
+	keycode == MAC_LEFT ? mlx->player->left = 0 : 0;
+	keycode == MAC_RIGHT ? mlx->player->right = 0 : 0;
+	keycode == MAC_UP ? mlx->player->up = 0 : 0;
+	keycode == MAC_DOWN ? mlx->player->down = 0 : 0;
 	if (keycode == MAC_SPACE && !mlx->player->jetpack)
 		mlx->player->jump = 0;
-
-	if (keycode == MAC_SHIFT_L)
-		mlx->player->shift = 0;
-
+	keycode == MAC_SHIFT_L ? mlx->player->shift = 0 : 0;
 	if (keycode == MAC_SPACE && mlx->player->jetpack)
 		mlx->player->j_up = 0;
 	if (keycode == MAC_CTRL_L && mlx->player->jetpack)
 		mlx->player->j_down = 0;
-
-	if (keycode == MAC_W)
-		mlx->player->wsad[0] = 0;
-	if (keycode == MAC_S)
-		mlx->player->wsad[1] = 0;
-	if (keycode == MAC_A)
-		mlx->player->wsad[2] = 0;
-	if (keycode == MAC_D)
-		mlx->player->wsad[3] = 0;
-
+	keycode == MAC_W ? mlx->player->wsad[0] = 0 : 0;
+	keycode == MAC_S ? mlx->player->wsad[1] = 0 : 0;
+	keycode == MAC_A ? mlx->player->wsad[2] = 0 : 0;
+	keycode == MAC_D ? mlx->player->wsad[3] = 0 : 0;
 	if (keycode == MAC_CTRL_R && mlx->player->weapon_state == 1 && mlx->player->weapon == mlx->player->a_rifle)
 	{
 		mlx->player->weapon_state = 0;
@@ -66,16 +52,12 @@ int		ft_key_realese(int keycode, t_mlx *mlx)
 
 int		ft_key_press(int keycode, t_mlx *mlx)
 {
-	// printf("%d\n", keycode);
-	(keycode == MAC_ESC) ? exit(0) : 1;
-	if (keycode == MAC_LEFT)
-		mlx->player->left = 1;
-	if (keycode == MAC_RIGHT)
-		mlx->player->right = 1;
-	if (keycode == MAC_UP)
-		mlx->player->up = 1;
-	if (keycode == MAC_DOWN)
-		mlx->player->down = 1;
+	 //printf("%d\n", keycode);
+	keycode == MAC_ESC ? exit(0) : 1;
+	keycode == MAC_LEFT ? mlx->player->left = 1 : 0;
+	keycode == MAC_RIGHT ? mlx->player->right = 1 : 0;
+	keycode == MAC_UP ? mlx->player->up = 1 : 0;
+	keycode == MAC_DOWN ? mlx->player->down = 1 : 0;
 	if (keycode == MAC_CTRL_L)
 	{
 		if (mlx->crouching && !mlx->player->jetpack)
@@ -98,14 +80,10 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 	if (keycode == MAC_SHIFT_L && !mlx->crouching)
 		mlx->player->shift = 1;
 
-	if (keycode == MAC_W)
-		mlx->player->wsad[0] = 1;
-	if (keycode == MAC_S)
-		mlx->player->wsad[1] = 1;
-	if (keycode == MAC_A)
-		mlx->player->wsad[2] = 1;
-	if (keycode == MAC_D)
-		mlx->player->wsad[3] = 1;
+	keycode == MAC_W ? mlx->player->wsad[0] = 1 : 0;
+	keycode == MAC_S ? mlx->player->wsad[1] = 1 : 0;
+	keycode == MAC_A ? mlx->player->wsad[2] = 1 : 0;
+	keycode == MAC_D ? mlx->player->wsad[3] = 1 : 0;
 
 	if (keycode == MAC_NUM_PLUS)
 	{

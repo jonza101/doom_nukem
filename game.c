@@ -15,14 +15,14 @@
 
 int		ft_game_loop(t_mlx *mlx)
 {
-	clock_t start_time = clock();
+	// clock_t start_time = clock();
 
 	ft_drawseg_sort(mlx);
 
 	ft_collision(mlx);
 	ft_player_view(mlx);
 	ft_move_calc(mlx);
-	ft_reset_image(mlx);
+	ft_bzero(mlx->data, W * H * 4);
 	ft_draw(mlx);
 
 	ft_weapon_state(mlx);
@@ -54,11 +54,11 @@ int		ft_game_loop(t_mlx *mlx)
 	// printf("\n");
 
 	// FPS COUNTER
-	clock_t end_time = clock();
-	double dif = ((double)(end_time - start_time) / CLOCKS_PER_SEC);
-	double result = 1.0 / dif;
-	double sleep_time = result - 60;
-	// printf("%f\n", result);
+	// clock_t end_time = clock();
+	// double dif = ((double)(end_time - start_time) / CLOCKS_PER_SEC);
+	// double result = 1.0 / dif;
+	// double sleep_time = result - 60;
+	// // printf("%f\n", result);
 
 	ft_drawseg_clear(mlx);
 	ft_opening_clear(mlx);

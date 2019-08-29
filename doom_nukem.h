@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doom_nukem.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/28 20:43:27 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/29 22:53:49 by lsandor-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,11 @@
 #define INTERACT_RANGE 2.5
 #define SPEED_BOOST_DUR 30
 #define	HP_BOOST_DUR 30
+
+#define RIGHT 2459
+#define LEFT -100
+#define BOTTOM -621
+#define TOP 818
 
 typedef struct		s_vec2
 {
@@ -490,7 +495,7 @@ typedef	struct		s_mlx
 }					t_mlx;
 
 void				ft_image(t_mlx *mlx, int x, int y, int color);
-void				ft_reset_image(t_mlx *mlx);
+
 
 void				ft_load_map(t_mlx *mlx, char *map_file);
 
@@ -592,5 +597,21 @@ void				ft_obj_search(t_mlx *mlx);
 
 void				ft_boost_check(t_mlx *mlx);
 void				ft_init_boost(t_mlx *mlx);
+
+/**
+ * mouse_rotation.c
+ **/
+
+void				ftLookRight(t_mlx *mlx);
+void				ftLookLeft(t_mlx *mlx);
+void				ftLookUp(t_mlx *mlx);
+void				ftLookDown(t_mlx *mlx);
+
+/**
+ * mousePressAndReleaseHooks.c
+ **/
+
+int					ft_mouse_press(int keycode, int x, int y, t_mlx *mlx);
+int					ft_mouse_release(int keycode, int x, int y, t_mlx *mlx);
 
 #endif

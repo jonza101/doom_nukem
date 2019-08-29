@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mac_keys.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/25 13:33:20 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/30 14:17:03 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/29 22:48:00 by lsandor-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@
 #define MAC_F17 64
 #define MAC_F18 79
 #define MAC_F19 80
+
+#define LEFT_CLICK 1
 
 #define MAC_TILDE 50
 #define MAC_ONE 18
