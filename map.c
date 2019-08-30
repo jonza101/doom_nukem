@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/28 21:25:40 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/30 21:32:10 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ int		ft_find_sect_mirror_side(t_mlx *mlx, int sector, int side, int sect_to_find
 			break ;
 		}
 	}
-	// printf("v1x %f		v1y %f\nv2x %f		v2y %f\n\n", v1->x, v1->y, v2->x, v2->y);
 	t_sector *sect_to = mlx->sect[sect_to_find];
 	s = 0;
 	while (++s < sect_to->verts_count)
@@ -217,8 +216,6 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				free(tmp_s);
 				mlx->sect[s - 1] = (t_sector*)malloc(sizeof(t_sector));
 
-				mlx->sect[s - 1]->txt_count = 0;
-
 				char **t;
 				t = ft_strsplit(temp[1], ' ');
 				mlx->sect[s - 1]->floor = (double)ft_atof(t[0]);
@@ -232,12 +229,18 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 					v_count++;
 				mlx->sect[s - 1]->verts_count = v_count;
 				mlx->sect[s - 1]->verts = (t_vec2**)malloc(sizeof(t_vec2*) * (v_count + 1));
+
+				mlx->sect[s - 1]->txt_count = v_count;
+				mlx->sect[s - 1]->texts = (char**)malloc(sizeof(char*) * v_count);
+
 				j = -1;
 				while (++j < v_count)
 				{
 					mlx->sect[s - 1]->verts[j + 1] = (t_vec2*)malloc(sizeof(t_vec2));
 					mlx->sect[s - 1]->verts[j + 1]->x = (double)verts[ft_atoi(t[j])]->x;
 					mlx->sect[s - 1]->verts[j + 1]->y = (double)verts[ft_atoi(t[j])]->y;
+
+					mlx->sect[s - 1]->texts[j] = NULL;
 				}
 				mlx->sect[s - 1]->verts[0] = (t_vec2*)malloc(sizeof(t_vec2));
 				mlx->sect[s - 1]->verts[0]->x = (double)verts[ft_atoi(t[j - 1])]->x;
@@ -250,11 +253,11 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				while (t[n_count])
 					n_count++;
 				mlx->sect[s - 1]->neighbors_count = n_count;
-				mlx->sect[s - 1]->neighbors = (char**)malloc(sizeof(char*) * n_count);
+				mlx->sect[s - 1]->neighbors = (int*)malloc(sizeof(int) * n_count);
 				j = 0;
 				while (j < n_count)
 				{
-					mlx->sect[s - 1]->neighbors[j] = ft_strdup(t[j]);
+					mlx->sect[s - 1]->neighbors[j] = ft_atoi(t[j]);
 					j++;
 				}
 				mlx->sect[s - 1]->ceil_txt = -1;
@@ -277,6 +280,8 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				}
 
 				mlx->sect[s - 1]->sky = 0;
+				mlx->sect[s - 1]->is_door = 0;
+				mlx->sect[s - 1]->door_i = -1;
 
 				ft_strsplit_free(t);
 			}
@@ -284,8 +289,6 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 			{
 				mlx->sect = (t_sector**)malloc(sizeof(t_sector*) * 1);
 				mlx->sect[0] = (t_sector*)malloc(sizeof(t_sector));
-
-				mlx->sect[0]->txt_count = 0;
 
 				char **t;
 				t = ft_strsplit(temp[1], ' ');
@@ -300,13 +303,18 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 					v_count++;
 				mlx->sect[0]->verts_count = v_count;
 				mlx->sect[0]->verts = (t_vec2**)malloc(sizeof(t_vec2*) * (v_count + 1));
-				int j = 0;
-				while (j < v_count)
+
+				mlx->sect[0]->txt_count = v_count;
+				mlx->sect[0]->texts = (char**)malloc(sizeof(char*) * v_count);
+
+				int j = -1;
+				while (++j < v_count)
 				{
 					mlx->sect[0]->verts[j + 1] = (t_vec2*)malloc(sizeof(t_vec2));
 					mlx->sect[0]->verts[j + 1]->x = (double)verts[ft_atoi(t[j])]->x;
 					mlx->sect[0]->verts[j + 1]->y = (double)verts[ft_atoi(t[j])]->y;
-					j++;
+
+					mlx->sect[0]->texts[j] = NULL;
 				}
 				mlx->sect[0]->verts[0] = (t_vec2*)malloc(sizeof(t_vec2));
 				mlx->sect[0]->verts[0]->x = (double)verts[ft_atoi(t[j - 1])]->x;
@@ -315,15 +323,15 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				ft_strsplit_free(t);
 
 				t = ft_strsplit(temp[3], ' ');
-				int n_counts = 0;
-				while (t[n_counts])
-					n_counts++;
-				mlx->sect[0]->neighbors_count = n_counts;
-				mlx->sect[0]->neighbors = (char**)malloc(sizeof(char*) * n_counts);
+				int n_count = 0;
+				while (t[n_count])
+					n_count++;
+				mlx->sect[0]->neighbors_count = n_count;
+				mlx->sect[0]->neighbors = (int*)malloc(sizeof(int) * n_count);
 				j = 0;
-				while (j < n_counts)
+				while (j < n_count)
 				{
-					mlx->sect[0]->neighbors[j] = ft_strdup(t[j]);
+					mlx->sect[0]->neighbors[j] = ft_atoi(t[j]);
 					j++;
 				}
 				mlx->sect[0]->ceil_txt = -1;
@@ -346,6 +354,8 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				}
 
 				mlx->sect[0]->sky = 0;
+				mlx->sect[0]->is_door = 0;
+				mlx->sect[0]->door_i = -1;
 
 				ft_strsplit_free(t);
 			}
@@ -357,13 +367,8 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 			temp = ft_strsplit(line, '|');
 			int tmp = ft_atoi(temp[1]);
 			char **tmp_t = ft_strsplit(temp[3], ' ');
-			int txt_count = 0;
-			while (tmp_t[txt_count])
-				txt_count++;
-			mlx->sect[tmp]->texts = (char**)malloc(sizeof(char*) * txt_count);
-			mlx->sect[tmp]->txt_count = txt_count;
 			int j = -1;
-			while (++j < txt_count)
+			while (++j < mlx->sect[tmp]->txt_count)
 				mlx->sect[tmp]->texts[j] = ft_strdup(tmp_t[j]);
 
 			ft_strsplit_free(tmp_t);
@@ -404,7 +409,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				if (temp[4])
 					sect->obj_list->next->specs->pov = ft_atof(temp[4]);
 				else
-					sect->obj_list->specs->pov = 0.0f;
+					sect->obj_list->next->specs->pov = 0.0f;
 
 				sect->obj_list->next->specs->frame = mlx->obj_l[sect->obj_list->next->specs->obj_i]->anim[0];
 				sect->obj_list->next->specs->del = 0;
@@ -458,7 +463,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				trans_prev = mlx->trans_list;
 
 				mlx->trans_list->next = (t_trans*)malloc(sizeof(t_trans));
-				int neigh_sect = ft_atoi(mlx->sect[mlx->trans_list->sect]->neighbors[mlx->trans_list->side]);
+				int neigh_sect = (mlx->sect[mlx->trans_list->sect]->neighbors[mlx->trans_list->side]);
 				int mirror_side = ft_find_sect_mirror_side(mlx, mlx->trans_list->sect, mlx->trans_list->side, neigh_sect);
 				mlx->trans_list->next->sect = neigh_sect;
 				mlx->trans_list->next->side = mirror_side;
@@ -480,7 +485,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				trans_prev = mlx->trans_list;
 
 				mlx->trans_list->next = (t_trans*)malloc(sizeof(t_trans));
-				int neigh_sect = ft_atoi(mlx->sect[mlx->trans_list->sect]->neighbors[mlx->trans_list->side]);
+				int neigh_sect = (mlx->sect[mlx->trans_list->sect]->neighbors[mlx->trans_list->side]);
 				int mirror_side = ft_find_sect_mirror_side(mlx, mlx->trans_list->sect, mlx->trans_list->side, neigh_sect);
 
 				mlx->trans_list->next->sect = neigh_sect;
@@ -571,6 +576,21 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 			}
 
 			ft_strsplit_free(w_pos);
+			ft_strsplit_free(temp);
+		}
+		if (line[0] == 'd' && line[1] == '|')
+		{
+			temp = ft_strsplit(line, '|');
+			int sect = ft_atoi(temp[1]);
+			int door_i = ft_atoi(temp[2]);
+
+			mlx->sect[sect]->is_door = 1;
+			mlx->sect[sect]->close = 1;
+			mlx->sect[sect]->open = 0;
+			mlx->sect[sect]->door_i = door_i;
+			mlx->sect[sect]->start_ceiling = mlx->sect[sect]->ceiling;
+			mlx->sect[sect]->ceiling = mlx->sect[sect]->floor;
+
 			ft_strsplit_free(temp);
 		}
 		if (line[0] == 'p' && line[1] == '|')

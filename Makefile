@@ -3,14 +3,14 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+         #
+#    By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/06/08 15:22:17 by zjeyne-l          #+#    #+#              #
-#    Updated: 2019/08/29 22:41:17 by lsandor-         ###   ########.fr        #
+#    Updated: 2019/08/30 12:17:25 by zjeyne-l         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRC = main.c map.c funcs.c render.c move.c init.c thread.c obj.c draw.c game.c keys.c init_weapon.c error.c obj_anim.c init_obj.c ray.c transparent.c wobj.c init_wobj.c init_boost.c mouse_rotation.c mousePressAndReleaseHooks.c
+SRC = main.c map.c funcs.c render.c move.c init.c thread.c obj.c draw.c game.c keys.c init_weapon.c error.c obj_anim.c init_obj.c ray.c transparent.c wobj.c init_wobj.c init_boost.c mouse_rotation.c mouse_hooks.c
 SRC += gnl/get_next_line.c gnl/libft/libft.a
 
 all :

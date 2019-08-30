@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doom_nukem.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/29 22:53:49 by lsandor-         ###   ########.fr       */
+/*   Updated: 2019/08/30 20:45:35 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@
 
 #define THREAD 16
 
-#define TXT 3
+#define TXT 4					//		4	-	DOOR
 #define OBJ 20
 #define WOBJ 9
 #define TRANSPARENT 4
@@ -291,7 +291,14 @@ typedef struct		s_sector
 
 	short			sky;
 
-	char			**neighbors;
+	short			is_door;
+	double			start_ceiling;
+	int				door_i;
+	short			close;
+	short			open;
+	time_t			start_time;
+
+	int				*neighbors;
 	int				neighbors_count;
 
 	short			light;
@@ -472,11 +479,13 @@ typedef	struct		s_mlx
 	int				seg_i;
 	t_drawseg		drawseg[MAX_DRAWSEG];
 	int				seg;
-	short			**opening;
+	int				**opening;
 	short			open_f;
 
 	double			fire_range;
 	t_vec2			*shoot_p;
+
+	int				activated_doors;
 
 	int				cya;
 	int				cyb;
@@ -598,18 +607,10 @@ void				ft_obj_search(t_mlx *mlx);
 void				ft_boost_check(t_mlx *mlx);
 void				ft_init_boost(t_mlx *mlx);
 
-/**
- * mouse_rotation.c
- **/
-
 void				ftLookRight(t_mlx *mlx);
 void				ftLookLeft(t_mlx *mlx);
 void				ftLookUp(t_mlx *mlx);
 void				ftLookDown(t_mlx *mlx);
-
-/**
- * mousePressAndReleaseHooks.c
- **/
 
 int					ft_mouse_press(int keycode, int x, int y, t_mlx *mlx);
 int					ft_mouse_release(int keycode, int x, int y, t_mlx *mlx);

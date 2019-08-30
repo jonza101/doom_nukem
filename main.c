@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/29 22:50:07 by lsandor-         ###   ########.fr       */
+/*   Updated: 2019/08/30 20:46:04 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,26 +95,26 @@ void ft_init(t_mlx *mlx)
 	mlx->altfire = 0;
 	mlx->fire_range = FIRE_RANGE;
 
-	mlx->scaler = (t_scaler *)malloc(sizeof(t_scaler));
-	mlx->ya_int = (t_scaler *)malloc(sizeof(t_scaler));
-	mlx->yb_int = (t_scaler *)malloc(sizeof(t_scaler));
-	mlx->nya_int = (t_scaler *)malloc(sizeof(t_scaler));
-	mlx->nyb_int = (t_scaler *)malloc(sizeof(t_scaler));
+	mlx->scaler = (t_scaler*)malloc(sizeof(t_scaler));
+	mlx->ya_int = (t_scaler*)malloc(sizeof(t_scaler));
+	mlx->yb_int = (t_scaler*)malloc(sizeof(t_scaler));
+	mlx->nya_int = (t_scaler*)malloc(sizeof(t_scaler));
+	mlx->nyb_int = (t_scaler*)malloc(sizeof(t_scaler));
 
-	mlx->wya_int = (t_scaler *)malloc(sizeof(t_scaler));
-	mlx->wyb_int = (t_scaler *)malloc(sizeof(t_scaler));
+	mlx->wya_int = (t_scaler*)malloc(sizeof(t_scaler));
+	mlx->wyb_int = (t_scaler*)malloc(sizeof(t_scaler));
 
-	mlx->rend_wobj = (t_rend_wobj **)malloc(sizeof(t_rend_wobj *) * MAX_WSPRITES_ON_WALL);
+	mlx->rend_wobj = (t_rend_wobj**)malloc(sizeof(t_rend_wobj*) * MAX_WSPRITES_ON_WALL);
 	int w = -1;
 	while (++w < MAX_WSPRITES_ON_WALL)
 	{
-		mlx->rend_wobj[w] = (t_rend_wobj *)malloc(sizeof(t_rend_wobj));
-		mlx->rend_wobj[w]->wya_int = (t_scaler *)malloc(sizeof(t_scaler));
-		mlx->rend_wobj[w]->wyb_int = (t_scaler *)malloc(sizeof(t_scaler));
+		mlx->rend_wobj[w] = (t_rend_wobj*)malloc(sizeof(t_rend_wobj));
+		mlx->rend_wobj[w]->wya_int = (t_scaler*)malloc(sizeof(t_scaler));
+		mlx->rend_wobj[w]->wyb_int = (t_scaler*)malloc(sizeof(t_scaler));
 	}
 
 	mlx->u0 = 0;
-	mlx->u1 = 512;
+	mlx->u1 = 1024;
 	mlx->c0 = 128;
 	mlx->c1 = 128;
 
@@ -126,11 +126,11 @@ void ft_init(t_mlx *mlx)
 
 	mlx->seg = 0;
 	mlx->seg_i = 0;
-	mlx->opening = (short **)malloc(sizeof(short *) * H);
+	mlx->opening = (int**)malloc(sizeof(int*) * H);
 	int y = -1;
 	while (++y < H)
 	{
-		mlx->opening[y] = (short *)malloc(sizeof(short) * W);
+		mlx->opening[y] = (int*)malloc(sizeof(int) * W);
 		int x = -1;
 		while (++x < W)
 			mlx->opening[y][x] = -1;
@@ -138,6 +138,8 @@ void ft_init(t_mlx *mlx)
 
 	mlx->sky_offset_x = 0;
 	mlx->sky_offset_y = 100;
+
+	mlx->activated_doors = 0;
 }
 
 int main()
@@ -158,7 +160,7 @@ int main()
 	ft_load_map(mlx, "maps/map4");
 	ft_init(mlx);
 
-	mlx_hook(mlx->win, 6, 1L << 6, ft_mouse_move, mlx);
+	// mlx_hook(mlx->win, 6, 1L << 6, ft_mouse_move, mlx);
 	mlx_hook(mlx->win, 4, 0, ft_mouse_press, mlx);
 	mlx_hook(mlx->win, 5, 0, ft_mouse_release, mlx);
 	mlx_loop_hook(mlx->mlx, ft_game_loop, mlx);

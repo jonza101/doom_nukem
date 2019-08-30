@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/28 21:24:48 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/27 21:23:40 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/30 19:03:31 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,8 @@ void	ft_init_textures(t_mlx *mlx)
 {
 	int fd;
 	char *line;
-	char *txts[TXT] = { "textures/walls/brick.xpm", "textures/walls/wall.xpm", "textures/walls/scifi_wall.xpm" };
+	char *txts[TXT] = { "textures/walls/brick.xpm", "textures/walls/wall.xpm", "textures/walls/scifi_wall.xpm",
+						"textures/walls/door.xpm" };
 	int i = -1;
 	while (++i < TXT)
 	{

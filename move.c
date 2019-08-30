@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/11 15:06:15 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/28 19:51:23 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/30 18:36:29 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	ft_move_player(t_mlx *mlx, double dx, double dy)
 	int s = -1;
 	while (++s < sector->verts_count)
 	{
-		int neighbor = ft_atoi(sector->neighbors[s]);
+		int neighbor = (sector->neighbors[s]);
 		if (neighbor >= 0
 			&& ft_intersect_box(px, py, px + dx, py + dy,
 				sector->verts[s + 0]->x, sector->verts[s + 0]->y,
@@ -80,20 +80,26 @@ void	ft_move_player(t_mlx *mlx, double dx, double dy)
 	ft_obj_search(mlx);
 }
 
+int        intersect(t_vec2 *v1, t_vec2 *v2, t_vec2 *p)
+{
+    if (((v1->y > p->y) != (v2->y > p->y)) && (p->x < (v1->x + (v2->x - v1->x) * (p->y - v1->y) / (v2->y - v1->y))))
+        return (1);
+    return (0);
+}
+
 void	ft_collision(t_mlx *mlx)
 {
 	//	VERTICAL COLLISION
-	double eye_h = mlx->crouching ? CROUCH_H : EYE_H;
-	mlx->player->eye_h = eye_h;
+	mlx->player->eye_h = mlx->crouching ? CROUCH_H : EYE_H;
 	mlx->ground = !mlx->falling;
 	if (mlx->falling)
 	{
 		if (!mlx->player->jetpack)
 			mlx->player->velocity->z -= 0.05f;
 		double next_z = mlx->player->pos->z + mlx->player->velocity->z;
-		if (mlx->player->velocity->z < 0 && next_z < mlx->sect[mlx->player->sector]->floor + eye_h)
+		if (mlx->player->velocity->z < 0 && next_z < mlx->sect[mlx->player->sector]->floor + mlx->player->eye_h)
 		{
-			mlx->player->pos->z = mlx->sect[mlx->player->sector]->floor + eye_h;
+			mlx->player->pos->z = mlx->sect[mlx->player->sector]->floor + mlx->player->eye_h;
 			mlx->player->velocity->z = 0;
 			mlx->falling = 0;
 			mlx->ground = 1;
@@ -159,36 +165,42 @@ void	ft_collision(t_mlx *mlx)
 			}
 			obj = obj->next;
 		}
-		free(p0);
-		free(p1);
+
+		// t_vec2 *p = (t_vec2*)malloc(sizeof(t_vec2));
+		// p->x = px + dx;
+		// p->y = py + dy;
 
 		int s = -1;
 		while (++s < sector->verts_count)
 		{
-			if (ft_intersect_box(px, py, px + dx, py + dy,
-					sector->verts[s + 0]->x, sector->verts[s + 0]->y,
-					sector->verts[s + 1]->x, sector->verts[s + 1]->y)
-				&& ft_point_side(px + dx, py + dy,
-					sector->verts[s + 0]->x, sector->verts[s + 0]->y,
-					sector->verts[s + 1]->x, sector->verts[s + 1]->y) < 0)
+			// if (ft_intersect_box(px, py, px + dx, py + dy,
+			// 		sector->verts[s + 0]->x, sector->verts[s + 0]->y,
+			// 		sector->verts[s + 1]->x, sector->verts[s + 1]->y)
+			// 	&& ft_point_side(px + dx, py + dy,
+			// 		sector->verts[s + 0]->x, sector->verts[s + 0]->y,
+			// 		sector->verts[s + 1]->x, sector->verts[s + 1]->y) < 0)
+			if (ft_line_intersect_move(mlx, p0, p1, sector->verts[s + 0], sector->verts[s + 1])
+					&& ft_point_side(px + dx, py + dy,
+						sector->verts[s + 0]->x, sector->verts[s + 0]->y,
+						sector->verts[s + 1]->x, sector->verts[s + 1]->y) < 0)
 			{
-				neighbor = ft_atoi(sector->neighbors[s]);
+				neighbor = (sector->neighbors[s]);
 				//	!!!
 				if (neighbor == -1)
 				{
 					int n, nt, i;
 					if (s != sector->verts_count - 1)
-						n = ft_atoi(sector->neighbors[s + 1]);
+						n = (sector->neighbors[s + 1]);
 					else
-						n = ft_atoi(sector->neighbors[0]);
+						n = (sector->neighbors[0]);
 					if (s != 0)
 					{
-						nt = ft_atoi(sector->neighbors[s - 1]);
+						nt = (sector->neighbors[s - 1]);
 						i = s - 1;
 					}
 					else
 					{
-						nt = ft_atoi(sector->neighbors[sector->verts_count - 1]);
+						nt = (sector->neighbors[sector->verts_count - 1]);
 						i = sector->verts_count - 1;
 					}
 					if (n == -1 || nt == -1)
@@ -224,8 +236,7 @@ void	ft_collision(t_mlx *mlx)
 						hole_low = ft_max(sector->floor, mlx->sect[neighbor]->floor);
 						hole_high = ft_min(sector->ceiling, mlx->sect[neighbor]->ceiling);
 					}
-					if (hole_high < mlx->player->pos->z + 0 ||				//	HEAD_MARGIN
-						hole_low > mlx->player->pos->z - eye_h + STAIRS_H || has_trans)
+					if (mlx->player->eye_h > (hole_high - hole_low) || hole_low > (mlx->player->pos->z - mlx->player->eye_h) + STAIRS_H || has_trans)
 					{
 						double xd = sector->verts[s + 1]->x - sector->verts[s + 0]->x;
 						double yd = sector->verts[s + 1]->y - sector->verts[s + 0]->y;
@@ -236,6 +247,8 @@ void	ft_collision(t_mlx *mlx)
 				}
 			}
 		}
+		free(p0);
+		free(p1);
 
 		if (!stop)
 			ft_move_player(mlx, mlx->player->velocity->x, mlx->player->velocity->y);
@@ -265,14 +278,14 @@ void	ft_player_view(t_mlx *mlx)
 	{
 		mlx->player->yaw -= 0.1f;
 		if (mlx->player->yaw > -5.0f)
-			mlx->sky_offset_y -= 20;
+			mlx->sky_offset_y -= 14;
 		mlx->player->yaw = ft_clamp(mlx->player->yaw, -5, 5);
 	}
 	if (mlx->player->down)
 	{
 		mlx->player->yaw += 0.1f;
 		if (mlx->player->yaw < 5.0f)
-			mlx->sky_offset_y += 20;
+			mlx->sky_offset_y += 14;
 		mlx->player->yaw = ft_clamp(mlx->player->yaw, -5, 5);
 	}
 }

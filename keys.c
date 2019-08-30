@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   keys.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:41:19 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/29 22:32:38 by lsandor-         ###   ########.fr       */
+/*   Updated: 2019/08/30 20:53:33 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,7 +168,7 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 	if (keycode == MAC_O)
 	{
 		mlx->sect[mlx->player->sector]->ceiling -= 0.5f;
-		printf("ceil %f\n", mlx->sect[mlx->player->sector]->ceiling);
+		printf("ceil %f\n", mlx->sect[21]->ceiling);
 	}
 	if (keycode == MAC_P)
 	{

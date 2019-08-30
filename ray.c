@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/12 17:10:17 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/24 14:06:25 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/30 20:09:51 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ void	ft_interact(t_mlx *mlx)
 		int s = ft_poly_intersect(mlx, sector, mlx->shoot_p, p1);
 		if (s != -1)
 		{
-			int neighbor = ft_atoi(sector->neighbors[s]);
+			int neighbor = (sector->neighbors[s]);
 
 			double dxx = mlx->shoot_p->x - px;
 			double dyy = mlx->shoot_p->y - py;
@@ -114,6 +114,17 @@ void	ft_interact(t_mlx *mlx)
 			{
 				double n_sect_f = mlx->sect[neighbor]->floor;
 				double n_sect_c = mlx->sect[neighbor]->ceiling;
+
+				if (mlx->sect[neighbor]->is_door)
+				{
+					// mlx->sect[neighbor]->ceiling = mlx->sect[neighbor]->start_ceiling;
+					mlx->sect[neighbor]->close = 0;
+					mlx->sect[neighbor]->open = 1;
+					mlx->sect[neighbor]->start_time = time(NULL);
+					mlx->activated_doors++;
+					printf("hit door!\n");
+					return;
+				}
 
 				if (n_sect_f != p_sect_f || n_sect_c != p_sect_c)
 				{
@@ -159,14 +170,11 @@ void	ft_shoot(t_mlx *mlx)
 {
 	double px = mlx->player->pos->x;
 	double py = mlx->player->pos->y;
-	double pz = mlx->player->pos->z;// + mlx->sect[mlx->player->sector]->floor;
+	double pz = mlx->player->pos->z;
 	double angle_xy = atan2f(mlx->player->sin_angle, mlx->player->cos_angle);
 	double angle_z = atanf(-mlx->player->yaw);
 	double dx = mlx->fire_range * cosf(angle_xy) + px;
 	double dy = mlx->fire_range * sinf(angle_xy) + py;
-
-	// printf("\npx %f		py %f		pz %f\n", px, py, pz);
-	// printf("dx %f		dy %f\n", dx, dy);
 
 	t_vec2 *p1 = (t_vec2*)malloc(sizeof(t_vec2));
 
@@ -184,38 +192,28 @@ void	ft_shoot(t_mlx *mlx)
 		int s = ft_poly_intersect(mlx, sector, mlx->shoot_p, p1);
 		if (s != -1)
 		{
-			int neighbor = ft_atoi(sector->neighbors[s]);
+			int neighbor = (sector->neighbors[s]);
 
 			double dxx = mlx->shoot_p->x - px;
 			double dyy = mlx->shoot_p->y - py;
 			double p_dist = sqrtf(dxx * dxx + dyy * dyy);
 			double sz = p_dist * tanf(angle_z) + pz;
-			// printf("angle_z %f\n", angle_z);
-			// printf("sx %f		sy %f		sz %f\n\n", mlx->shoot_p->x, mlx->shoot_p->y, sz);
 			double p_sect_f = mlx->sect[mlx->player->sector]->floor;
 			double p_sect_c = mlx->sect[mlx->player->sector]->ceiling;
 
 			if (ft_explosive_obj(mlx, p_dist, mlx->now->sector_n))
 			{
-				// printf("hit canister\n");
-				// printf("----------------------------------------------------\n");
 				free(p1);
 				return ;
 			}
 
 			if (sz < p_sect_f)
 			{
-				// printf("hit floor\n");
-				// printf("sect %d\n", mlx->now->sector_n);
-				// printf("----------------------------------------------------\n");
 				free(p1);
 				return ;
 			}
 			if (sz > p_sect_c)
 			{
-				// printf("hit ceiling\n");
-				// printf("sect %d\n", mlx->now->sector_n);
-				// printf("----------------------------------------------------\n");
 				free(p1);
 				return ;
 			}
@@ -236,9 +234,6 @@ void	ft_shoot(t_mlx *mlx)
 					{
 						ft_add_wobj(mlx, pos, mlx->now->sector_n, s);
 
-						// printf("hit lower wall\n");
-						// printf("sect %d			s %d\n", mlx->now->sector_n, s);
-						// printf("----------------------------------------------------\n");
 						free(p1);
 						free(pos);
 						return ;
@@ -247,9 +242,6 @@ void	ft_shoot(t_mlx *mlx)
 					{
 						ft_add_wobj(mlx, pos, mlx->now->sector_n, s);
 
-						// printf("hit upper wall\n");
-						// printf("sect %d			s %d\n", mlx->now->sector_n, s);
-						// printf("----------------------------------------------------\n");
 						free(p1);
 						free(pos);
 						return ;

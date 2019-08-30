@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/28 20:43:20 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/30 21:22:17 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +29,15 @@ t_wobj	*ft_find_wobj(t_mlx *mlx, int sect, int side)
 	return (NULL);
 }
 
-// double	ft_check(t_vec3 *p, t_vec2 *v1, t_vec2 *v2)
-// {
-// 	double nx = v1->y - v2->y;
-// 	double ny = v2->x - v1->x;
+double	ft_check(t_vec3 *p, t_vec2 *v1, t_vec2 *v2)
+{
+	double nx = v1->y - v2->y;
+	double ny = v2->x - v1->x;
 
-// 	double p_c = (nx * (p->x - v1->x) + ny * (p->y - v1->y)) / sqrtf(nx * nx + ny * ny);
-// 	printf("%f\n", p_c);
-// 	return (p_c);
-// }
+	double p_c = (nx * (p->x - v1->x) + ny * (p->y - v1->y)) / sqrtf(nx * nx + ny * ny);
+	printf("check %f\n", p_c);
+	return (p_c);
+}
 
 void	ft_skybox_render(t_mlx *mlx, int x, int y1, int y2)
 {
@@ -128,15 +128,22 @@ void	ft_draw(t_mlx *mlx)
 			double tx2 = vx2 * p_sin - vy2 * p_cos;
 			double tz2 = vx2 * p_cos + vy2 * p_sin;
 
+			// if (mlx->now->sector_n == mlx->player->sector)
+				// printf("tz1 %f			tz2 %f\n", tz1, tz2);
+
 			//	IS THE WALL AT LEAST PARTIALLY IN FRONT OF THE PLAYER?
-			if (tz1 <= 0 && tz2 <= 0)
+			if (tz1 <= 0.0f && tz2 <= 0.0f)
+			{
+				// if (mlx->now->sector_n == mlx->player->sector)
+					// printf("\n");
 				continue;
+			}
 
 			int u0 = 0;
 			int u1 = mlx->u1;
 
 			//	IF IT'S PARTIALLY BEHIND THE PLAYER, CLIP IT AGAINST PLAYER'S VIEW FRUSTRUM
-			if (tz1 <= 0 || tz2 <= 0)
+			if (tz1 <= 0.0f || tz2 <= 0.0f)
 			{
 				double near_z = 1e-4f;
 				double far_z = 5.0f;
@@ -210,15 +217,25 @@ void	ft_draw(t_mlx *mlx)
 			double yscale2 = (H * FOV_V) / tz2;
 			int x2 = W / 2 + (int)(-tx2 * xscale2);
 
+			if (mlx->now->sector_n == mlx->player->sector)
+			{
+				// printf("x1 %d				x2 %d\n", x1, x2);
+				// printf("sx1 %d				sx2 %d\n", mlx->now->sx1, mlx->now->sx2);
+			}
+
 			if (x1 >= x2 || x2 < mlx->now->sx1 || x1 > mlx->now->sx2)
+			{
+				// if (mlx->now->sector_n == mlx->player->sector)
+					// printf("next\n\n");
 				continue;
+			}
 
 			//	ACQUIRE THE FLOOR AND CEILING HEIGHTS, RELATIVE TO WHERE THE PLAYER'S VIEW IS
 			double yceil = sector->ceiling - mlx->player->pos->z;
 			double yfloor = sector->floor - mlx->player->pos->z;
 
 			//	CHECK NEIGHBORS
-			int neighbor = ft_atoi(sector->neighbors[s]);
+			int neighbor = (sector->neighbors[s]);
 			double nyceil = 0;
 			double nyfloor = 0;
 			if (neighbor >= 0)
@@ -239,13 +256,16 @@ void	ft_draw(t_mlx *mlx)
 			int ny2a = H / 2 + (int)(-(nyceil + tz2 * mlx->player->yaw) * yscale2);
 			int ny2b = H / 2 + (int)(-(nyfloor + tz2 * mlx->player->yaw) * yscale2);
 
-			int wy1a, wy1b;
-			int wy2a, wy2b;
-			int wbeginx, wendx;
-
 			//	RENDER THE WALL
 			int beginx = ft_max(x1, mlx->now->sx1);
 			int endx = ft_min(x2, mlx->now->sx2);
+
+			if (mlx->now->sector_n == mlx->player->sector)
+			{
+				// printf("x1 %d			x2 %d\n", x1, x2);
+				// printf("sx1 %d			sx2 %d\n", mlx->now->sx1, mlx->now->sx2);
+				// printf("bx %d				ex %d\n\n", beginx, endx);
+			}
 
 			ft_scaler_init(mlx->ya_int, x1, beginx, x2, y1a, y2a);
             ft_scaler_init(mlx->yb_int, x1, beginx, x2, y1b, y2b);
@@ -314,13 +334,19 @@ void	ft_draw(t_mlx *mlx)
 						//	RENDER CEILING TXT
 						if (y < mlx->cya && ceil_f && mlx->opening[y][x] == -1 && !sector->sky)
 						{
-							mlx->data[y * W + x] = mlx->txt[ceil_t]->data[txtz % mlx->txt[ceil_t]->h * mlx->txt[ceil_t]->w + txtx % mlx->txt[ceil_t]->w];
+							int color = mlx->txt[ceil_t]->data[txtz % mlx->txt[ceil_t]->h * mlx->txt[ceil_t]->w + txtx % mlx->txt[ceil_t]->w];
+							if (mlx->sect[mlx->now->sector_n]->light == 0)
+								color = ft_color_convert(color, mlx->sect[mlx->now->sector_n]->lum);
+							mlx->data[y * W + x] = color;
 							if (mlx->cya != mlx->cnya && neighbor >= 0)
 								mlx->opening[y][x] = mlx->now->sector_n;
 						}
 						else if (y >= mlx->cya && floor_f && mlx->opening[y][x] == -1)
 						{
-							mlx->data[y * W + x] = mlx->txt[floor_t]->data[txtz % mlx->txt[floor_t]->h * mlx->txt[floor_t]->w + txtx % mlx->txt[floor_t]->w];
+							int color = mlx->txt[floor_t]->data[txtz % mlx->txt[floor_t]->h * mlx->txt[floor_t]->w + txtx % mlx->txt[floor_t]->w];
+							if (mlx->sect[mlx->now->sector_n]->light == 0)
+								color = ft_color_convert(color, mlx->sect[mlx->now->sector_n]->lum);
+							mlx->data[y * W + x] = color;
 							if (mlx->cyb != mlx->cnyb && neighbor >= 0)
 								mlx->opening[y][x] = mlx->now->sector_n;
 						}
@@ -347,7 +373,7 @@ void	ft_draw(t_mlx *mlx)
 				if (neighbor >= 0)
 				{
 					mlx->open_f = 1;
-					if (sector->txt_count > 0)
+					if (sector->texts[s])
 					{
 						char **tmp = ft_strsplit(sector->texts[s], '/');
 						int count = 0;
@@ -384,18 +410,14 @@ void	ft_draw(t_mlx *mlx)
 							
 						}
 						ft_strsplit_free(tmp);
-						mlx->open_f = 0;
 					}
 					else
 					{
-						mlx->open_f = 1;
 						// RENDER UPPER WALL
 						ft_upper_solid(mlx, x, mlx->cya, mlx->cnya, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : UPPER_COLOR, LINE_COLOR, &ytop[x]);
 
 						// RENDER LOWER WALL
 						ft_lower_solid(mlx, x, mlx->cnyb, mlx->cyb, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : LOWER_COLOR, LINE_COLOR, &ybottom[x]);
-
-						mlx->open_f = 0;
 					}
 
 					//////////////////////////////////////////////////////////	TRANSPARENT	//////////////////////////////////////////////////////////
@@ -410,17 +432,17 @@ void	ft_draw(t_mlx *mlx)
 
 						if ((mlx->sect[neighbor]->ceiling > mlx->sect[mlx->now->sector_n]->floor) && (mlx->sect[mlx->now->sector_n]->ceiling > mlx->sect[neighbor]->floor))
 						{
-							mlx->open_f = 1;
 							ft_scaler_init(mlx->scaler, cl, c_cl, fl, mlx->u0, mlx->u1);
 							ft_draw_tvline(mlx, x, c_cl, c_fl, txtx, mlx->trans[trans_i]->anim[0], 1);
-							mlx->open_f = 0;
 						}
 					}
 					///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+					mlx->open_f = 0;
 				}
 				else
 				{
-					if (sector->txt_count > 0)
+					// mlx->open_f = 1;
+					if (sector->texts[s])
 					{
 						int txt_i = ft_atoi(sector->texts[s]);
 						if (txt_i >= 0 && txt_i < TXT)
@@ -433,6 +455,7 @@ void	ft_draw(t_mlx *mlx)
 					}
 					else
 						ft_draw_vline(mlx, x, mlx->cya, mlx->cyb, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : WALL_COLOR, LINE_COLOR);
+					// mlx->open_f = 0;
 				}
 
 				////////////////////////////////////////////////////// WALL_OBJECTS //////////////////////////////////////////////////////
@@ -489,9 +512,9 @@ void	ft_draw(t_mlx *mlx)
 
 				double v1_dist = sqrtf(powf(v1->x - p->x, 2) + powf(v1->y - p->y, 2));
 				double v2_dist = sqrtf(powf(v2->x - p->x, 2) + powf(v2->y - p->y, 2));
-				double max_dist = ft_max(v1_dist, v2_dist);
+				double min_dist = ft_min(v1_dist, v2_dist);
 
-				mlx->drawseg[index].dist = max_dist;
+				mlx->drawseg[index].dist = min_dist;
 				mlx->drawseg[index].sect = mlx->now->sector_n;
 			}
 			mlx->seg_i++;
@@ -509,5 +532,7 @@ void	ft_draw(t_mlx *mlx)
 		f++;
 		++rendered_sect[mlx->now->sector_n];
 		ft_sect_obj(mlx, mlx->now->sector_n);
+		// if (mlx->now->sector_n == mlx->player->sector)
+			// printf("----------------------------\n");
 	}
 }

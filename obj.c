@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 15:17:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/28 19:08:36 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/30 21:15:26 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,8 +114,6 @@ void	ft_obj_angle(t_mlx *mlx, t_obj *obj)
 		obj_angle += (2 * 3.14159f);
 	if (obj_angle > 3.14159f)
 		obj_angle -= (2 * 3.14159f);
-	// printf("%f\n", obj_angle);
-	// printf("%f\n\n", obj_angle * 180 / M_PI);
 
 	if (obj_angle >= -0.3839724f && obj_angle < 0.3839724f)
 		obj->specs->frame = mlx->obj_l[obj->specs->obj_i]->rot[0];
@@ -164,8 +162,8 @@ void	ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector)
 	double p_sin = mlx->player->sin_angle;
 	double tx1 = vx1 * p_sin - vy1 * p_cos;
 	double tz1 = vx1 * p_cos + vy1 * p_sin;
-	double tx2 = vx1 * p_sin - vy1 * p_cos;		//	vx2		vy2
-	double tz2 = vx1 * p_cos + vy1 * p_sin;		//	vx2		vy2
+	double tx2 = vx1 * p_sin - vy1 * p_cos;
+	double tz2 = vx1 * p_cos + vy1 * p_sin;
 
 	if (tz1 <= 0 && tz2 <= 0)
 		return ;
@@ -173,9 +171,7 @@ void	ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector)
 	double xscale1 = (W * FOV_H) / tz1;
 	double yscale1 = (H * FOV_V) / tz1;
 	int x1 = W / 2 + (int)(-tx1 * xscale1);
-	// double xscale2 = (W * FOV_H) / tz2;
 	double yscale2 = (H * FOV_V) / tz2;
-	// int x2 = W / 2 + (int)(-tx2 * xscale2);
 
 	double yfloor = mlx->sect[obj->specs->sect]->floor - mlx->player->pos->z;
 	double yceil = mlx->sect[obj->specs->sect]->ceiling - mlx->player->pos->z;
@@ -190,11 +186,6 @@ void	ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector)
 	int yb1 = H / 2 + (int)(-ft_yaw(yfloor, tz1, mlx->player->yaw) * yscale1);
 	int ya2 = H / 2 + (int)(-ft_yaw(yceil, tz2, mlx->player->yaw * 4) * yscale2) / 4 + fix_obj_h2;
 	int yb2 = H / 2 + (int)(-ft_yaw(yfloor, tz2, mlx->player->yaw) * yscale2);
-	// printf("dist		%f\n", obj_dist);
-	// printf("yceil %f		yfloor %f\n\n", yceil, yfloor);
-	// printf("ya %d	yb %d\n\n", ya1, yb1);
-	// printf("ya1 %d	yb1 %d\n", ya2, yb2);
-	// printf("\n");
 
 	int ojb_h, yb, ya;
 	if (ya1 < ya2)
@@ -222,9 +213,9 @@ void	ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector)
 	int f = -1;
 	while (++f <= mlx->seg_i)
 	{
-		if (mlx->drawseg[f].seg_type == 0 && mlx->drawseg[f].dist < obj->dist && ft_overlap(x1, x2, mlx->drawseg[f].x1, mlx->drawseg[f].x2))												//	TOO SLOW, I THINK
+		if (mlx->drawseg[f].seg_type == 0 && mlx->drawseg[f].sect != obj->specs->sect && mlx->drawseg[f].dist < obj->dist && ft_overlap(x1, x2, mlx->drawseg[f].x1, mlx->drawseg[f].x2))
 		{
-			int y = -1;																		//			SOLID
+			int y = -1;
 			while (++y < H)
 			{
 				int x = ft_clamp(mlx->drawseg[f].x1, 0, W - 1) - 1;
