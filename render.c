@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/30 21:22:17 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/31 19:11:24 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,62 +151,52 @@ void	ft_draw(t_mlx *mlx)
 				double farside = 20.0f;
 
 				// //	FIND AN INTERSECTION BETWEEN THE WALL AND THE APPROXIMATE EDGES OF PLAYER'S VIEW
-				t_vec2 *i1 = (t_vec2*)malloc(sizeof(t_vec2));
-				t_vec2 *i2 = (t_vec2*)malloc(sizeof(t_vec2));
 
-				ft_intersect(i1, tx1, tz1, tx2, tz2, -nearside, near_z, -farside, far_z);
-				ft_intersect(i2, tx1, tz1, tx2, tz2, nearside, near_z, farside, far_z);
+				ft_intersect(mlx->i1, tx1, tz1, tx2, tz2, -nearside, near_z, -farside, far_z);
+				ft_intersect(mlx->i2, tx1, tz1, tx2, tz2, nearside, near_z, farside, far_z);
 
-				t_vec2 *org1 = (t_vec2*)malloc(sizeof(t_vec2));
-				t_vec2 *org2 = (t_vec2*)malloc(sizeof(t_vec2));
-				org1->x = tx1;
-				org1->y = tz1;
-				org2->x = tx2;
-				org2->y = tz2;
+				mlx->org1->x = tx1;
+				mlx->org1->y = tz1;
+				mlx->org2->x = tx2;
+				mlx->org2->y = tz2;
 
 				if (tz1 < near_z)
 				{
-					if (i1->y > 0)
+					if (mlx->i1->y > 0)
 					{
-						tx1 = i1->x;
-						tz1 = i1->y;
+						tx1 = mlx->i1->x;
+						tz1 = mlx->i1->y;
 					}
 					else
 					{
-						tx1 = i2->x;
-						tz1 = i2->y;
+						tx1 = mlx->i2->x;
+						tz1 = mlx->i2->y;
 					}
 				}
 				if (tz2 < near_z)
 				{
-					if (i1->y > 0)
+					if (mlx->i1->y > 0)
 					{
-						tx2 = i1->x;
-						tz2 = i1->y;
+						tx2 = mlx->i1->x;
+						tz2 = mlx->i1->y;
 					}
 					else
 					{
-						tx2 = i2->x;
-						tz2 = i2->y;
+						tx2 = mlx->i2->x;
+						tz2 = mlx->i2->y;
 					}
 				}
 
 				if (fabs(tx2 - tx1) > fabs(tz2 - tz1))
 				{
-					u0 = (tx1 - org1->x) * mlx->u1 / (org2->x - org1->x);
-					u1 = (tx2 - org1->x) * mlx->u1 / (org2->x - org1->x);
+					u0 = (tx1 - mlx->org1->x) * mlx->u1 / (mlx->org2->x - mlx->org1->x);
+					u1 = (tx2 - mlx->org1->x) * mlx->u1 / (mlx->org2->x - mlx->org1->x);
 				}
 				else
 				{
-					u0 = (tz1 - org1->y) * mlx->u1 / (org2->y - org1->y);
-					u1 = (tz2 - org1->y) * mlx->u1 / (org2->y - org1->y);
+					u0 = (tz1 - mlx->org1->y) * mlx->u1 / (mlx->org2->y - mlx->org1->y);
+					u1 = (tz2 - mlx->org1->y) * mlx->u1 / (mlx->org2->y - mlx->org1->y);
 				}
-
-				free(i1);
-				free(i2);
-
-				free(org1);
-				free(org2);
 			}
 
 			//	DO PERSPECTIVE TRANSFORMATION

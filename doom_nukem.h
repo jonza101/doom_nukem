@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/30 20:45:35 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/31 20:54:31 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -496,6 +496,15 @@ typedef	struct		s_mlx
 	int				u1;
 	int				c0;
 	int				c1;
+
+	t_vec2			*i1;
+	t_vec2			*i2;
+	t_vec2			*org1;
+	t_vec2			*org2;
+
+	t_vec2			*p0;
+	t_vec2			*p1;
+	t_vec3			*pos;
 
 	short 			gun_fire_i;
 	short			gun_delay;

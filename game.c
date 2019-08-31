@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:40:26 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/30 21:30:08 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/31 21:13:51 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int		ft_game_loop(t_mlx *mlx)
 
 	ft_drawseg_sort(mlx);
 
-	printf("doors %d\n", mlx->activated_doors);
+	// printf("doors %d\n", mlx->activated_doors);
 	(mlx->activated_doors) ? ft_check_doors(mlx) : 1;
 
 	ft_collision(mlx);
@@ -90,14 +90,14 @@ int		ft_game_loop(t_mlx *mlx)
 	// printf("state %d\n", mlx->player->weapon_state);
 	// printf("altfire %d\n", mlx->altfire);
 	// printf("s %d\n", mlx->s);
-	printf("p_sect %d\n", mlx->player->sector);
+	// printf("p_sect %d\n", mlx->player->sector);
 	// printf("eye_h %f\n", mlx->player->eye_h);
 	// printf("jetpack %d\n", mlx->player->jetpack);
 	// printf("px %f	py %f	pz %f\n", mlx->player->pos->x, mlx->player->pos->y, mlx->player->pos->z);
 	// printf("angle %f	sin %f	cos %f\n", mlx->player->angle, mlx->player->sin_angle, mlx->player->cos_angle);
 	// printf("dx %f	dy %f	dz %f\n\n", mlx->player->velocity->x, mlx->player->velocity->y, mlx->player->velocity->z);
 	// printf("g %d\nf %d\nm %d\nc %d\n\n", mlx->ground, mlx->falling, mlx->moving, mlx->crouching);
-	printf("\n");
+	// printf("\n");
 
 	// FPS COUNTER
 	// clock_t end_time = clock();

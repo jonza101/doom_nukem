@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/11 15:06:15 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/30 18:36:29 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/08/31 21:13:31 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,11 +80,26 @@ void	ft_move_player(t_mlx *mlx, double dx, double dy)
 	ft_obj_search(mlx);
 }
 
-int        intersect(t_vec2 *v1, t_vec2 *v2, t_vec2 *p)
+int		ft_inter(t_vec2 *v1, t_vec2 *v2, t_vec2 *p)
 {
-    if (((v1->y > p->y) != (v2->y > p->y)) && (p->x < (v1->x + (v2->x - v1->x) * (p->y - v1->y) / (v2->y - v1->y))))
-        return (1);
-    return (0);
+	if (((v1->y >= p->y && v2->y < p->y) || (v1->y < p->y && v2->y >= p->y)) && (p->x < (v2->x - v1->x) * (p->y - v1->y) / (v2->y - v1->y) + v1->x))
+		return (1);
+	return (0);
+}
+
+int		ft_poly_col(t_sector *sect, t_vec2 *p)
+{
+	int col = 0;
+	int s = -1;
+	while (++s < sect->verts_count)
+	{
+		t_vec2 *vc = sect->verts[s + 0];
+		t_vec2 *vn = sect->verts[s + 1];
+		if (((vc->y >= p->y && vn->y < p->y) || (vc->y < p->y && vn->y >= p->y)) && (p->x < (vn->x - vc->x) * (p->y - vc->y) / (vn->y - vc->y) + vc->x))
+			col = !col;
+	}
+	printf("collision %d\n", col);
+	return (col);
 }
 
 void	ft_collision(t_mlx *mlx)
@@ -134,12 +149,10 @@ void	ft_collision(t_mlx *mlx)
 
 		t_sector *sector = mlx->sect[mlx->player->sector];
 
-		t_vec2 *p0 = (t_vec2*)malloc(sizeof(t_vec2));
-		t_vec2 *p1 = (t_vec2*)malloc(sizeof(t_vec2));
-		p0->x = px;
-		p0->y = py;
-		p1->x = px + dx;
-		p1->y = py + dy;
+		mlx->p0->x = px;
+		mlx->p0->y = py;
+		mlx->p1->x = px + dx;
+		mlx->p1->y = py + dy;
 
 		t_obj *obj = sector->obj_list;
 		while (obj && obj->specs->z == (mlx->player->pos->z - mlx->player->eye_h))
@@ -150,7 +163,7 @@ void	ft_collision(t_mlx *mlx)
 				int v = -1;
 				while (++v < 4)
 				{
-					if (ft_line_intersect_move(mlx, p0, p1, obj->specs->verts[v + 0], obj->specs->verts[v + 1])
+					if (ft_line_intersect_move(mlx, mlx->p0, mlx->p1, obj->specs->verts[v + 0], obj->specs->verts[v + 1])
 							&& ft_point_side(px + dx, py + dy,
 								obj->specs->verts[v + 0]->x, obj->specs->verts[v + 0]->y,
 								obj->specs->verts[v + 1]->x, obj->specs->verts[v + 1]->y) >= 0)
@@ -166,23 +179,17 @@ void	ft_collision(t_mlx *mlx)
 			obj = obj->next;
 		}
 
-		// t_vec2 *p = (t_vec2*)malloc(sizeof(t_vec2));
-		// p->x = px + dx;
-		// p->y = py + dy;
+		// ft_poly_col(sector, mlx->p1);
 
 		int s = -1;
 		while (++s < sector->verts_count)
 		{
-			// if (ft_intersect_box(px, py, px + dx, py + dy,
-			// 		sector->verts[s + 0]->x, sector->verts[s + 0]->y,
-			// 		sector->verts[s + 1]->x, sector->verts[s + 1]->y)
-			// 	&& ft_point_side(px + dx, py + dy,
-			// 		sector->verts[s + 0]->x, sector->verts[s + 0]->y,
-			// 		sector->verts[s + 1]->x, sector->verts[s + 1]->y) < 0)
-			if (ft_line_intersect_move(mlx, p0, p1, sector->verts[s + 0], sector->verts[s + 1])
-					&& ft_point_side(px + dx, py + dy,
-						sector->verts[s + 0]->x, sector->verts[s + 0]->y,
-						sector->verts[s + 1]->x, sector->verts[s + 1]->y) < 0)
+			if (ft_intersect_box(px, py, px + dx, py + dy,
+					sector->verts[s + 0]->x, sector->verts[s + 0]->y,
+					sector->verts[s + 1]->x, sector->verts[s + 1]->y)
+				&& ft_point_side(px + dx, py + dy,
+					sector->verts[s + 0]->x, sector->verts[s + 0]->y,
+					sector->verts[s + 1]->x, sector->verts[s + 1]->y) < 0)
 			{
 				neighbor = (sector->neighbors[s]);
 				//	!!!
@@ -219,10 +226,7 @@ void	ft_collision(t_mlx *mlx)
 							&& ft_point_side(px + dx, py + dy,
 								sector->verts[i + 0]->x, sector->verts[i + 0]->y,
 								sector->verts[s + 0]->x, sector->verts[s + 0]->y) < 0))
-						{
-							// printf("stop\n");
 							stop = 1;
-						}
 					}
 				}
 				//	!!!
@@ -242,13 +246,12 @@ void	ft_collision(t_mlx *mlx)
 						double yd = sector->verts[s + 1]->y - sector->verts[s + 0]->y;
 						mlx->player->velocity->x = xd * (dx * xd + yd * dy) / (xd * xd + yd * yd);
 						mlx->player->velocity->y = yd * (dx * xd + yd * dy) / (xd * xd + yd * yd);
+
 						mlx->moving = 0;
 					}
 				}
 			}
 		}
-		free(p0);
-		free(p1);
 
 		if (!stop)
 			ft_move_player(mlx, mlx->player->velocity->x, mlx->player->velocity->y);
