@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/27 13:56:20 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/29 22:57:33 by lsandor-         ###   ########.fr       */
+/*   Updated: 2019/09/02 19:05:58 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,6 +246,13 @@ void	ft_draw_weapon(t_mlx *mlx)
 	ft_hud_ammo(mlx, mlx->player->weapon->ammo_count, 1200, 25, 20, 9);
 	ft_hud_ammo(mlx, mlx->player->weapon->mag_ammo, mlx->hud_x - 40, 45, 35, 0);
 	ft_r(mlx);
+	if (mlx->player->jetpack)
+	{
+		if (mlx->hud_r || (mlx->r_i || mlx->r_i_d))
+			ft_draw_chr(mlx, mlx->font[12], mlx->hud_x - 114, 665, 30);
+		else
+			ft_draw_chr(mlx, mlx->font[12], mlx->hud_x - 60, 665, 30);
+	}
 
 	if (mlx->player->speed_boost)
 	{

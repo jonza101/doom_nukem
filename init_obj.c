@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/11 13:43:09 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/28 16:37:13 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/02 15:05:05 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -540,7 +540,7 @@ void	ft_init_obj_specs(t_mlx *mlx)
 	mlx->obj_l[1]->scaler = 5.75f;
 	mlx->obj_l[2]->scaler = -4.5f;
 	mlx->obj_l[3]->scaler = 2.0f;
-	mlx->obj_l[4]->scaler = 2.0f;
+	mlx->obj_l[4]->scaler = 3.0f;
 	mlx->obj_l[5]->scaler = -10.0f;
 	mlx->obj_l[6]->scaler = 2.0f;
 	mlx->obj_l[7]->scaler = 2.5;

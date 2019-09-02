@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:41:19 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/30 21:36:51 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/02 19:10:41 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 	if (keycode == MAC_SHIFT_R && mlx->player->weapon->has_altfire && !mlx->player->weapon->mag_ammo && mlx->player->weapon->ammo_count)
 		mlx->hud_r = 1;
 
-	if (keycode == MAC_ONE && mlx->player->weapon_state == 0)
+	if (keycode == MAC_ONE && mlx->player->weapon != mlx->player->revolver && mlx->player->weapon_state == 0)
 	{
 		mlx->player->weapon = mlx->player->revolver;
 		mlx->fire_range = FIRE_RANGE;
@@ -140,7 +140,7 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 		mlx->r_i = 0;
 		mlx->r_i_d = 0;
 	}
-	if (keycode == MAC_TWO && mlx->player->weapon_state == 0)
+	if (keycode == MAC_TWO && mlx->player->weapon != mlx->player->shotgun && mlx->player->weapon_state == 0)
 	{
 		mlx->player->weapon = mlx->player->shotgun;
 		mlx->fire_range = FIRE_RANGE;
@@ -152,7 +152,7 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 		mlx->r_i = 0;
 		mlx->r_i_d = 0;
 	}
-	if (keycode == MAC_THREE && mlx->player->weapon_state == 0)
+	if (keycode == MAC_THREE && mlx->player->weapon != mlx->player->a_rifle && mlx->player->weapon_state == 0)
 	{
 		mlx->player->weapon = mlx->player->a_rifle;
 		mlx->fire_range = FIRE_RANGE;

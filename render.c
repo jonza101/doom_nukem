@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/31 19:11:24 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/02 20:39:52 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ t_wobj	*ft_find_wobj(t_mlx *mlx, int sect, int side)
 	return (NULL);
 }
 
-double	ft_check(t_vec3 *p, t_vec2 *v1, t_vec2 *v2)
+double	ft_check(t_vec3 *p, t_vec2 *v1, t_vec2 *v2)							//	-1.5 -> 1.5
 {
 	double nx = v1->y - v2->y;
 	double ny = v2->x - v1->x;
@@ -128,14 +128,21 @@ void	ft_draw(t_mlx *mlx)
 			double tx2 = vx2 * p_sin - vy2 * p_cos;
 			double tz2 = vx2 * p_cos + vy2 * p_sin;
 
-			// if (mlx->now->sector_n == mlx->player->sector)
+			int edge = 0;
+
+			if (mlx->now->sector_n == mlx->player->sector)
+			{
+				// int temp = ft_check(mlx->player->pos, sector->verts[s + 0], sector->verts[s + 1]);
+				// edge = (temp >= -1.5f && temp <= 1.5f) ? 1 : 0;
+				// printf("edge %d\n", edge);
 				// printf("tz1 %f			tz2 %f\n", tz1, tz2);
+			}
 
 			//	IS THE WALL AT LEAST PARTIALLY IN FRONT OF THE PLAYER?
 			if (tz1 <= 0.0f && tz2 <= 0.0f)
 			{
 				// if (mlx->now->sector_n == mlx->player->sector)
-					// printf("\n");
+				// 	printf("\n");
 				continue;
 			}
 
@@ -213,10 +220,10 @@ void	ft_draw(t_mlx *mlx)
 				// printf("sx1 %d				sx2 %d\n", mlx->now->sx1, mlx->now->sx2);
 			}
 
-			if (x1 >= x2 || x2 < mlx->now->sx1 || x1 > mlx->now->sx2)
+			if ((x1 >= x2 || x2 < mlx->now->sx1 || x1 > mlx->now->sx2) && !edge)
 			{
 				// if (mlx->now->sector_n == mlx->player->sector)
-					// printf("next\n\n");
+				// 	printf("next\n\n");
 				continue;
 			}
 
@@ -247,8 +254,8 @@ void	ft_draw(t_mlx *mlx)
 			int ny2b = H / 2 + (int)(-(nyfloor + tz2 * mlx->player->yaw) * yscale2);
 
 			//	RENDER THE WALL
-			int beginx = ft_max(x1, mlx->now->sx1);
-			int endx = ft_min(x2, mlx->now->sx2);
+			int beginx = (!edge) ? ft_max(x1, mlx->now->sx1) : mlx->now->sx1;
+			int endx = (!edge) ? ft_min(x2, mlx->now->sx2) : mlx->now->sx2;
 
 			if (mlx->now->sector_n == mlx->player->sector)
 			{
@@ -431,7 +438,6 @@ void	ft_draw(t_mlx *mlx)
 				}
 				else
 				{
-					// mlx->open_f = 1;
 					if (sector->texts[s])
 					{
 						int txt_i = ft_atoi(sector->texts[s]);
@@ -445,7 +451,6 @@ void	ft_draw(t_mlx *mlx)
 					}
 					else
 						ft_draw_vline(mlx, x, mlx->cya, mlx->cyb, LINE_COLOR, x == x1 || x == x2 ? LINE_COLOR : WALL_COLOR, LINE_COLOR);
-					// mlx->open_f = 0;
 				}
 
 				////////////////////////////////////////////////////// WALL_OBJECTS //////////////////////////////////////////////////////
@@ -484,8 +489,7 @@ void	ft_draw(t_mlx *mlx)
 			if (mlx->r_trans != -1)
 				mlx->trans_i++;
 
-			int index = mlx->seg_i;
-			if (index >= MAX_DRAWSEG)
+			if (mlx->seg_i >= MAX_DRAWSEG)
 				ft_drawseg_error();
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -496,16 +500,16 @@ void	ft_draw(t_mlx *mlx)
 				t_vec2 *v2 = sector->verts[s + 1];
 				t_vec3 *p = mlx->player->pos;
 
-				mlx->drawseg[index].seg_type = 0;
-				mlx->drawseg[index].x1 = beginx;
-				mlx->drawseg[index].x2 = endx;
+				mlx->drawseg[mlx->seg_i].seg_type = 0;
+				mlx->drawseg[mlx->seg_i].x1 = beginx;
+				mlx->drawseg[mlx->seg_i].x2 = endx;
 
 				double v1_dist = sqrtf(powf(v1->x - p->x, 2) + powf(v1->y - p->y, 2));
 				double v2_dist = sqrtf(powf(v2->x - p->x, 2) + powf(v2->y - p->y, 2));
 				double min_dist = ft_min(v1_dist, v2_dist);
 
-				mlx->drawseg[index].dist = min_dist;
-				mlx->drawseg[index].sect = mlx->now->sector_n;
+				mlx->drawseg[mlx->seg_i].dist = min_dist;
+				mlx->drawseg[mlx->seg_i].sect = mlx->now->sector_n;
 			}
 			mlx->seg_i++;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -523,6 +527,6 @@ void	ft_draw(t_mlx *mlx)
 		++rendered_sect[mlx->now->sector_n];
 		ft_sect_obj(mlx, mlx->now->sector_n);
 		// if (mlx->now->sector_n == mlx->player->sector)
-			// printf("----------------------------\n");
+		// 	printf("----------------------------\n");
 	}
 }

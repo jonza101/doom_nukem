@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/29 22:17:43 by lsandor-          #+#    #+#             */
-/*   Updated: 2019/08/30 12:39:52 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/02 20:21:31 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void ftLookRight(t_mlx *mlx)
 	mlx->player->angle += 0.06f;
 	mlx->player->sin_angle = sinf(mlx->player->angle);
 	mlx->player->cos_angle = cosf(mlx->player->angle);
-	mlx->sky_offset_x += 36;
+	mlx->sky_offset_x += 40;
 }
 
 void ftLookLeft(t_mlx *mlx)
@@ -25,7 +25,7 @@ void ftLookLeft(t_mlx *mlx)
 	mlx->player->angle -= 0.06f;
 	mlx->player->sin_angle = sinf(mlx->player->angle);
 	mlx->player->cos_angle = cosf(mlx->player->angle);
-	mlx->sky_offset_x -= 36;
+	mlx->sky_offset_x -= 40;
 }
 
 void ftLookUp(t_mlx *mlx)

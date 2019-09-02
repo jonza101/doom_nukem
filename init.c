@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/28 21:24:48 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/30 19:03:31 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/02 17:08:18 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,12 @@ void	ft_init_font(t_mlx *mlx)
 {
 	int fd;
 	char *line;
-	char *font[12] = { "textures/font/_zero.xpm", "textures/font/_one.xpm", "textures/font/_two.xpm", "textures/font/_three.xpm",
+	char *font[FONT] = { "textures/font/_zero.xpm", "textures/font/_one.xpm", "textures/font/_two.xpm", "textures/font/_three.xpm",
 						"textures/font/_four.xpm", "textures/font/_five.xpm", "textures/font/_six.xpm", "textures/font/_seven.xpm",
-						"textures/font/_eight.xpm", "textures/font/_nine.xpm", "textures/font/_R.xpm", "textures/font/_plus.xpm" };
+						"textures/font/_eight.xpm", "textures/font/_nine.xpm", "textures/font/_R.xpm", "textures/font/_plus.xpm",
+						"textures/font/_J.xpm" };
 	int i = -1;
-	while (++i < 12)
+	while (++i < FONT)
 	{
 		fd = open(font[i], O_RDONLY);
 		int j = -1;

@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/12 17:10:17 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/31 15:13:27 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/02 17:08:41 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,7 +179,7 @@ void	ft_shoot(t_mlx *mlx)
 			double p_sect_f = mlx->sect[mlx->player->sector]->floor;
 			double p_sect_c = mlx->sect[mlx->player->sector]->ceiling;
 
-			if (ft_explosive_obj(mlx, p_dist, mlx->now->sector_n))
+			if (ft_shoot_obj(mlx, p_dist, mlx->now->sector_n))
 				return ;
 			if (sz < p_sect_f)
 				return ;

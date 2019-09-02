@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 15:17:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/30 21:15:26 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/02 20:15:42 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,8 +107,6 @@ void	ft_obj_angle(t_mlx *mlx, t_obj *obj)
 	double dx = obj->specs->x - mlx->player->pos->x;
 	double dy = obj->specs->y - mlx->player->pos->y;
 
-	double eye_y = mlx->player->sin_angle;
-	double eye_x = mlx->player->cos_angle;
 	double obj_angle = atan2f(dy, dx) + obj->specs->pov;
 	if (obj_angle < -3.14159f)
 		obj_angle += (2 * 3.14159f);
@@ -389,25 +387,28 @@ void	ft_obj_search(t_mlx *mlx)
 	}
 }
 
-int		ft_explosive_obj(t_mlx *mlx, double p_dist, int sect)
+int		ft_shoot_obj(t_mlx *mlx, double p_dist, int sect)
 {
 	t_obj *obj = mlx->sect[sect]->obj_list;
 	while (obj)
 	{
-		if (mlx->obj_l[obj->specs->obj_i]->expl == 1)
+		if (mlx->obj_l[obj->specs->obj_i]->expl == 1 || obj->specs->has_collider)
 		{
 			if (ft_overlap(obj->specs->x1, obj->specs->x2, W / 2, W / 2) && ft_overlap(obj->specs->y1, obj->specs->y2, H / 2, H / 2) && obj->dist < p_dist)
 			{
-				if (obj->specs->obj_i == 3)
-					obj->specs->obj_i = 6;
-				obj->specs->expl_f = 1;
-				if (obj->specs->has_collider)
+				if (mlx->obj_l[obj->specs->obj_i]->expl == 1)
 				{
-					int i = -1;
-					while (++i < 5)
-						free(obj->specs->verts[i]);
-					free(obj->specs->verts);
-					obj->specs->has_collider = 0;
+					if (obj->specs->obj_i == 3)
+						obj->specs->obj_i = 6;
+					obj->specs->expl_f = 1;
+					if (obj->specs->has_collider)
+					{
+						int i = -1;
+						while (++i < 5)
+							free(obj->specs->verts[i]);
+						free(obj->specs->verts);
+						obj->specs->has_collider = 0;
+					}
 				}
 				return (1);
 			}

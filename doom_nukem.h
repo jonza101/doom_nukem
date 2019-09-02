@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/31 20:54:31 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/02 19:22:03 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@
 #define TRANSPARENT 4
 #define SKY 1
 #define BOOST 2
+#define FONT 13
 
 #define FIRE_RANGE 10000
 #define MELEE_RANGE 1
@@ -450,7 +451,7 @@ typedef	struct		s_mlx
 	t_anim_list		**wobj_l;
 	t_anim_list		**trans;
 	t_img			*sky[SKY];
-	t_img			*font[12];
+	t_img			*font[FONT];
 
 	int				hud_x;
 	short			hud_r;
@@ -521,7 +522,7 @@ double				ft_min(double a, double b);
 double				ft_max(double a, double b);
 double				ft_clamp(double a, double min, double max);
 int					ft_overlap(double a0, double a1, double b0, double b1);
-int					ft_intersect_box(double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3);
+int					ft_intersect_box(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3);
 double				ft_vec_cross_prod(double x0, double y0, double x1, double y1);
 int					ft_point_side(double px, double py, double x0, double y0, double x1, double y1);
 void				ft_intersect(t_vec2 *p, double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4);
@@ -596,7 +597,7 @@ void				ft_bzero(void *s, size_t n);
 void				ft_obj_anim(t_mlx *mlx, t_obj *obj);
 void				ft_wobj_anim(t_mlx *mlx, t_wobj *wobj);
 
-int					ft_explosive_obj(t_mlx *mlx, double p_dist, int sect);
+int					ft_shoot_obj(t_mlx *mlx, double p_dist, int sect);
 
 void				ft_shoot(t_mlx *mlx);
 

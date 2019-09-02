@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/11 15:06:15 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/31 21:13:31 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/02 20:21:22 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,28 +78,6 @@ void	ft_move_player(t_mlx *mlx, double dx, double dy)
 	mlx->player->pos->y += dy;
 
 	ft_obj_search(mlx);
-}
-
-int		ft_inter(t_vec2 *v1, t_vec2 *v2, t_vec2 *p)
-{
-	if (((v1->y >= p->y && v2->y < p->y) || (v1->y < p->y && v2->y >= p->y)) && (p->x < (v2->x - v1->x) * (p->y - v1->y) / (v2->y - v1->y) + v1->x))
-		return (1);
-	return (0);
-}
-
-int		ft_poly_col(t_sector *sect, t_vec2 *p)
-{
-	int col = 0;
-	int s = -1;
-	while (++s < sect->verts_count)
-	{
-		t_vec2 *vc = sect->verts[s + 0];
-		t_vec2 *vn = sect->verts[s + 1];
-		if (((vc->y >= p->y && vn->y < p->y) || (vc->y < p->y && vn->y >= p->y)) && (p->x < (vn->x - vc->x) * (p->y - vc->y) / (vn->y - vc->y) + vc->x))
-			col = !col;
-	}
-	printf("collision %d\n", col);
-	return (col);
 }
 
 void	ft_collision(t_mlx *mlx)
@@ -179,8 +157,6 @@ void	ft_collision(t_mlx *mlx)
 			obj = obj->next;
 		}
 
-		// ft_poly_col(sector, mlx->p1);
-
 		int s = -1;
 		while (++s < sector->verts_count)
 		{
@@ -189,67 +165,75 @@ void	ft_collision(t_mlx *mlx)
 					sector->verts[s + 1]->x, sector->verts[s + 1]->y)
 				&& ft_point_side(px + dx, py + dy,
 					sector->verts[s + 0]->x, sector->verts[s + 0]->y,
-					sector->verts[s + 1]->x, sector->verts[s + 1]->y) < 0)
+					sector->verts[s + 1]->x, sector->verts[s + 1]->y) <= 0)
 			{
 				neighbor = (sector->neighbors[s]);
-				//	!!!
-				if (neighbor == -1)
-				{
-					int n, nt, i;
-					if (s != sector->verts_count - 1)
-						n = (sector->neighbors[s + 1]);
-					else
-						n = (sector->neighbors[0]);
-					if (s != 0)
-					{
-						nt = (sector->neighbors[s - 1]);
-						i = s - 1;
-					}
-					else
-					{
-						nt = (sector->neighbors[sector->verts_count - 1]);
-						i = sector->verts_count - 1;
-					}
-					if (n == -1 || nt == -1)
-					{
-						if ((n == -1 &&
-								ft_intersect_box(px, py, px + dx, py + dy,
-								sector->verts[(s + 1) % sector->verts_count]->x, sector->verts[(s + 1) % sector->verts_count]->y,
-								sector->verts[(s + 2) % sector->verts_count]->x, sector->verts[(s + 2) % sector->verts_count]->y)
-							&& ft_point_side(px + dx, py + dy,
-								sector->verts[(s + 1) % sector->verts_count]->x, sector->verts[(s + 1) % sector->verts_count]->y,
-								sector->verts[(s + 2) % sector->verts_count]->x, sector->verts[(s + 2) % sector->verts_count]->y) < 0)
-							|| (nt == -1 &&
-								ft_intersect_box(px, py, px + dx, py + dy,
-								sector->verts[i + 0]->x, sector->verts[i + 0]->y,
-								sector->verts[s + 0]->x, sector->verts[s + 0]->y)
-							&& ft_point_side(px + dx, py + dy,
-								sector->verts[i + 0]->x, sector->verts[i + 0]->y,
-								sector->verts[s + 0]->x, sector->verts[s + 0]->y) < 0))
-							stop = 1;
-					}
-				}
-				//	!!!
-				if (!stop)
-				{
-					int has_trans = ft_trans_find(mlx, mlx->player->sector, s);
-					double hole_low = 9e9;
-					double hole_high = -9e9;
-					if (neighbor >= 0)
-					{
-						hole_low = ft_max(sector->floor, mlx->sect[neighbor]->floor);
-						hole_high = ft_min(sector->ceiling, mlx->sect[neighbor]->ceiling);
-					}
-					if (mlx->player->eye_h > (hole_high - hole_low) || hole_low > (mlx->player->pos->z - mlx->player->eye_h) + STAIRS_H || has_trans)
-					{
-						double xd = sector->verts[s + 1]->x - sector->verts[s + 0]->x;
-						double yd = sector->verts[s + 1]->y - sector->verts[s + 0]->y;
-						mlx->player->velocity->x = xd * (dx * xd + yd * dy) / (xd * xd + yd * yd);
-						mlx->player->velocity->y = yd * (dx * xd + yd * dy) / (xd * xd + yd * yd);
 
-						mlx->moving = 0;
-					}
+				int has_trans = ft_trans_find(mlx, mlx->player->sector, s);
+				double hole_low = 9e9;
+				double hole_high = -9e9;
+				if (neighbor >= 0)
+				{
+					hole_low = ft_max(sector->floor, mlx->sect[neighbor]->floor);
+					hole_high = ft_min(sector->ceiling, mlx->sect[neighbor]->ceiling);
 				}
+
+				int prev = (s - 1 <= 0) ? ((s > 0) ? sector->verts_count : sector->verts_count - 1) : s - 1;
+				int next = (s + 2 >= sector->verts_count) ? ((s + 1 < sector->verts_count) ? 0 : 1) : s + 2;
+
+				if ((ft_intersect_box(px, py, px + dx, py + dy,
+						sector->verts[prev]->x, sector->verts[prev]->y,
+						sector->verts[s + 0]->x, sector->verts[s + 0]->y)
+					|| ft_line_intersect_move(mlx, mlx->p0, mlx->p1, sector->verts[prev], sector->verts[s + 0]))
+					&& ft_point_side(px + dx, py + dy,
+						sector->verts[prev]->x, sector->verts[prev]->y,
+						sector->verts[s + 0]->x, sector->verts[s + 0]->y) <= 0)
+				{
+					int p_neigh = sector->neighbors[prev % sector->verts_count];
+					int p_has_trans = ft_trans_find(mlx, mlx->player->sector, prev);
+					double p_hole_low = 9e9;
+					double p_hole_high = -9e9;
+					if (p_neigh >= 0)
+					{
+						p_hole_low = ft_max(sector->floor, mlx->sect[p_neigh]->floor);
+						p_hole_high = ft_min(sector->ceiling, mlx->sect[p_neigh]->ceiling);
+					}
+					if ((p_hole_high < mlx->player->pos->z + HEAD_MARGIN || p_hole_low > (mlx->player->pos->z - mlx->player->eye_h) + STAIRS_H || p_has_trans)
+							&& (hole_high < mlx->player->pos->z + HEAD_MARGIN || hole_low > (mlx->player->pos->z - mlx->player->eye_h) + STAIRS_H || has_trans))
+						stop = 1;
+				}
+				if ((ft_intersect_box(px, py, px + dx, py + dy,
+						sector->verts[s + 1]->x, sector->verts[s + 1]->y,
+						sector->verts[next]->x, sector->verts[next]->y)
+					|| ft_line_intersect_move(mlx, mlx->p0, mlx->p1, sector->verts[s + 1], sector->verts[next]))
+					&& ft_point_side(px + dx, py + dy,
+						sector->verts[s + 1]->x, sector->verts[s + 1]->y,
+						sector->verts[next]->x, sector->verts[next]->y) <= 0)
+				{
+					int n_neigh = (s + 1 < sector->verts_count) ? sector->neighbors[s + 1] : sector->neighbors[0];
+					int n_has_trans = ft_trans_find(mlx, mlx->player->sector, n_neigh);
+					double n_hole_low = 9e9;
+					double n_hole_high = -9e9;
+					if (n_neigh >= 0)
+					{
+						n_hole_low = ft_max(sector->floor, mlx->sect[n_neigh]->floor);
+						n_hole_high = ft_min(sector->ceiling, mlx->sect[n_neigh]->ceiling);
+					}
+					if ((n_hole_high < mlx->player->pos->z + HEAD_MARGIN || n_hole_low > (mlx->player->pos->z - mlx->player->eye_h) + STAIRS_H || n_has_trans)
+							&& (hole_high < mlx->player->pos->z + HEAD_MARGIN || hole_low > (mlx->player->pos->z - mlx->player->eye_h) + STAIRS_H || has_trans))
+						stop = 1;
+				}
+
+				if (!stop && (hole_high < (mlx->player->pos->z + HEAD_MARGIN) || hole_low > (mlx->player->pos->z - mlx->player->eye_h) + STAIRS_H || has_trans))
+				{
+					double xd = sector->verts[s + 1]->x - sector->verts[s + 0]->x;
+					double yd = sector->verts[s + 1]->y - sector->verts[s + 0]->y;
+					mlx->player->velocity->x = xd * (dx * xd + yd * dy) / (xd * xd + yd * yd);
+					mlx->player->velocity->y = yd * (dx * xd + yd * dy) / (xd * xd + yd * yd);
+
+					mlx->moving = 0;
+				}
+				
 			}
 		}
 
@@ -267,7 +251,7 @@ void	ft_player_view(t_mlx *mlx)
 		mlx->player->sin_angle = sinf(mlx->player->angle);
 		mlx->player->cos_angle = cosf(mlx->player->angle);
 
-		mlx->sky_offset_x -= 18;
+		mlx->sky_offset_x -= 20;
 	}
 	if (mlx->player->right)
 	{
@@ -275,7 +259,7 @@ void	ft_player_view(t_mlx *mlx)
 		mlx->player->sin_angle = sinf(mlx->player->angle);
 		mlx->player->cos_angle = cosf(mlx->player->angle);
 
-		mlx->sky_offset_x += 18;
+		mlx->sky_offset_x += 20;
 	}
 	if (mlx->player->up)
 	{

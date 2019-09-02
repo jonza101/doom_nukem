@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/31 20:54:36 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/02 20:40:43 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ int ft_close(int i)
 
 int ft_mouse_move(int x, int y, t_mlx *mlx)
 {
-	//printf("x %d	y %d\n", x, y);
 	if (x > mlx->mouse_pos_x || (mlx->mouse_pos_x == RIGHT && x == RIGHT))
 		ftLookRight(mlx);
 	else if (x < mlx->mouse_pos_x || (mlx->mouse_pos_x == LEFT && x == LEFT))
@@ -29,10 +28,6 @@ int ft_mouse_move(int x, int y, t_mlx *mlx)
 		ftLookUp(mlx);
 	else if (y < mlx->mouse_pos_y || (mlx->mouse_pos_y == BOTTOM && y == BOTTOM))
 		ftLookDown(mlx);
-	// printf("yaww %f\n", mlx->yaw + y * 0.05f);
-	// //mlx->yaw = ft_clamp(mlx->yaw - y * 0.05f, -0.5, 0.5);
-	// //mlx->player->yaw = mlx->yaw - mlx->player->velocity->z * 0.5;
-	// printf("pyaw %f\n\n", mlx->player->yaw);
 	mlx->mouse_pos_x = x;
 	mlx->mouse_pos_y = y;
 	ft_move_player(mlx, 0, 0);
