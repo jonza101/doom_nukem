@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/02 17:08:37 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/05 18:26:22 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,6 +146,8 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 	mlx->wobj_list = NULL;
 	mlx->wobj_count = 0;
 
+	mlx->activated_doors = 0;
+
 	while (get_next_line(fd, &line))
 	{
 		if (line[0] == 'v' && line[1] == ' ')
@@ -281,7 +283,6 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 
 				mlx->sect[s - 1]->sky = 0;
 				mlx->sect[s - 1]->is_door = 0;
-				mlx->sect[s - 1]->door_i = -1;
 
 				ft_strsplit_free(t);
 			}
@@ -355,7 +356,6 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 
 				mlx->sect[0]->sky = 0;
 				mlx->sect[0]->is_door = 0;
-				mlx->sect[0]->door_i = -1;
 
 				ft_strsplit_free(t);
 			}
@@ -582,12 +582,11 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 		{
 			temp = ft_strsplit(line, '|');
 			int sect = ft_atoi(temp[1]);
-			int door_i = ft_atoi(temp[2]);
 
 			mlx->sect[sect]->is_door = 1;
-			mlx->sect[sect]->close = 1;
+			mlx->sect[sect]->close = 0;
 			mlx->sect[sect]->open = 0;
-			mlx->sect[sect]->door_i = door_i;
+			mlx->sect[sect]->up = 0;
 			mlx->sect[sect]->start_ceiling = mlx->sect[sect]->ceiling;
 			mlx->sect[sect]->ceiling = mlx->sect[sect]->floor;
 
@@ -601,8 +600,8 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 			mlx->player->velocity = (t_vec3*)malloc(sizeof(t_vec3));
 
 			mlx->player->eye_h = EYE_H;
-			mlx->player->angle = (double)ft_atof(temp[2]);
-			mlx->player->sector = ft_atoi(temp[3]);
+			mlx->player->angle = (double)ft_atof(temp[3]);
+			mlx->player->sector = ft_atoi(temp[2]);
 
 			char **t;
 			t = ft_strsplit(temp[1], ' ');

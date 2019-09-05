@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 15:17:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/02 20:15:42 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/05 18:51:14 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,7 +246,7 @@ void	ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector)
 				{
 					if ((mlx->opening[yc][xc] == obj->specs->sect || mlx->opening[yc][xc] == -1))
 					{
-						if (mlx->sect[mlx->now->sector_n]->light == 0 && !mlx->obj_l[obj->specs->obj_i]->is_boost)
+						if (mlx->sect[mlx->now->sector_n]->light == 0 && mlx->obj_l[obj->specs->obj_i]->can_shade)
 							color = ft_color_convert(color, mlx->sect[mlx->now->sector_n]->lum);
 						mlx->data[yc * W + xc] = color;
 						mlx->opening[yc][xc] = obj->specs->sect;

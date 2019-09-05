@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:40:26 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/02 20:36:09 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/05 18:28:31 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,37 +18,40 @@ void	ft_check_doors(t_mlx *mlx)
 	int s = -1;
 	while (++s < mlx->num_sec)
 	{
-		if (mlx->sect[s]->is_door)
+		t_sector *sector = mlx->sect[s];
+		if (sector->is_door)
 		{
-			if (mlx->sect[s]->open)
+			if (sector->open)
 			{
-				mlx->sect[s]->ceiling += 0.75f;
-				if (mlx->sect[s]->ceiling >= mlx->sect[s]->start_ceiling)
+				sector->ceiling += 0.75f;
+				if (sector->ceiling >= sector->start_ceiling)
 				{
-					mlx->sect[s]->open = 0;
-					mlx->sect[s]->ceiling = mlx->sect[s]->start_ceiling;
+					sector->open = 0;
+					sector->up = 1;
+					sector->ceiling = sector->start_ceiling;
 				}
 			}
-			else if (!mlx->sect[s]->open && !mlx->sect[s]->close)
+			else if (!sector->open && !sector->close && sector->up)
 			{
-				double time_diff = difftime(time(NULL), mlx->sect[s]->start_time);
-				printf("time %f\n", time_diff);
-				if (time_diff >= 10.0f)
+				double time_diff = difftime(time(NULL), sector->start_time);
+				printf("%d time %f\n", s, time_diff);
+				if (time_diff >= DOOR_TIME)
 				{
 					if (mlx->player->sector != s)
-						mlx->sect[s]->close = 1;
-					// else
-					// 	mlx->sect[s]->start_time = time(NULL);
+					{
+						sector->close = 1;
+						sector->up = 0;
+					}
 				}
 			}
-			else if (mlx->sect[s]->close)
+			else if (sector->close && !sector->up)
 			{
-				mlx->sect[s]->ceiling -= 0.75f;
-				if (mlx->sect[s]->ceiling <= mlx->sect[s]->floor)
+				sector->ceiling -= 0.75f;
+				if (sector->ceiling <= sector->floor)
 				{
-					mlx->sect[s]->close = 0;
-					mlx->sect[s]->open = 0;
-					mlx->sect[s]->ceiling = mlx->sect[s]->floor;
+					sector->close = 0;
+					sector->open = 0;
+					sector->ceiling = sector->floor;
 					mlx->activated_doors--;
 				}
 			}
@@ -94,10 +97,10 @@ int		ft_game_loop(t_mlx *mlx)
 	// printf("eye_h %f\n", mlx->player->eye_h);
 	// printf("jetpack %d\n", mlx->player->jetpack);
 	// printf("px %f	py %f	pz %f\n", mlx->player->pos->x, mlx->player->pos->y, mlx->player->pos->z);
-	// printf("angle %f	sin %f	cos %f\n", mlx->player->angle, mlx->player->sin_angle, mlx->player->cos_angle);
+	printf("angle %f	sin %f	cos %f\n", mlx->player->angle, mlx->player->sin_angle, mlx->player->cos_angle);
 	// printf("dx %f	dy %f	dz %f\n\n", mlx->player->velocity->x, mlx->player->velocity->y, mlx->player->velocity->z);
 	// printf("g %d\nf %d\nm %d\nc %d\n\n", mlx->ground, mlx->falling, mlx->moving, mlx->crouching);
-	// printf("\n");
+	printf("\n");
 
 	// FPS COUNTER
 	// clock_t end_time = clock();

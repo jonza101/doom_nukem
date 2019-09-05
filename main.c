@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/02 20:40:43 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/05 20:22:38 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,8 +133,6 @@ void ft_init(t_mlx *mlx)
 
 	mlx->sky_offset_x = 0;
 	mlx->sky_offset_y = 100;
-
-	mlx->activated_doors = 0;
 
 	mlx->i1 = (t_vec2*)malloc(sizeof(t_vec2));
 	mlx->i2 = (t_vec2*)malloc(sizeof(t_vec2));

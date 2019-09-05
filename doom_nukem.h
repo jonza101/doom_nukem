@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/02 19:22:03 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/05 18:46:03 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@
 
 #define MAX_QUEUE 32
 
-#define MAX_DRAWSEG 128
+#define MAX_DRAWSEG 256
 #define MAX_VISSPRITES 64
 #define MAX_VISWSPRITES 64
 #define MAX_WSPRITES_ON_WALL 128
@@ -61,7 +61,7 @@
 
 #define THREAD 16
 
-#define TXT 4					//		4	-	DOOR
+#define TXT 4					//		3	-	DOOR
 #define OBJ 20
 #define WOBJ 9
 #define TRANSPARENT 4
@@ -74,6 +74,8 @@
 #define INTERACT_RANGE 2.5
 #define SPEED_BOOST_DUR 30
 #define	HP_BOOST_DUR 30
+
+#define DOOR_TIME 10
 
 #define RIGHT 2459
 #define LEFT -100
@@ -173,7 +175,7 @@ typedef struct		s_anim_list
 	int				can_rotate;
 	t_img			**rot;
 
-	short			is_boost;
+	short			can_shade;
 
 	t_wobj_specs	*wobj_specs;
 }					t_anim_list;
@@ -264,7 +266,7 @@ typedef struct		s_rend_wobj
 
 typedef struct		s_drawseg
 {
-	short			seg_type;		//	0 - SOLID
+	short			seg_type;
 
 	int				x1;
 	int				x2;
@@ -294,9 +296,9 @@ typedef struct		s_sector
 
 	short			is_door;
 	double			start_ceiling;
-	int				door_i;
 	short			close;
 	short			open;
+	short			up;
 	time_t			start_time;
 
 	int				*neighbors;

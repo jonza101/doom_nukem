@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/11 13:43:09 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/02 15:05:05 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/05 18:51:11 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -627,9 +627,12 @@ void	ft_init_obj_specs(t_mlx *mlx)
 
 	int i = -1;
 	while (++i < OBJ)
-		mlx->obj_l[i]->is_boost = 0;
-	mlx->obj_l[16]->is_boost = 1;
-	mlx->obj_l[17]->is_boost = 1;
+		mlx->obj_l[i]->can_shade = 1;
+	mlx->obj_l[4]->can_shade = 0;
+	mlx->obj_l[7]->can_shade = 0;
+	mlx->obj_l[8]->can_shade = 0;
+	mlx->obj_l[16]->can_shade = 0;
+	mlx->obj_l[17]->can_shade = 0;
 }
 
 void	ft_init_rot_obj(t_mlx *mlx)

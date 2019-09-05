@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:38 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/02 17:51:23 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/05 18:24:42 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,11 +75,11 @@ double	ft_yaw(double y, double z, double p_yaw)
 
 void	ft_scaler_init(t_scaler *scaler, int a, int b, int c, int d, int f)
 {
-	scaler->result = d + (b - 1 - a) * (f - d) / (c - a);
+	scaler->result = d + (b - 1 - a) * (f - d) / ((c - a != 0) ? (c - a) : 1);
 	scaler->bop = ((f < d) ^ (c < a)) ? -1 : 1;
 	scaler->fd = abs(f - d);
 	scaler->ca = abs(c - a);
-	scaler->cache = (int)((b - 1 - a) * abs(f - d)) % abs(c - a);
+	scaler->cache = (int)((b - 1 - a) * abs(f - d)) % ((c - a != 0) ? abs(c - a) : 1);
 }
 
 int		ft_scaler_next(t_scaler *scaler)

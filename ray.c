@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/12 17:10:17 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/02 17:08:41 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/05 18:21:39 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,13 +109,12 @@ void	ft_interact(t_mlx *mlx)
 				double n_sect_f = mlx->sect[neighbor]->floor;
 				double n_sect_c = mlx->sect[neighbor]->ceiling;
 
-				if (mlx->sect[neighbor]->is_door)
+				if (mlx->sect[neighbor]->is_door && !mlx->sect[neighbor]->open && !mlx->sect[neighbor]->close && !mlx->sect[neighbor]->up)
 				{
 					mlx->sect[neighbor]->close = 0;
 					mlx->sect[neighbor]->open = 1;
 					mlx->sect[neighbor]->start_time = time(NULL);
 					mlx->activated_doors++;
-					printf("hit door!\n");
 					return;
 				}
 
