@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   keys.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adoyle <adoyle@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:41:19 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/05 17:31:03 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/08 19:51:06 by adoyle           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,18 @@ int		ft_key_realese(int keycode, t_mlx *mlx)
 	keycode == MAC_S ? mlx->player->wsad[1] = 0 : 0;
 	keycode == MAC_A ? mlx->player->wsad[2] = 0 : 0;
 	keycode == MAC_D ? mlx->player->wsad[3] = 0 : 0;
+
+// //adoyle
+// 	if (!(mlx->player->wsad[0]) && !(mlx->player->wsad[1]) && !(mlx->player->wsad[2]) && !(mlx->player->wsad[3]) && mlx->snd->chunks->cstep >= 0 && !(Mix_Paused(mlx->snd->chunks->cstep)))
+// 	{
+// 		Mix_Paused(mlx->snd->chunks->cstep);
+// 	}
+	if (keycode == MAC_W || keycode == MAC_A || keycode == MAC_D || keycode == MAC_S)
+	{
+		if (mlx->snd->chunks->cstep >= 0 && !(Mix_Paused(mlx->snd->chunks->cstep)) && !(mlx->player->wsad[0]) && !(mlx->player->wsad[1]) && !(mlx->player->wsad[2]) && !(mlx->player->wsad[3]))
+			Mix_Pause(mlx->snd->chunks->cstep);
+	}
+
 	if (keycode == MAC_CTRL_R && mlx->player->weapon_state == 1 && mlx->player->weapon == mlx->player->a_rifle)
 	{
 		mlx->player->weapon_state = 0;
@@ -53,7 +65,8 @@ int		ft_key_realese(int keycode, t_mlx *mlx)
 int		ft_key_press(int keycode, t_mlx *mlx)
 {
 	 //printf("%d\n", keycode);
-	keycode == MAC_ESC ? exit(0) : 1;
+	// keycode == MAC_ESC ? exit(0) : 1;
+	// sound_eff(mlx);
 	keycode == MAC_LEFT ? mlx->player->left = 1 : 0;
 	keycode == MAC_RIGHT ? mlx->player->right = 1 : 0;
 	keycode == MAC_UP ? mlx->player->up = 1 : 0;
@@ -84,6 +97,22 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 	keycode == MAC_S ? mlx->player->wsad[1] = 1 : 0;
 	keycode == MAC_A ? mlx->player->wsad[2] = 1 : 0;
 	keycode == MAC_D ? mlx->player->wsad[3] = 1 : 0;
+	
+// //adoyle
+// 	if (mlx->player->wsad[0] || mlx->player->wsad[1] || mlx->player->wsad[2] || mlx->player->wsad[3])
+// 	{
+// 		if (mlx->snd->chunks->cstep == -1)
+// 			mlx->snd->chunks->cstep = Mix_PlayChannel(-1, mlx->snd->chunks->step, -1);
+// 		else
+// 			Mix_Resume(mlx->snd->chunks->cstep);
+// 	}
+	if (keycode == MAC_W || keycode == MAC_A || keycode == MAC_D || keycode == MAC_S)
+	{
+		if (mlx->snd->chunks->cstep == -1)
+			mlx->snd->chunks->cstep = Mix_PlayChannel(20, mlx->snd->chunks->step, -1);
+		else if (mlx->snd->chunks->cstep > 0)
+			Mix_Resume(mlx->snd->chunks->cstep);
+	}
 
 	if (keycode == MAC_NUM_PLUS)
 	{
@@ -118,6 +147,7 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 			mlx->player->weapon_state = 4;
 		else if (mlx->player->weapon->mag_ammo < mlx->player->weapon->mag_ammo_count && mlx->player->weapon->mag_ammo >= 0)
 			mlx->player->weapon_state = 3;
+		Mix_PlayChannel(16, mlx->player->weapon->reload, 0);
 		mlx->gun_fire_i = 0;
 		mlx->gun_delay = 0;
 		mlx->altfire = 0;
@@ -200,6 +230,34 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 		mlx->player->j_up = 1;
 	if (keycode == MAC_CTRL_L && mlx->player->jetpack)
 		mlx->player->j_down = 1;
+
+	//adoyle
+	if (keycode == MAC_M)
+	{
+		if( Mix_PausedMusic() == 1 )
+		{
+			//Продолжить играть
+			Mix_ResumeMusic();
+		}
+			//Если музыка играет
+		else
+		{
+			//Приостановить проигрывание
+			Mix_PauseMusic();
+		}
+	}
+	if (keycode == MAC_ESC)
+	{
+		Mix_HaltChannel(mlx->snd->chunks->cstep);
+		Mix_FreeMusic(mlx->snd->music->mus1);
+		// Mix_FreeMusic(mlx->snd->music->mus2);
+		// Mix_FreeMusic(snd->music->mus3);
+		// Mix_FreeMusic(snd->music->mus4);
+		// Mix_FreeMusic(snd->music->mus5);e
+		Mix_CloseAudio();
+    	SDL_Quit();
+		exit (0);
+	}
 
 	return (0);
 }

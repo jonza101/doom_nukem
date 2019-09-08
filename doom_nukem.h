@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doom_nukem.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adoyle <adoyle@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/05 18:46:03 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/08 19:17:39 by adoyle           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <pthread.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 
 #define W 1280
 #define H 720
@@ -42,7 +44,7 @@
 #define MAX_WSPRITES_ON_WALL 128
 #define MAX_VISTRANSPARENT 64
 
-#define DBL_MAX 1.7976931348623158e+308
+// #define DBL_MAX 1.7976931348623158e+308
 
 #define UPPER_COLOR 0x330315
 #define LOWER_COLOR 0x1B0030
@@ -195,6 +197,7 @@ typedef	struct		s_obj
 {
 	t_obj_specs		*specs;
 	double			dist;
+	int 			chan;
 
 	struct s_obj	*next;
 }					t_obj;
@@ -344,6 +347,8 @@ typedef	struct		s_weapon
 
 	double			scaler;
 	int				x_offset;
+	Mix_Chunk		*shot;
+	Mix_Chunk		*reload;
 }					t_weapon;
 
 typedef	struct		s_boost
@@ -404,6 +409,29 @@ typedef	struct		s_player
 	t_weapon		*shotgun;
 	t_weapon		*a_rifle;
 }					t_player;
+
+typedef struct s_music
+{
+	Mix_Music	*mus1;
+	Mix_Music	*mus2;
+	Mix_Music	*mus3;
+	Mix_Music	*mus4;
+	Mix_Music	*mus5;
+	int			nummus;
+}				t_music;
+
+typedef struct s_bup
+{
+	Mix_Chunk	*fire;
+	Mix_Chunk	*step;
+	int			cstep;
+}				t_bup;
+
+typedef struct	s_snd
+{
+	t_music		*music;
+	t_bup		*chunks;
+}				t_snd;
 
 typedef	struct		s_mlx
 {
@@ -513,7 +541,14 @@ typedef	struct		s_mlx
 	short			gun_delay;
 	short			altfire;
 	short			del;
+
+	t_snd			*snd;
 }					t_mlx;
+
+//adoyle
+void				sound_eff(t_mlx *mlx);
+void				ft_init_obj(t_mlx *mlx);
+
 
 void				ft_image(t_mlx *mlx, int x, int y, int color);
 
@@ -543,7 +578,7 @@ void				ft_collision(t_mlx *mlx);
 void				ft_player_view(t_mlx *mlx);
 
 void				ft_init_textures(t_mlx *mlx);
-void				ft_init_obj(t_mlx *mlx);
+void				ft_ini(t_mlx *mlx);
 void				ft_init_wobj(t_mlx *mlx);
 void				ft_init_transparent(t_mlx *mlx);
 void				ft_init_sky(t_mlx *mlx);

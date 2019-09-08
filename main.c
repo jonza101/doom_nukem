@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adoyle <adoyle@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/05 20:22:38 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/08 19:10:01 by adoyle           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,39 @@ int ft_close(int i)
 {
 	i = 1;
 	exit(0);
+}
+
+void	initsdl(t_mlx *mlx)
+{
+	SDL_Window *window;
+	t_snd *snd;
+	snd = malloc(sizeof(t_snd));
+	snd->music = malloc(sizeof(t_music));
+	snd->chunks = malloc(sizeof(t_bup));
+	mlx->snd = snd;
+//	if (SDL_Init(SDL_INIT_AUDIO) < 0)
+//		return ;
+	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
+		return ;
+	// window = SDL_CreateWindow("Hello, SDL 2!",SDL_WINDOWPOS_UNDEFINED,
+	// 						  SDL_WINDOWPOS_UNDEFINED, 640, 640,
+	// 						  SDL_WINDOW_SHOWN);
+	if (Mix_OpenAudio( 22050, MIX_DEFAULT_FORMAT, 2, 4096 ) == -1) 
+		return ;
+	snd->music->mus1 = Mix_LoadMUS( "/sound/blade1.ogg"); //объединить все дорожки музщыки в одну для оптимизации
+	// snd->music->mus2 = Mix_LoadMUS( "/sound/blade2.ogg");
+	// snd->music->mus3 = Mix_LoadMUS( "/sound/blade3.ogg");
+	// snd->music->mus4 = Mix_LoadMUS( "/sound/blade4.ogg");
+	// snd->music->mus5 = Mix_LoadMUS( "/sound/blade5.ogg");
+	mlx->snd->music->nummus = 1;
+	mlx->snd->chunks->fire = Mix_LoadWAV("/sound/fire_zkyuzme_.wav");
+	mlx->snd->chunks->step = Mix_LoadWAV("/sound/step.wav");
+	// mlx->player->revolver->shot = Mix_LoadWAV("/sound/pistol.wav");
+	// mlx->player->shotgun->shot = Mix_LoadWAV("/sound/shotgun.wav");
+	if (!(snd->music->mus1) || !(snd->music->mus2) || !(snd->music->mus3) || !(snd->music->mus4) || !(snd->music->mus5))
+		exit(0) ;
+	Mix_AllocateChannels(22);
+	mlx->snd->chunks->cstep = -1;
 }
 
 int ft_mouse_move(int x, int y, t_mlx *mlx)
@@ -144,6 +177,32 @@ void ft_init(t_mlx *mlx)
 	mlx->pos = (t_vec3*)malloc(sizeof(t_vec3));
 }
 
+void	playmusic(t_music *music)
+{
+	if (Mix_PlayingMusic() == 0)
+	{
+		if (music->nummus == 1)
+		{
+			music->nummus = 2;
+			Mix_PlayMusic(music->mus1, 0);
+		}
+		else if (music->nummus == 2)
+		{
+			music->nummus = 1;
+			Mix_PlayMusic(music->mus1, 0);
+		}
+//		if (Mix_PlayMusic(music->mus3, 0) == -1)
+//			return;
+//		while (Mix_PlayingMusic());
+//		if (Mix_PlayMusic(music->mus4, 0) == -1)
+//			return;
+//		while (Mix_PlayingMusic());
+//		if (Mix_PlayMusic(music->mus5, 0) == -1)
+//			return;
+//		while (Mix_PlayingMusic());
+	}
+}
+
 int main()
 {
 	t_mlx *mlx;
@@ -158,9 +217,13 @@ int main()
 
 	mlx->shoot_p = (t_vec2 *)malloc(sizeof(t_vec2));
 
+	initsdl(mlx);
 	ft_init_graphics(mlx);
 	ft_load_map(mlx, "maps/map4");
 	ft_init(mlx);
+
+	//adoyle
+	playmusic(mlx->snd->music);
 
 	// mlx_hook(mlx->win, 6, 1L << 6, ft_mouse_move, mlx);
 	mlx_hook(mlx->win, 4, 0, ft_mouse_press, mlx);
