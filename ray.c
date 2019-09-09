@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/12 17:10:17 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/05 18:21:39 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/08 19:46:21 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,23 +46,13 @@ int		ft_poly_intersect(t_mlx *mlx, t_sector *sector, t_vec2 *p0, t_vec2 *p1)
 	t_vec2	*v1;
 
 	i = -1;
-	v0 = (t_vec2*)malloc(sizeof(t_vec2));
-	v1 = (t_vec2*)malloc(sizeof(t_vec2));
 	while (++i < sector->verts_count)
 	{
-		v0->x = sector->verts[i + 0]->x;
-		v0->y = sector->verts[i + 0]->y;
-		v1->x = sector->verts[i + 1]->x;
-		v1->y = sector->verts[i + 1]->y;
+		v0 = sector->verts[i + 0];
+		v1 = sector->verts[i + 1];
 		if (ft_line_intersect(mlx, p0, p1, v0, v1))
-		{
-			ft_memdel((void**)&v0);
-			ft_memdel((void**)&v1);
 			return (i);
-		}
 	}
-	ft_memdel((void**)&v0);
-	ft_memdel((void**)&v1);
 	return (-1);
 }
 

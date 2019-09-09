@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/05 18:46:03 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/09 20:07:28 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -513,6 +513,9 @@ typedef	struct		s_mlx
 	short			gun_delay;
 	short			altfire;
 	short			del;
+
+	short			edge;
+	double			e_angle;
 }					t_mlx;
 
 void				ft_image(t_mlx *mlx, int x, int y, int color);

@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:41:19 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/05 17:31:03 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/06 16:17:05 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,6 +200,9 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 		mlx->player->j_up = 1;
 	if (keycode == MAC_CTRL_L && mlx->player->jetpack)
 		mlx->player->j_down = 1;
+
+	if (keycode == MAC_DOT)
+		mlx->s = !mlx->s;
 
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/05 20:23:19 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/09 20:41:40 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,14 +29,16 @@ t_wobj	*ft_find_wobj(t_mlx *mlx, int sect, int side)
 	return (NULL);
 }
 
-double	ft_check(t_vec3 *p, t_vec2 *v1, t_vec2 *v2)							//	-1.5 -> 1.5
+int		ft_check(t_vec3 *p, t_vec2 *v1, t_vec2 *v2)							//	-1.5 -> 1.5
 {
 	double nx = v1->y - v2->y;
 	double ny = v2->x - v1->x;
 
 	double p_c = (nx * (p->x - v1->x) + ny * (p->y - v1->y)) / sqrtf(nx * nx + ny * ny);
 	printf("check %f\n", p_c);
-	return (p_c);
+	if (p_c <= 1.5f)
+		return (1);
+	return (0);
 }
 
 void	ft_skybox_render(t_mlx *mlx, int x, int y1, int y2)
@@ -90,6 +92,8 @@ void	ft_draw(t_mlx *mlx)
 	if (++mlx->head == mlx->queue + MAX_QUEUE)
 		mlx->head = mlx->queue;
 
+	mlx->edge = 0;
+
 	mlx->seg_i = 0;
 	mlx->obj_i = 0;
 	mlx->trans_i = 0;
@@ -127,68 +131,9 @@ void	ft_draw(t_mlx *mlx)
 			double tx2 = vx2 * p_sin - vy2 * p_cos;
 			double tz2 = vx2 * p_cos + vy2 * p_sin;
 
-			int edge = 0;
-
-			if (mlx->now->sector_n == mlx->player->sector)
-			{
-				int temp = ft_check(mlx->player->pos, sector->verts[s + 0], sector->verts[s + 1]);
-				printf("tz1 %f			tz2 %f\n", tz1, tz2);
-				printf("tx1 %f			tx2 %f\n", tx1, tx2);
-
-				mlx->p0->x = mlx->player->pos->x;
-				mlx->p0->y = mlx->player->pos->y;
-				mlx->p1->x = mlx->p0->x + cosf(mlx->player->angle) * FIRE_RANGE;
-				mlx->p1->y = mlx->p0->y + sinf(mlx->player->angle) * FIRE_RANGE;
-				if (ft_line_intersect(mlx, mlx->p0, mlx->p1, sector->verts[s + 0], sector->verts[s + 1]))
-				{
-					t_vec2 *v1 = sector->verts[s + 0];
-					t_vec2 *v2 = sector->verts[s + 1];
-
-					double pr0 = fabs((v2->y - v1->y) * mlx->p0->x - (v2->x - v1->x) * mlx->p0->y + v2->x * v1->y - v2->y * v1->x) / sqrtf(powf(v2->y - v1->y, 2) + powf(v2->x - v1->x, 2));
-					double pr1 = fabs((v2->y - v1->y) * mlx->p1->x - (v2->x - v1->x) * mlx->p1->y + v2->x * v1->y - v2->y * v1->x) / sqrtf(powf(v2->y - v1->y, 2) + powf(v2->x - v1->x, 2));
-
-					double dx = mlx->p0->x - mlx->p1->x;
-					double dy = mlx->p0->y - mlx->p1->y;
-					double w_len = sqrtf(dx * dx + dy * dy);
-
-					double seg = (pr1 + pr0 != 0) ? (w_len * pr0) / (pr1 + pr0) : 1;
-
-					double ang = asinf(pr0 / seg);
-					double deg = ang * (180 / M_PI);
-					printf("rad ang %f\n", ang);
-					printf("deg ang %f\n", deg);
-					// printf("w_len %f		seg %f\n", w_len, seg);
-					// printf("pr0 %f			pr1 %f\n", pr0, pr1);
-
-					double v2dx = mlx->shoot_p->x - v2->x;
-					double v2dy = mlx->shoot_p->y - v2->y;
-					double v2_dist = sqrtf(v2dx * v2dx + v2dy * v2dy);
-
-					mlx->p1->x = mlx->p0->x + cosf(mlx->player->angle - 0.27f) * FIRE_RANGE;
-					mlx->p1->y = mlx->p0->y + sinf(mlx->player->angle - 0.27f) * FIRE_RANGE;
-					if (ft_line_intersect(mlx, mlx->p0, mlx->p1, sector->verts[s + 0], sector->verts[s + 1]))
-					{
-						double _v2dx = mlx->shoot_p->x - v2->x;
-						double _v2dy = mlx->shoot_p->y - v2->y;
-						double _v2_dist = sqrtf(_v2dx * _v2dx + _v2dy * _v2dy);
-
-						// printf("dist %f				_dist %f\n", v2_dist, _v2_dist);
-
-						edge = (temp >= -1.5f && temp <= 1.5f && v2_dist < _v2_dist && ang >= 1.3f && ang <= 1.57f) ? 1 : 0;
-					}
-					else
-						edge = (temp >= -1.5f && temp <= 1.5f && ang >= 1.3f && ang <= 1.57f) ? 1 : 0;
-				}
-				printf("edge %d\n", edge);
-			}
-
 			//	IS THE WALL AT LEAST PARTIALLY IN FRONT OF THE PLAYER?
 			if (tz1 <= 0.0f && tz2 <= 0.0f)
-			{
-				if (mlx->now->sector_n == mlx->player->sector)
-					printf("\n");
 				continue;
-			}
 
 			int u0 = 0;
 			int u1 = mlx->u1;
@@ -258,19 +203,82 @@ void	ft_draw(t_mlx *mlx)
 			double yscale2 = (H * FOV_V) / tz2;
 			int x2 = W / 2 + (int)(-tx2 * xscale2);
 
-			if ((x1 >= x2 || x2 < mlx->now->sx1 || x1 > mlx->now->sx2) && edge == 0)
+			int neighbor = (sector->neighbors[s]);
+
+			int e_check = 0;
+			int edge = 0;
+			if (mlx->now->sector_n == mlx->player->sector)
 			{
-				if (mlx->now->sector_n == mlx->player->sector)
-					printf("next\n\n");
-				continue;
+				e_check = ft_check(mlx->player->pos, sector->verts[s + 0], sector->verts[s + 1]);
+
+				mlx->p0->x = mlx->player->pos->x;
+				mlx->p0->y = mlx->player->pos->y;
+				mlx->p1->x = mlx->p0->x + cosf(mlx->player->angle) * FIRE_RANGE;
+				mlx->p1->y = mlx->p0->y + sinf(mlx->player->angle) * FIRE_RANGE;
+				if (e_check == 1 && ft_line_intersect(mlx, mlx->p0, mlx->p1, sector->verts[s + 0], sector->verts[s + 1]))
+				{
+					t_vec2 *v1 = sector->verts[s + 0];
+					t_vec2 *v2 = sector->verts[s + 1];
+
+					double pr0 = fabs((v2->y - v1->y) * mlx->p0->x - (v2->x - v1->x) * mlx->p0->y + v2->x * v1->y - v2->y * v1->x) / sqrtf(powf(v2->y - v1->y, 2) + powf(v2->x - v1->x, 2));
+					double pr1 = fabs((v2->y - v1->y) * mlx->p1->x - (v2->x - v1->x) * mlx->p1->y + v2->x * v1->y - v2->y * v1->x) / sqrtf(powf(v2->y - v1->y, 2) + powf(v2->x - v1->x, 2));
+
+					double dx = mlx->p0->x - mlx->p1->x;
+					double dy = mlx->p0->y - mlx->p1->y;
+					double w_len = sqrtf(dx * dx + dy * dy);
+
+					double seg = (pr1 + pr0 != 0) ? (w_len * pr0) / (pr1 + pr0) : 1;
+
+					double ang = asinf(pr0 / seg);
+					double deg = ang * (180 / M_PI);
+					printf("rad ang %f\n", ang);
+					printf("deg ang %f\n\n", deg);
+
+					mlx->edge = (ang > 1.32f && (x1 >= x2 || x2 < mlx->now->sx1 || x1 > mlx->now->sx2) && neighbor >= 0) ? 1 : 0;
+					edge = (ang > 1.32f && (x1 >= x2 || x2 < mlx->now->sx1 || x1 > mlx->now->sx2) && neighbor < 0) ? 1 : 0;
+					// if (mlx->edge)
+					// {
+					// 	double diff_l = fabs(1.57f - ang);
+					// 	double diff_r = fabs(ang - 1.32f);
+					// 	// // printf("diff_l %f\n", diff_l);
+					// 	// // printf("diff_r %f\n\n", diff_r);
+					// 	if (diff_l < diff_r)
+					// 		mlx->player->angle += diff_r;
+					// 	else
+					// 		mlx->player->angle -= diff_l;
+					// 	// if (diff_l < diff_r)
+					// 	// {
+					// 	// 	mlx->player->angle -= diff_l;
+					// 	// 	mlx->left = 1;
+					// 	// 	if (mlx->right == 1)
+					// 	// 		mlx->e_angle = mlx->player->angle;
+					// 	// 	mlx->right = 0;
+					// 	// }
+					// 	// else
+					// 	// {
+					// 	// 	mlx->player->angle += diff_r;
+					// 	// 	mlx->right = 1;
+					// 	// 	if (mlx->left == 1)
+					// 	// 		mlx->e_angle = mlx->player->angle;
+					// 	// 	mlx->left = 0;
+					// 	// }
+					// 	mlx->player->sin_angle = sinf(mlx->player->angle);
+					// 	mlx->player->cos_angle = cosf(mlx->player->angle);
+					// 	ft_draw(mlx);
+					// 	return;
+					// }
+				}
+				// printf("edge %d\n", edge);
 			}
+
+			if ((x1 >= x2 || x2 < mlx->now->sx1 || x1 > mlx->now->sx2) && !edge)
+				continue;
 
 			//	ACQUIRE THE FLOOR AND CEILING HEIGHTS, RELATIVE TO WHERE THE PLAYER'S VIEW IS
 			double yceil = sector->ceiling - mlx->player->pos->z;
 			double yfloor = sector->floor - mlx->player->pos->z;
 
 			//	CHECK NEIGHBORS
-			int neighbor = (sector->neighbors[s]);
 			double nyceil = 0;
 			double nyfloor = 0;
 			if (neighbor >= 0)
@@ -295,12 +303,8 @@ void	ft_draw(t_mlx *mlx)
 			int beginx = ft_max(x1, mlx->now->sx1);
 			int endx = ft_min(x2, mlx->now->sx2);
 
-			if (mlx->now->sector_n == mlx->player->sector)
-			{
-				printf("x1 %d			x2 %d\n", x1, x2);
-				printf("sx1 %d			sx2 %d\n", mlx->now->sx1, mlx->now->sx2);
-				printf("bx %d			ex %d\n\n", beginx, endx);
-			}
+			if (edge)
+				beginx = 0;
 
 			ft_scaler_init(mlx->ya_int, x1, beginx, x2, y1a, y2a);
             ft_scaler_init(mlx->yb_int, x1, beginx, x2, y1b, y2b);
@@ -337,8 +341,8 @@ void	ft_draw(t_mlx *mlx)
 				int ya = ft_scaler_next(mlx->ya_int);					//		 + x / 25
 				int yb = ft_scaler_next(mlx->yb_int);					//		 + x / 25
 
-                mlx->cya = ft_clamp(ya, ytop[x], ybottom[x]);
-                mlx->cyb = ft_clamp(yb, ytop[x], ybottom[x]);
+				mlx->cya = ft_clamp(ya, ytop[x], ybottom[x]);
+				mlx->cyb = ft_clamp(yb, ytop[x], ybottom[x]);
 
 				//	SAME FOR NEIGHBORS
 				int nya = ft_scaler_next(mlx->nya_int);
@@ -552,19 +556,11 @@ void	ft_draw(t_mlx *mlx)
 			mlx->seg_i++;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-			if (neighbor >= 0 && (mlx->head + MAX_QUEUE + 1 - mlx->tail) % MAX_QUEUE)
+			if (neighbor >= 0 && beginx <= endx && (mlx->head + MAX_QUEUE + 1 - mlx->tail) % MAX_QUEUE)
 			{
 				mlx->head->sector_n = neighbor;
-				if (edge == 0)
-				{
-					mlx->head->sx1 = beginx;
-					mlx->head->sx2 = endx;
-				}
-				else
-				{
-					mlx->head->sx1 = 0;
-					mlx->head->sx2 = W - 1;
-				}
+				mlx->head->sx1 = beginx;
+				mlx->head->sx2 = endx;
 				if (++mlx->head == mlx->queue + MAX_QUEUE)
 					mlx->head = mlx->queue;
 			}
@@ -572,6 +568,6 @@ void	ft_draw(t_mlx *mlx)
 		++rendered_sect[mlx->now->sector_n];
 		ft_sect_obj(mlx, mlx->now->sector_n);
 		if (mlx->now->sector_n == mlx->player->sector)
-			printf("----------------------------\n");
+			printf("\n");
 	}
 }

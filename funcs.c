@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:38 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/05 18:24:42 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/07 15:50:00 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ int		ft_color_convert(int color, double lum)
 	return (((r & 0xFF) << 16) + ((g & 0xFF) << 8) + ((b & 0xFF)));
 }
 
-void	ft_draw_vline(t_mlx *mlx, int x, int y1,int y2, int top_color,int middle_color, int bottom_color)
+void	ft_draw_vline(t_mlx *mlx, int x, int y1, int y2, int top_color,int middle_color, int bottom_color)
 {
 	y1 = ft_clamp(y1, 0, H - 1);
 	y2 = ft_clamp(y2, 0, H - 1);

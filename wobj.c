@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/17 18:28:03 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/02 17:08:32 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/09 19:28:57 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,16 +134,15 @@ void	ft_wobj_pos_correct(t_mlx *mlx)
 	{
 		double ang = atan2f(wobj->pos->y - mlx->player->pos->y, wobj->pos->x - mlx->player->pos->x);
 
-		t_vec2 *p0 = (t_vec2*)malloc(sizeof(t_vec2));
-		t_vec2 *p1 = (t_vec2*)malloc(sizeof(t_vec2));
-		p0->x = mlx->player->pos->x;
-		p0->y = mlx->player->pos->y;
-		p1->x = FIRE_RANGE * cosf(ang) + wobj->pos->x;
-		p1->y = FIRE_RANGE * sinf(ang) + wobj->pos->y;
+		t_vec2 *v1 = mlx->sect[wobj->sect]->verts[wobj->side];
+		t_vec2 *v2 = mlx->sect[wobj->sect]->verts[wobj->side + 1];
 
-		ft_line_intersect(mlx, p0, p1, mlx->sect[wobj->sect]->verts[wobj->side + 0], mlx->sect[wobj->sect]->verts[wobj->side + 1]);
-		wobj->pos->x = mlx->shoot_p->x;
-		wobj->pos->y = mlx->shoot_p->y;
+		double px = v2->x - v1->x;
+		double py = v2->y - v1->y;
+		double dxy = px * px + py * py;
+		double u = ((wobj->pos->x - v1->x) * px + (wobj->pos->y - v1->y) * py) / dxy;
+		wobj->pos->x = v1->x + u * px;
+		wobj->pos->y = v1->y + u * py;
 
 		double dx1 = mlx->sect[wobj->sect]->verts[wobj->side + 0]->x - wobj->pos->x;
 		double dy1 = mlx->sect[wobj->sect]->verts[wobj->side + 0]->y - wobj->pos->y;
@@ -159,9 +158,6 @@ void	ft_wobj_pos_correct(t_mlx *mlx)
 
 		wobj->p2->x = wobj->pos->x - ((half_w * (wobj->pos->x - mlx->sect[wobj->sect]->verts[wobj->side + 1]->x)) / dist2);
 		wobj->p2->y = wobj->pos->y - ((half_w * (wobj->pos->y - mlx->sect[wobj->sect]->verts[wobj->side + 1]->y)) / dist2);
-
-		free(p0);
-		free(p1);
 
 		wobj = wobj->next;
 	}
