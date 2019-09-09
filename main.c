@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/09 20:07:34 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/09 23:05:06 by lsandor-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ void ft_init_graphics(t_mlx *mlx)
 	ft_init_revolver(mlx);
 	ft_init_shotgun(mlx);
 	ft_init_arifle(mlx);
+	ft_init_menu_textures(mlx);
 }
 
 void ft_init(t_mlx *mlx)
@@ -142,6 +143,9 @@ void ft_init(t_mlx *mlx)
 	mlx->p0 = (t_vec2*)malloc(sizeof(t_vec2));
 	mlx->p1 = (t_vec2*)malloc(sizeof(t_vec2));
 	mlx->pos = (t_vec3*)malloc(sizeof(t_vec3));
+
+	mlx->menuNeeded = 1;
+	mlx->menuIsDrawn = 0;
 }
 
 int main()
@@ -159,9 +163,10 @@ int main()
 	mlx->shoot_p = (t_vec2 *)malloc(sizeof(t_vec2));
 
 	ft_init_graphics(mlx);
+							printf("------------------123414");
 	ft_load_map(mlx, "maps/map4");
+						printf("------------------123414");
 	ft_init(mlx);
-
 	// mlx_hook(mlx->win, 6, 1L << 6, ft_mouse_move, mlx);
 	mlx_hook(mlx->win, 4, 0, ft_mouse_press, mlx);
 	mlx_hook(mlx->win, 5, 0, ft_mouse_release, mlx);

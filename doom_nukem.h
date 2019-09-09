@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doom_nukem.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/09 20:07:28 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/09 22:43:00 by lsandor-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -454,6 +454,7 @@ typedef	struct		s_mlx
 	t_anim_list		**trans;
 	t_img			*sky[SKY];
 	t_img			*font[FONT];
+	t_img			*menu[0];
 
 	int				hud_x;
 	short			hud_r;
@@ -516,6 +517,9 @@ typedef	struct		s_mlx
 
 	short			edge;
 	double			e_angle;
+
+	short			menuNeeded;
+	short			menuIsDrawn;
 }					t_mlx;
 
 void				ft_image(t_mlx *mlx, int x, int y, int color);
@@ -629,5 +633,6 @@ void				ftLookDown(t_mlx *mlx);
 
 int					ft_mouse_press(int keycode, int x, int y, t_mlx *mlx);
 int					ft_mouse_release(int keycode, int x, int y, t_mlx *mlx);
+void ft_init_menu_textures(t_mlx *mlx);
 
 #endif

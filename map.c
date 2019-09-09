@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/09 21:06:04 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/09 23:04:23 by lsandor-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,6 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 	mlx->wobj_count = 0;
 
 	mlx->activated_doors = 0;
-
 	while (get_next_line(fd, &line))
 	{
 		if (line[0] == 'v' && line[1] == ' ')

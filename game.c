@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   game.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:40:26 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/09 20:56:28 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/09 23:06:22 by lsandor-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,16 @@ void	ft_check_doors(t_mlx *mlx)
 	}
 }
 
+
 int		ft_game_loop(t_mlx *mlx)
 {
+	if (mlx->menuNeeded){
+		if (mlx->menuIsDrawn == 0){
+			mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->sky[0]->img,0,0);
+			mlx->menuIsDrawn = 1;
+		}
+		return 0;
+	}
 	// clock_t start_time = clock();
 
 	ft_drawseg_sort(mlx);
