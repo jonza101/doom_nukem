@@ -6,12 +6,17 @@
 /*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:40:26 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/09 23:06:22 by lsandor-         ###   ########.fr       */
+/*   Updated: 2019/09/10 23:22:13 by lsandor-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doom_nukem.h"
 #include <time.h>
+
+#define NONE_SELECTED 0
+#define NEW_GAME_SELECTED 1
+#define OPTIONS_SELECTED 2
+#define QUIT_SELECTED 3
 
 void	ft_check_doors(t_mlx *mlx)
 {
@@ -59,13 +64,27 @@ void	ft_check_doors(t_mlx *mlx)
 	}
 }
 
+//ft_draw_chr(mlx, mlx->font[digit], 190 - i * 35, 660, 45);
+
 
 int		ft_game_loop(t_mlx *mlx)
 {
 	if (mlx->menuNeeded){
-		if (mlx->menuIsDrawn == 0){
-			mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->sky[0]->img,0,0);
-			mlx->menuIsDrawn = 1;
+		if (mlx->menuIsDrawn[NONE_SELECTED] && mlx->whichMenuIsSelected[NONE_SELECTED]){
+			mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->menu[NONE_SELECTED]->img,0,0);
+			mlx->menuIsDrawn[NONE_SELECTED] = 0;
+		}
+		if (mlx->menuIsDrawn[NEW_GAME_SELECTED] && mlx->whichMenuIsSelected[NEW_GAME_SELECTED]){
+			mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->menu[NEW_GAME_SELECTED]->img,0,0);
+			mlx->menuIsDrawn[NEW_GAME_SELECTED] = 0;
+		}
+		if (mlx->menuIsDrawn[OPTIONS_SELECTED] && mlx->whichMenuIsSelected[OPTIONS_SELECTED]){
+			mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->menu[OPTIONS_SELECTED]->img,0,0);
+			mlx->menuIsDrawn[OPTIONS_SELECTED] = 0;
+		}
+		if (mlx->menuIsDrawn[QUIT_SELECTED] && mlx->whichMenuIsSelected[QUIT_SELECTED]){
+			mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->menu[QUIT_SELECTED]->img,0,0);
+			mlx->menuIsDrawn[QUIT_SELECTED] = 0;
 		}
 		return 0;
 	}

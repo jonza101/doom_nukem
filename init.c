@@ -6,7 +6,7 @@
 /*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/28 21:24:48 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/09 23:00:55 by lsandor-         ###   ########.fr       */
+/*   Updated: 2019/09/10 22:35:53 by lsandor-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,33 @@ void	ft_init_sky(t_mlx *mlx)
 	}
 }
 
+void	ft_init_menu(t_mlx *mlx)
+{
+	int fd;
+	char *line;
+	char *menus[MENU_IMGS_NUM] = { "textures/menu/default.xpm", "textures/menu/newgame.xpm", "textures/menu/options.xpm", "textures/menu/quit.xpm" }; 
+	int i = -1;
+	while (++i < MENU_IMGS_NUM)
+	{
+		fd = open(menus[i], O_RDONLY);
+		int j = -1;
+		while (++j < 4)
+		{
+			get_next_line(fd, &line);
+			(j < 3) ? ft_strdel(&line) : 1;
+		}
+		char **tmp = ft_strsplit(line, ' ');
+		mlx->menu[i] = (t_img*)malloc(sizeof(t_img));
+		mlx->menu[i]->w = ft_atoi(&tmp[0][1]);
+		mlx->menu[i]->h = ft_atoi(tmp[1]);
+		mlx->menu[i]->img = mlx_xpm_file_to_image(mlx->mlx, menus[i], &mlx->menu[i]->w, &mlx->menu[i]->h);
+		mlx->menu[i]->data = (int*)mlx_get_data_addr(mlx->menu[i]->img, &mlx->menu[i]->bpp, &mlx->menu[i]->size_line, &mlx->menu[i]->endian);
+		ft_strsplit_free(tmp);
+		close(fd);
+		ft_strdel(&line);
+	}
+}
+
 void	ft_init_transparent(t_mlx *mlx)
 {
 	int fd;
@@ -124,32 +151,6 @@ void	ft_init_textures(t_mlx *mlx)
 		mlx->txt[i]->h = ft_atoi(tmp[1]);
 		mlx->txt[i]->img = mlx_xpm_file_to_image(mlx->mlx, txts[i], &mlx->txt[i]->w, &mlx->txt[i]->h);
 		mlx->txt[i]->data = (int*)mlx_get_data_addr(mlx->txt[i]->img, &mlx->txt[i]->bpp, &mlx->txt[i]->size_line, &mlx->txt[i]->endian);
-		ft_strsplit_free(tmp);
-		close(fd);
-		ft_strdel(&line);
-	}
-}
-
-void ft_init_menu_textures(t_mlx *mlx){
-	int fd;
-	char *line;
-	char *menu[1] = { "textures/menu/duke_main_menu.xpm" };
-	int i = -1;
-	while (++i < 1)
-	{
-		fd = open(menu[0], O_RDONLY);
-		int j = -1;
-		while (++j < 4)
-		{
-			get_next_line(fd, &line);
-			(j < 3) ? ft_strdel(&line) : 1;
-		}
-		char **tmp = ft_strsplit(line, ' ');
-		mlx->menu[0] = (t_img*)malloc(sizeof(t_img));
-		mlx->menu[0]->w = ft_atoi(&tmp[0][1]);
-		mlx->menu[0]->h = ft_atoi(tmp[1]);
-		mlx->menu[0]->img = mlx_xpm_file_to_image(mlx->mlx, menu[0], &mlx->menu[0]->w, &mlx->menu[0]->h);
-		mlx->menu[0]->data = (int*)mlx_get_data_addr(mlx->menu[0]->img, &mlx->menu[0]->bpp, &mlx->menu[0]->size_line, &mlx->menu[0]->endian);
 		ft_strsplit_free(tmp);
 		close(fd);
 		ft_strdel(&line);
