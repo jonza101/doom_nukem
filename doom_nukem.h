@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doom_nukem.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/10 22:57:54 by lsandor-         ###   ########.fr       */
+/*   Updated: 2019/09/12 20:41:45 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -454,8 +454,11 @@ typedef	struct		s_mlx
 	t_anim_list		**wobj_l;
 	t_anim_list		**trans;
 	t_img			*sky[SKY];
-	t_img			*menu[MENU_IMGS_NUM];
 	t_img			*font[FONT];
+	t_img			*menu_font[5];
+	t_img			*menu_play[4];
+	t_img			*menu_quit[4];
+	t_img			*menu_pointer[2];
 
 	int				hud_x;
 	short			hud_r;
@@ -519,9 +522,11 @@ typedef	struct		s_mlx
 	short			edge;
 	double			e_angle;
 
-	short			menuNeeded;
-	short			whichMenuIsSelected[4];
-	short			menuIsDrawn[4];
+	short			menu;
+	short			button_i;
+
+	int				fire[36];
+	int				fire_buff[W * H * 2];
 }					t_mlx;
 
 void				ft_image(t_mlx *mlx, int x, int y, int color);
@@ -635,8 +640,14 @@ void				ftLookDown(t_mlx *mlx);
 
 int					ft_mouse_press(int keycode, int x, int y, t_mlx *mlx);
 int					ft_mouse_release(int keycode, int x, int y, t_mlx *mlx);
-void	ft_draw_chr(t_mlx *mlx, t_img *chr, int x, int y, int d_h);
-void	ft_init_menu(t_mlx *mlx);
-int ft_mouse_move(int x, int y, t_mlx *mlx);
+void				ft_draw_chr(t_mlx *mlx, t_img *chr, int x, int y, int d_h);
+int 				ft_mouse_move(int x, int y, t_mlx *mlx);
+
+void				ft_init_menu_fire(t_mlx *mlx);
+void				ft_init_menu_font(t_mlx *mlx);
+void				ft_init_menu_buttons(t_mlx *mlx);
+
+void				ft_play(t_mlx *mlx);
+int					ft_close(int i);
 
 #endif

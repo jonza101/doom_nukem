@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/11 15:06:15 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/09 20:19:49 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/11 14:26:18 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -250,7 +250,6 @@ void	ft_player_view(t_mlx *mlx)
 	if (mlx->player->left)
 	{
 		mlx->player->angle -= 0.045f;
-		// mlx->e_angle -= 0.045f;
 		mlx->player->sin_angle = sinf(mlx->player->angle);
 		mlx->player->cos_angle = cosf(mlx->player->angle);
 
@@ -259,7 +258,6 @@ void	ft_player_view(t_mlx *mlx)
 	if (mlx->player->right)
 	{
 		mlx->player->angle += 0.045f;
-		// mlx->e_angle += 0.045f;
 		mlx->player->sin_angle = sinf(mlx->player->angle);
 		mlx->player->cos_angle = cosf(mlx->player->angle);
 

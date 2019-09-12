@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/10 23:00:37 by lsandor-         ###   ########.fr       */
+/*   Updated: 2019/09/12 20:55:45 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,21 +18,23 @@ int ft_close(int i)
 	exit(0);
 }
 
-// int ft_mouse_move(int x, int y, t_mlx *mlx)
-// {
-// 	if (x > mlx->mouse_pos_x || (mlx->mouse_pos_x == RIGHT && x == RIGHT))
-// 		ftLookRight(mlx);
-// 	else if (x < mlx->mouse_pos_x || (mlx->mouse_pos_x == LEFT && x == LEFT))
-// 		ftLookLeft(mlx);
-// 	if (y > mlx->mouse_pos_y || (mlx->mouse_pos_y == TOP && y == TOP))
-// 		ftLookUp(mlx);
-// 	else if (y < mlx->mouse_pos_y || (mlx->mouse_pos_y == BOTTOM && y == BOTTOM))
-// 		ftLookDown(mlx);
-// 	mlx->mouse_pos_x = x;
-// 	mlx->mouse_pos_y = y;
-// 	ft_move_player(mlx, 0, 0);
-// 	return (0);
-// }
+int ft_mouse_move(int x, int y, t_mlx *mlx)
+{
+	if (mlx->menu)
+		return (0);
+	if (x > mlx->mouse_pos_x || (mlx->mouse_pos_x == RIGHT && x == RIGHT))
+		ftLookRight(mlx);
+	else if (x < mlx->mouse_pos_x || (mlx->mouse_pos_x == LEFT && x == LEFT))
+		ftLookLeft(mlx);
+	if (y > mlx->mouse_pos_y || (mlx->mouse_pos_y == TOP && y == TOP))
+		ftLookUp(mlx);
+	else if (y < mlx->mouse_pos_y || (mlx->mouse_pos_y == BOTTOM && y == BOTTOM))
+		ftLookDown(mlx);
+	mlx->mouse_pos_x = x;
+	mlx->mouse_pos_y = y;
+	ft_move_player(mlx, 0, 0);
+	return (0);
+}
 
 void ft_init_graphics(t_mlx *mlx)
 {
@@ -46,7 +48,9 @@ void ft_init_graphics(t_mlx *mlx)
 	ft_init_revolver(mlx);
 	ft_init_shotgun(mlx);
 	ft_init_arifle(mlx);
-	ft_init_menu(mlx);
+
+	ft_init_menu_font(mlx);
+	ft_init_menu_buttons(mlx);
 }
 
 void ft_init(t_mlx *mlx)
@@ -84,6 +88,7 @@ void ft_init(t_mlx *mlx)
 		mlx->player->wsad[i] = 0;
 
 	mlx->player->weapon = mlx->player->revolver;
+	mlx->player->frame = mlx->player->weapon->idle[0];
 	mlx->player->weapon_state = 0;
 	mlx->gun_fire_i = 0;
 	mlx->gun_delay = 0;
@@ -143,15 +148,21 @@ void ft_init(t_mlx *mlx)
 	mlx->p1 = (t_vec2*)malloc(sizeof(t_vec2));
 	mlx->pos = (t_vec3*)malloc(sizeof(t_vec3));
 
-	mlx->menuNeeded = 1;
-	mlx->whichMenuIsSelected[0] = 1;
-	mlx->whichMenuIsSelected[1] = 0;
-	mlx->whichMenuIsSelected[2] = 0;
-	mlx->whichMenuIsSelected[3] = 0;
-	mlx->menuIsDrawn[0] = 1;
-	mlx->menuIsDrawn[1] = 1;
-	mlx->menuIsDrawn[2] = 1;
-	mlx->menuIsDrawn[3] = 1;
+	mlx->menu = 1;
+	ft_init_menu_fire(mlx);
+	y = -1;
+	while (++y < H * 2)
+	{
+		int x = -1;
+		while (++x < W)
+		{
+			if (y == H - 1)
+				mlx->fire_buff[y * W + x] = 35;
+			else
+				mlx->fire_buff[y * W + x] = 0;
+		}
+	}
+	mlx->button_i = 0;
 }
 
 int main()
@@ -171,8 +182,8 @@ int main()
 	ft_init_graphics(mlx);
 	ft_load_map(mlx, "maps/map4");
 	ft_init(mlx);
+
 	// mlx_hook(mlx->win, 6, 1L << 6, ft_mouse_move, mlx);
-	mlx_hook(mlx->win, 6, 0, ft_mouse_move, mlx);
 	mlx_hook(mlx->win, 4, 0, ft_mouse_press, mlx);
 	mlx_hook(mlx->win, 5, 0, ft_mouse_release, mlx);
 	mlx_loop_hook(mlx->mlx, ft_game_loop, mlx);

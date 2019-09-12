@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:41:19 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/06 16:17:05 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/12 20:47:12 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,8 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 	keycode == MAC_ESC ? exit(0) : 1;
 	keycode == MAC_LEFT ? mlx->player->left = 1 : 0;
 	keycode == MAC_RIGHT ? mlx->player->right = 1 : 0;
-	keycode == MAC_UP ? mlx->player->up = 1 : 0;
-	keycode == MAC_DOWN ? mlx->player->down = 1 : 0;
+	keycode == (MAC_UP) ? mlx->player->up = 1 : 0;
+	keycode == (MAC_DOWN) ? mlx->player->down = 1 : 0;
 	if (keycode == MAC_CTRL_L)
 	{
 		if (mlx->crouching && !mlx->player->jetpack)
@@ -123,9 +123,9 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 		mlx->altfire = 0;
 	}
 
-	if (keycode == MAC_CTRL_R && !mlx->player->weapon->mag_ammo && mlx->player->weapon->ammo_count)
+	if (keycode == MAC_CTRL_R && !mlx->player->weapon->mag_ammo && mlx->player->weapon->ammo_count && !mlx->menu)
 		mlx->hud_r = 1;
-	if (keycode == MAC_SHIFT_R && mlx->player->weapon->has_altfire && !mlx->player->weapon->mag_ammo && mlx->player->weapon->ammo_count)
+	if (keycode == MAC_SHIFT_R && mlx->player->weapon->has_altfire && !mlx->player->weapon->mag_ammo && mlx->player->weapon->ammo_count && !mlx->menu)
 		mlx->hud_r = 1;
 
 	if (keycode == MAC_ONE && mlx->player->weapon != mlx->player->revolver && mlx->player->weapon_state == 0)
@@ -203,6 +203,13 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 
 	if (keycode == MAC_DOT)
 		mlx->s = !mlx->s;
+
+	if (keycode == MAC_UP && mlx->menu)
+		mlx->button_i = (mlx->button_i - 1 < 0) ? 1 : 0;
+	if (keycode == MAC_DOWN && mlx->menu)
+		mlx->button_i = (mlx->button_i + 1 > 1) ? 0 : 1;
+	if (keycode == MAC_ENTER && mlx->menu)
+		(mlx->button_i == 0) ? ft_play(mlx) : ft_close(1);
 
 	return (0);
 }

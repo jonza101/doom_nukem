@@ -3,20 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   game.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:40:26 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/10 23:22:13 by lsandor-         ###   ########.fr       */
+/*   Updated: 2019/09/12 20:55:13 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doom_nukem.h"
 #include <time.h>
-
-#define NONE_SELECTED 0
-#define NEW_GAME_SELECTED 1
-#define OPTIONS_SELECTED 2
-#define QUIT_SELECTED 3
 
 void	ft_check_doors(t_mlx *mlx)
 {
@@ -64,31 +59,88 @@ void	ft_check_doors(t_mlx *mlx)
 	}
 }
 
-//ft_draw_chr(mlx, mlx->font[digit], 190 - i * 35, 660, 45);
+void	ft_draw_menu_back(t_mlx *mlx)
+{
+	int x = -1;
+	while (++x < W)
+	{
+		int y = 0;
+		mlx->data[x] = mlx->fire[0];
+		while (++y < H)
+		{
+			int src = y * W + x;
+			int pix = mlx->fire_buff[src];
+			if (pix == 0)
+				mlx->fire_buff[src - W] = 0;
+			else
+			{
+				int random = (rand() % 3) & 3;
+				int dst = src - random + 1;
+				mlx->fire_buff[dst - W] = abs(mlx->fire_buff[src] - (random & 1));
+			}
+			mlx->data[src] = mlx->fire[mlx->fire_buff[src]];
+		}
+	}
 
+	ft_draw_chr(mlx, mlx->menu_font[0], 572, 86, 127);
+	ft_draw_chr(mlx, mlx->menu_font[1], 619, 75, 105);
+	ft_draw_chr(mlx, mlx->menu_font[1], 661, 75, 105);
+	ft_draw_chr(mlx, mlx->menu_font[2], 712, 88, 132);
+
+	ft_draw_chr(mlx, mlx->menu_play[0], 599, 230, 50);
+	ft_draw_chr(mlx, mlx->menu_play[1], 628, 230, 50);
+	ft_draw_chr(mlx, mlx->menu_play[2], 655, 230, 50);
+	ft_draw_chr(mlx, mlx->menu_play[3], 683, 230, 50);
+
+	ft_draw_chr(mlx, mlx->menu_quit[0], 607, 325, 50);
+	ft_draw_chr(mlx, mlx->menu_quit[1], 635, 325, 50);
+	ft_draw_chr(mlx, mlx->menu_quit[2], 655, 325, 51);
+	ft_draw_chr(mlx, mlx->menu_quit[3], 675, 325, 50);
+
+	ft_draw_chr(mlx, mlx->menu_pointer[1], 540, 230 + mlx->button_i * 95, 25);
+	ft_draw_chr(mlx, mlx->menu_pointer[0], 741, 230 + mlx->button_i * 95, 25);
+
+	// int i = -1;
+	// while (++i < H)
+	// {
+	// 	mlx->data[i * W + W / 2] = 0xFF0000;
+	// 	mlx->data[i * W + W / 2 - 42] = 0xFF0000;
+	// 	mlx->data[i * W + W / 2 + 42] = 0xFF0000;
+	// 	mlx->data[i * W + W / 2 - 104] = 0xFF0000;
+	// 	mlx->data[i * W + W / 2 + 104] = 0xFF0000;
+	// }
+	// i = -1;
+	// while (++i < W)
+	// {
+	// 	mlx->data[H / 2 * W + i] = 0xFF0000;
+	// 	mlx->data[(H / 2 + H / 4) * W + i] = 0xFF0000;
+	// 	mlx->data[H / 4 * W + i] = 0xFF0000;
+	// 	mlx->data[H / 4 * W + i] = 0xFF0000;
+	// 	mlx->data[22 * W + i] = 0xFF0000;
+	// 	mlx->data[698 * W + i] = 0xFF0000;
+	// }
+}
+
+void	ft_play(t_mlx *mlx)
+{
+	mlx->menu = 0;
+}
 
 int		ft_game_loop(t_mlx *mlx)
 {
-	if (mlx->menuNeeded){
-		if (mlx->menuIsDrawn[NONE_SELECTED] && mlx->whichMenuIsSelected[NONE_SELECTED]){
-			mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->menu[NONE_SELECTED]->img,0,0);
-			mlx->menuIsDrawn[NONE_SELECTED] = 0;
-		}
-		if (mlx->menuIsDrawn[NEW_GAME_SELECTED] && mlx->whichMenuIsSelected[NEW_GAME_SELECTED]){
-			mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->menu[NEW_GAME_SELECTED]->img,0,0);
-			mlx->menuIsDrawn[NEW_GAME_SELECTED] = 0;
-		}
-		if (mlx->menuIsDrawn[OPTIONS_SELECTED] && mlx->whichMenuIsSelected[OPTIONS_SELECTED]){
-			mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->menu[OPTIONS_SELECTED]->img,0,0);
-			mlx->menuIsDrawn[OPTIONS_SELECTED] = 0;
-		}
-		if (mlx->menuIsDrawn[QUIT_SELECTED] && mlx->whichMenuIsSelected[QUIT_SELECTED]){
-			mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->menu[QUIT_SELECTED]->img,0,0);
-			mlx->menuIsDrawn[QUIT_SELECTED] = 0;
-		}
-		return 0;
+	if (mlx->menu)
+	{
+		// printf("%d\n", mlx->button_i);
+		ft_bzero(mlx->data, W * H * 4);
+		mlx_clear_window(mlx->mlx, mlx->win);
+		ft_draw_menu_back(mlx);
+		mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
+		return (0);
 	}
+
 	// clock_t start_time = clock();
+
+	ft_bzero(mlx->data, W * H * 4);
 
 	ft_drawseg_sort(mlx);
 
@@ -98,7 +150,6 @@ int		ft_game_loop(t_mlx *mlx)
 	ft_collision(mlx);
 	ft_player_view(mlx);
 	ft_move_calc(mlx);
-	ft_bzero(mlx->data, W * H * 4);
 	ft_draw(mlx);
 
 	ft_weapon_state(mlx);
