@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wobj.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adoyle <adoyle@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/17 18:28:03 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/02 17:08:32 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/13 17:19:14 by adoyle           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ void	ft_interact_check(t_mlx *mlx, int sect, int side, t_vec3 *pos)
 				&& pos->y >= y1 && pos->y <= y2
 				&& pos->z >= down_z && pos->z <= up_z)
 		{
+			Mix_PlayChannel(17, mlx->snd->chunks->swich, 0);
 			wobj->frame = (wobj->frame == mlx->wobj_l[wobj->wobj_i]->anim[0]) ? mlx->wobj_l[wobj->wobj_i]->anim[1] : mlx->wobj_l[wobj->wobj_i]->anim[0];
 			mlx->sect[sect]->light = !mlx->sect[sect]->light;
 			return;

@@ -6,7 +6,7 @@
 /*   By: adoyle <adoyle@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/27 13:56:20 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/08 19:19:00 by adoyle           ###   ########.fr       */
+/*   Updated: 2019/09/13 18:45:11 by adoyle           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	ft_gun_anim(t_mlx *mlx, t_weapon *gun, int delay, int cont_delay)
 	{
 		if (mlx->gun_delay == 0 && mlx->gun_fire_i == 0)
 		{
-			Mix_PlayChannel(15, mlx->player->weapon->shot, 0);
+			Mix_PlayChannel(SHOTS_CH, mlx->player->weapon->shot, 0);
 			ft_shoot(mlx);
 		}
 		mlx->gun_delay++;
@@ -59,7 +59,7 @@ void	ft_gun_anim(t_mlx *mlx, t_weapon *gun, int delay, int cont_delay)
 			if (!mlx->altfire)
 				mlx->altfire = 1;
 			gun->mag_ammo--;
-			Mix_PlayChannel(15, mlx->player->weapon->shot, 0);
+			Mix_PlayChannel(SHOTS_CH, mlx->player->weapon->shot, 0);
 			ft_shoot(mlx);
 		}
 	}

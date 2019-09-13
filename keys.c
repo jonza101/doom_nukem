@@ -6,7 +6,7 @@
 /*   By: adoyle <adoyle@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:41:19 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/08 19:51:06 by adoyle           ###   ########.fr       */
+/*   Updated: 2019/09/13 20:32:15 by adoyle           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ int		ft_key_realese(int keycode, t_mlx *mlx)
 
 	if (keycode == MAC_CTRL_R && mlx->player->weapon_state == 1 && mlx->player->weapon == mlx->player->a_rifle)
 	{
+		if (mlx->player->weapon == mlx->player->a_rifle)
+			Mix_HaltChannel(15);
 		mlx->player->weapon_state = 0;
 		mlx->gun_fire_i = 0;
 		mlx->gun_delay = 0;
@@ -88,7 +90,10 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 		}
 	}
 	if (keycode == MAC_SPACE && mlx->ground && !mlx->crouching)
+	{
 		mlx->player->jump = 1;
+		// Mix_PlayChannel(21, mlx->snd->chunks->jump, 0);
+	}
 
 	if (keycode == MAC_SHIFT_L && !mlx->crouching)
 		mlx->player->shift = 1;
@@ -110,7 +115,7 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 	{
 		if (mlx->snd->chunks->cstep == -1)
 			mlx->snd->chunks->cstep = Mix_PlayChannel(20, mlx->snd->chunks->step, -1);
-		else if (mlx->snd->chunks->cstep > 0)
+		else if (mlx->snd->chunks->cstep > 0 && mlx->player->jump == 0)
 			Mix_Resume(mlx->snd->chunks->cstep);
 	}
 
@@ -144,10 +149,22 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 	if (keycode == MAC_R && mlx->player->weapon_state == 0 && mlx->player->weapon->mag_ammo < mlx->player->weapon->mag_ammo_count && mlx->player->weapon->ammo_count > 0 && mlx->player->weapon != mlx->player->shotgun)
 	{
 		if (mlx->player->weapon->mag_ammo == 0 && mlx->player->weapon->has_reload_ptt)
+		{
 			mlx->player->weapon_state = 4;
+			if (mlx->player->speed_boost == 1)
+				Mix_PlayChannel(16, mlx->player->weapon->assreloadboost, 0);
+			else
+				Mix_PlayChannel(16, mlx->player->weapon->assreload, 0);
+		}
 		else if (mlx->player->weapon->mag_ammo < mlx->player->weapon->mag_ammo_count && mlx->player->weapon->mag_ammo >= 0)
+		{
 			mlx->player->weapon_state = 3;
-		Mix_PlayChannel(16, mlx->player->weapon->reload, 0);
+			if (mlx->player->speed_boost == 1 || mlx->player->weapon == mlx->player->revolver)
+				Mix_PlayChannel(16, mlx->player->weapon->reload, 0);
+			else
+				Mix_PlayChannel(16, mlx->player->weapon->assreloadshort, 0);
+				
+		}
 		mlx->gun_fire_i = 0;
 		mlx->gun_delay = 0;
 		mlx->altfire = 0;
@@ -250,10 +267,6 @@ int		ft_key_press(int keycode, t_mlx *mlx)
 	{
 		Mix_HaltChannel(mlx->snd->chunks->cstep);
 		Mix_FreeMusic(mlx->snd->music->mus1);
-		// Mix_FreeMusic(mlx->snd->music->mus2);
-		// Mix_FreeMusic(snd->music->mus3);
-		// Mix_FreeMusic(snd->music->mus4);
-		// Mix_FreeMusic(snd->music->mus5);e
 		Mix_CloseAudio();
     	SDL_Quit();
 		exit (0);

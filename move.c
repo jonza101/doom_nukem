@@ -6,7 +6,7 @@
 /*   By: adoyle <adoyle@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/11 15:06:15 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/08 15:48:39 by adoyle           ###   ########.fr       */
+/*   Updated: 2019/09/13 17:04:02 by adoyle           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,11 @@ void	ft_collision(t_mlx *mlx)
 			mlx->player->velocity->z = 0;
 			mlx->falling = 0;
 			mlx->ground = 1;
+			// Mix_Resume(mlx->snd->chunks->cstep);
+			if ((mlx->player->wsad[0] || mlx->player->wsad[1] || mlx->player->wsad[2] || mlx->player->wsad[3]) && mlx->player->jump == 0)
+			{
+					Mix_Resume(mlx->snd->chunks->cstep);
+			}
 		}
 		else if (mlx->player->velocity->z > 0 && next_z > mlx->sect[mlx->player->sector]->ceiling)
 		{
@@ -313,6 +318,8 @@ void	ft_move_calc(t_mlx *mlx)
 	{
 		mlx->player->velocity->z += JUMP_H;
 		mlx->falling = 1;
+		Mix_PlayChannel(21, mlx->snd->chunks->jump, 0);
+		Mix_Pause(mlx->snd->chunks->cstep);
 	}
 
 	if (mlx->player->j_up && mlx->player->jetpack)

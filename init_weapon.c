@@ -6,7 +6,7 @@
 /*   By: adoyle <adoyle@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/30 12:49:39 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/08 19:18:49 by adoyle           ###   ########.fr       */
+/*   Updated: 2019/09/13 20:43:11 by adoyle           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,6 +154,10 @@ void	ft_init_arifle(t_mlx *mlx)
 	ft_init_arifle_reload(mlx);
 	ft_init_arifle_reload_ptt(mlx);
 	mlx->player->a_rifle->shot = Mix_LoadWAV("/sound/rifle.wav");
+	mlx->player->a_rifle->assreloadboost = Mix_LoadWAV("/sound/assschelk.wav");
+	mlx->player->a_rifle->assreload = Mix_LoadWAV("/sound/export.wav");
+	mlx->player->a_rifle->reload = Mix_LoadWAV("/sound/assreload.wav");
+	mlx->player->a_rifle->assreloadshort = Mix_LoadWAV("/sound/relaodslow.wav");
 }
 
 void	ft_init_shotgun_fire(t_mlx *mlx)
@@ -386,7 +390,7 @@ void	ft_init_revolver_idle(t_mlx *mlx)
 void	ft_init_revolver(t_mlx *mlx)
 {
 	mlx->player->revolver = (t_weapon*)malloc(sizeof(t_weapon));
-	mlx->player->revolver->fire_delay = 3;
+	mlx->player->revolver->fire_delay = 4;
 	mlx->player->revolver->altfire_delay = 2;
 	mlx->player->revolver->altfire_cont_delay = 2;
 	mlx->player->revolver->has_reload_ptt = 0;

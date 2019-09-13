@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ray.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adoyle <adoyle@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/12 17:10:17 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/05 18:21:39 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/13 19:53:34 by adoyle           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,8 @@ void	ft_interact(t_mlx *mlx)
 					mlx->sect[neighbor]->close = 0;
 					mlx->sect[neighbor]->open = 1;
 					mlx->sect[neighbor]->start_time = time(NULL);
+					Mix_Volume(17, VOLUME);
+					Mix_PlayChannel(17, mlx->snd->chunks->door, 0);
 					mlx->activated_doors++;
 					return;
 				}

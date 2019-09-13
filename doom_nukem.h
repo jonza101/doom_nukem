@@ -6,7 +6,7 @@
 /*   By: adoyle <adoyle@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/08 19:17:39 by adoyle           ###   ########.fr       */
+/*   Updated: 2019/09/13 20:28:43 by adoyle           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@
 #define INTERACT_RANGE 2.5
 #define SPEED_BOOST_DUR 30
 #define	HP_BOOST_DUR 30
+#define MAX_DOOR_DIST_VOL 50
 
 #define DOOR_TIME 10
 
@@ -83,6 +84,25 @@
 #define LEFT -100
 #define BOTTOM -621
 #define TOP 818
+
+#define VOLUME 128
+#define COUNT_CH 22
+#define SHOTS_CH 15
+#define STEP_CH 20
+#define RELOAD_CH 16
+#define JUMP_CH 21
+#define SWICH_CH 17
+#define BOOM_CH 18
+
+/*
+Mix_channels
+
+15 - shots
+16 - reload
+20 - step
+21 - jump
+17 - swich/door
+ */
 
 typedef struct		s_vec2
 {
@@ -303,6 +323,7 @@ typedef struct		s_sector
 	short			open;
 	short			up;
 	time_t			start_time;
+	double			door_dist;
 
 	int				*neighbors;
 	int				neighbors_count;
@@ -349,6 +370,10 @@ typedef	struct		s_weapon
 	int				x_offset;
 	Mix_Chunk		*shot;
 	Mix_Chunk		*reload;
+	Mix_Chunk		*assreloadshort;
+	Mix_Chunk		*assreload;
+	Mix_Chunk		*assreloadboost;
+	Mix_Chunk		*assreloadboostshort;
 }					t_weapon;
 
 typedef	struct		s_boost
@@ -425,6 +450,10 @@ typedef struct s_bup
 	Mix_Chunk	*fire;
 	Mix_Chunk	*step;
 	int			cstep;
+	Mix_Chunk	*jump;
+	Mix_Chunk	*swich;
+	Mix_Chunk	*door;
+	Mix_Chunk	*boom;
 }				t_bup;
 
 typedef struct	s_snd

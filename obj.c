@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   obj.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adoyle <adoyle@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 15:17:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/05 18:51:14 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/13 20:27:29 by adoyle           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -399,7 +399,14 @@ int		ft_shoot_obj(t_mlx *mlx, double p_dist, int sect)
 				if (mlx->obj_l[obj->specs->obj_i]->expl == 1)
 				{
 					if (obj->specs->obj_i == 3)
+					{
 						obj->specs->obj_i = 6;
+						if (obj->dist <= 50)
+						{
+							Mix_Volume(BOOM_CH, 128 - (obj->dist * 2));
+							Mix_PlayChannel(BOOM_CH, mlx->snd->chunks->boom, 0);
+						}
+					}
 					obj->specs->expl_f = 1;
 					if (obj->specs->has_collider)
 					{
