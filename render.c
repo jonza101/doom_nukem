@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/11 18:44:06 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/13 19:04:32 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,7 @@ void	ft_draw(t_mlx *mlx)
 
 		t_sector *sector = mlx->sect[mlx->now->sector_n];
 		mlx->seg = sector->verts_count;
+
 		int s = -1;
 		while (++s < sector->verts_count)
 		{

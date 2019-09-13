@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/11 13:43:09 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/05 18:51:11 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/13 21:07:25 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ void	ft_init_speed_boost(t_mlx *mlx)
 	char *boost[7] = { "textures/obj/speed_boost/speed_boost01.xpm", "textures/obj/speed_boost/speed_boost02.xpm", "textures/obj/speed_boost/speed_boost03.xpm",
 						"textures/obj/speed_boost/speed_boost04.xpm", "textures/obj/speed_boost/speed_boost03.xpm", "textures/obj/speed_boost/speed_boost02.xpm",
 						"textures/obj/speed_boost/speed_boost01.xpm" };
-	mlx->obj_l[id] = (t_anim_list*)malloc(sizeof(t_anim_list));
-	mlx->obj_l[id]->anim = (t_img**)malloc(sizeof(t_img*) * 7);
+	(!(mlx->obj_l[id] = (t_anim_list*)malloc(sizeof(t_anim_list)))) ? ft_mem_error() : 1;
+	(!(mlx->obj_l[id]->anim = (t_img**)malloc(sizeof(t_img*) * 7))) ? ft_mem_error() : 1;
 	mlx->obj_l[id]->anim_n = 7;
 	mlx->obj_l[id]->delay = 13;
 	mlx->obj_l[id]->expl = 0;
@@ -36,7 +36,7 @@ void	ft_init_speed_boost(t_mlx *mlx)
 			(j < 3) ? ft_strdel(&line) : 1;
 		}
 		char **tmp = ft_strsplit(line, ' ');
-		mlx->obj_l[id]->anim[i] = (t_img*)malloc(sizeof(t_img));
+		(!(mlx->obj_l[id]->anim[i] = (t_img*)malloc(sizeof(t_img)))) ? ft_mem_error() : 1;
 		mlx->obj_l[id]->anim[i]->w = ft_atoi(&tmp[0][1]);
 		mlx->obj_l[id]->anim[i]->h = ft_atoi(tmp[1]);
 		mlx->obj_l[id]->anim[i]->img = mlx_xpm_file_to_image(mlx->mlx, boost[i], &mlx->obj_l[id]->anim[i]->w, &mlx->obj_l[id]->anim[i]->h);
@@ -60,8 +60,8 @@ void	ft_init_hp_boost(t_mlx *mlx)
 						"textures/obj/hp_boost/hp_boost08.xpm", "textures/obj/hp_boost/hp_boost07.xpm", "textures/obj/hp_boost/hp_boost06.xpm",
 						"textures/obj/hp_boost/hp_boost05.xpm", "textures/obj/hp_boost/hp_boost04.xpm", "textures/obj/hp_boost/hp_boost03.xpm",
 						"textures/obj/hp_boost/hp_boost02.xpm", "textures/obj/hp_boost/hp_boost01.xpm" };
-	mlx->obj_l[id] = (t_anim_list*)malloc(sizeof(t_anim_list));
-	mlx->obj_l[id]->anim = (t_img**)malloc(sizeof(t_img*) * 23);
+	(!(mlx->obj_l[id] = (t_anim_list*)malloc(sizeof(t_anim_list)))) ? ft_mem_error() : 1;
+	(!(mlx->obj_l[id]->anim = (t_img**)malloc(sizeof(t_img*) * 23))) ? ft_mem_error() : 1;
 	mlx->obj_l[id]->anim_n = 23;
 	mlx->obj_l[id]->delay = 4;
 	mlx->obj_l[id]->expl = 0;
@@ -76,7 +76,7 @@ void	ft_init_hp_boost(t_mlx *mlx)
 			(j < 3) ? ft_strdel(&line) : 1;
 		}
 		char **tmp = ft_strsplit(line, ' ');
-		mlx->obj_l[id]->anim[i] = (t_img*)malloc(sizeof(t_img));
+		(!(mlx->obj_l[id]->anim[i] = (t_img*)malloc(sizeof(t_img)))) ? ft_mem_error() : 1;
 		mlx->obj_l[id]->anim[i]->w = ft_atoi(&tmp[0][1]);
 		mlx->obj_l[id]->anim[i]->h = ft_atoi(tmp[1]);
 		mlx->obj_l[id]->anim[i]->img = mlx_xpm_file_to_image(mlx->mlx, boost[i], &mlx->obj_l[id]->anim[i]->w, &mlx->obj_l[id]->anim[i]->h);
@@ -94,8 +94,8 @@ void	ft_init_backpack(t_mlx *mlx)
 	int id = 12;
 	char *backpack[6] = { "textures/obj/backpack/backpack01.xpm", "textures/obj/backpack/backpack02.xpm", "textures/obj/backpack/backpack03.xpm",
 							"textures/obj/backpack/backpack04.xpm", "textures/obj/backpack/backpack05.xpm", "textures/obj/backpack/backpack06.xpm" };
-	mlx->obj_l[id] = (t_anim_list*)malloc(sizeof(t_anim_list));
-	mlx->obj_l[id]->anim = (t_img**)malloc(sizeof(t_img*) * 6);
+	(!(mlx->obj_l[id] = (t_anim_list*)malloc(sizeof(t_anim_list)))) ? ft_mem_error() : 1;
+	(!(mlx->obj_l[id]->anim = (t_img**)malloc(sizeof(t_img*) * 6))) ? ft_mem_error() : 1;
 	mlx->obj_l[id]->anim_n = 6;
 	mlx->obj_l[id]->delay = 8;
 	mlx->obj_l[id]->expl = 0;
@@ -110,7 +110,7 @@ void	ft_init_backpack(t_mlx *mlx)
 			(j < 3) ? ft_strdel(&line) : 1;
 		}
 		char **tmp = ft_strsplit(line, ' ');
-		mlx->obj_l[id]->anim[i] = (t_img*)malloc(sizeof(t_img));
+		(!(mlx->obj_l[id]->anim[i] = (t_img*)malloc(sizeof(t_img)))) ? ft_mem_error() : 1;
 		mlx->obj_l[id]->anim[i]->w = ft_atoi(&tmp[0][1]);
 		mlx->obj_l[id]->anim[i]->h = ft_atoi(tmp[1]);
 		mlx->obj_l[id]->anim[i]->img = mlx_xpm_file_to_image(mlx->mlx, backpack[i], &mlx->obj_l[id]->anim[i]->w, &mlx->obj_l[id]->anim[i]->h);
@@ -127,8 +127,8 @@ void	ft_init_mouse(t_mlx *mlx)
 	char *line;
 	int id = 11;
 	char *mouse[2] = { "textures/obj/mouse/mouse01.xpm", "textures/obj/mouse/mouse02.xpm" };
-	mlx->obj_l[id] = (t_anim_list*)malloc(sizeof(t_anim_list));
-	mlx->obj_l[id]->anim = (t_img**)malloc(sizeof(t_img*) * 2);
+	(!(mlx->obj_l[id] = (t_anim_list*)malloc(sizeof(t_anim_list)))) ? ft_mem_error() : 1;
+	(!(mlx->obj_l[id]->anim = (t_img**)malloc(sizeof(t_img*) * 2))) ? ft_mem_error() : 1;
 	mlx->obj_l[id]->anim_n = 2;
 	mlx->obj_l[id]->delay = 30;
 	mlx->obj_l[id]->expl = 0;
@@ -143,7 +143,7 @@ void	ft_init_mouse(t_mlx *mlx)
 			(j < 3) ? ft_strdel(&line) : 1;
 		}
 		char **tmp = ft_strsplit(line, ' ');
-		mlx->obj_l[id]->anim[i] = (t_img*)malloc(sizeof(t_img));
+		(!(mlx->obj_l[id]->anim[i] = (t_img*)malloc(sizeof(t_img))) ? ft_mem_error() : 1);
 		mlx->obj_l[id]->anim[i]->w = ft_atoi(&tmp[0][1]);
 		mlx->obj_l[id]->anim[i]->h = ft_atoi(tmp[1]);
 		mlx->obj_l[id]->anim[i]->img = mlx_xpm_file_to_image(mlx->mlx, mouse[i], &mlx->obj_l[id]->anim[i]->w, &mlx->obj_l[id]->anim[i]->h);
@@ -162,12 +162,12 @@ void	ft_init_hog(t_mlx *mlx)
 	char *hog[8] = { "textures/obj/rotatable/hog/hog0.xpm", "textures/obj/rotatable/hog/hog45.xpm", "textures/obj/rotatable/hog/hog90.xpm",
 						"textures/obj/rotatable/hog/hog135.xpm", "textures/obj/rotatable/hog/hog180.xpm", "textures/obj/rotatable/hog/hog225.xpm",
 						"textures/obj/rotatable/hog/hog270.xpm", "textures/obj/rotatable/hog/hog315.xpm" };
-	mlx->obj_l[id] = (t_anim_list*)malloc(sizeof(t_anim_list));
+	(!(mlx->obj_l[id] = (t_anim_list*)malloc(sizeof(t_anim_list)))) ? ft_mem_error() : 1;
 	mlx->obj_l[id]->anim_n = 1;
 	mlx->obj_l[id]->expl = 0;
 
-	mlx->obj_l[id]->anim = (t_img**)malloc(sizeof(t_img*));
-	mlx->obj_l[id]->anim[0] = (t_img*)malloc(sizeof(t_img));
+	(!(mlx->obj_l[id]->anim = (t_img**)malloc(sizeof(t_img*)))) ? ft_mem_error() : 1;
+	(!(mlx->obj_l[id]->anim[0] = (t_img*)malloc(sizeof(t_img)))) ? ft_mem_error() : 1;
 	fd = open(hog[0], O_RDONLY);
 	int j = -1;
 	while (++j < 4)
@@ -184,7 +184,7 @@ void	ft_init_hog(t_mlx *mlx)
 	close(fd);
 	ft_strdel(&line);
 
-	mlx->obj_l[id]->rot = (t_img**)malloc(sizeof(t_img*) * 8);
+	(!(mlx->obj_l[id]->rot = (t_img**)malloc(sizeof(t_img*) * 8))) ? ft_mem_error() : 1;
 	int i = -1;
 	while (++i < 8)
 	{
@@ -196,7 +196,7 @@ void	ft_init_hog(t_mlx *mlx)
 			(j < 3) ? ft_strdel(&line) : 1;
 		}
 		tmp = ft_strsplit(line, ' ');
-		mlx->obj_l[id]->rot[i] = (t_img*)malloc(sizeof(t_img));
+		(!(mlx->obj_l[id]->rot[i] = (t_img*)malloc(sizeof(t_img)))) ? ft_mem_error() : 1;
 		mlx->obj_l[id]->rot[i]->w = ft_atoi(&tmp[0][1]);
 		mlx->obj_l[id]->rot[i]->h = ft_atoi(tmp[1]);
 		mlx->obj_l[id]->rot[i]->img = mlx_xpm_file_to_image(mlx->mlx, hog[i], &mlx->obj_l[id]->rot[i]->w, &mlx->obj_l[id]->rot[i]->h);
@@ -215,12 +215,12 @@ void	ft_init_chair(t_mlx *mlx)
 	char *chair[8] = { "textures/obj/rotatable/chair/chair0.xpm", "textures/obj/rotatable/chair/chair45.xpm", "textures/obj/rotatable/chair/chair90.xpm",
 						"textures/obj/rotatable/chair/chair135.xpm", "textures/obj/rotatable/chair/chair180.xpm", "textures/obj/rotatable/chair/chair225.xpm",
 						"textures/obj/rotatable/chair/chair270.xpm", "textures/obj/rotatable/chair/chair315.xpm"};
-	mlx->obj_l[id] = (t_anim_list*)malloc(sizeof(t_anim_list));
+	(!(mlx->obj_l[id] = (t_anim_list*)malloc(sizeof(t_anim_list)))) ? ft_mem_error() : 1;
 	mlx->obj_l[id]->anim_n = 1;
 	mlx->obj_l[id]->expl = 0;
 
-	mlx->obj_l[id]->anim = (t_img**)malloc(sizeof(t_img*));
-	mlx->obj_l[id]->anim[0] = (t_img*)malloc(sizeof(t_img));
+	(!(mlx->obj_l[id]->anim = (t_img**)malloc(sizeof(t_img*)))) ? ft_mem_error() : 1;
+	(!(mlx->obj_l[id]->anim[0] = (t_img*)malloc(sizeof(t_img)))) ? ft_mem_error() : 1;
 	fd = open(chair[0], O_RDONLY);
 	int j = -1;
 	while (++j < 4)
@@ -237,7 +237,7 @@ void	ft_init_chair(t_mlx *mlx)
 	close(fd);
 	ft_strdel(&line);
 
-	mlx->obj_l[id]->rot = (t_img**)malloc(sizeof(t_img*) * 8);
+	(!(mlx->obj_l[id]->rot = (t_img**)malloc(sizeof(t_img*) * 8))) ? ft_mem_error() : 1;
 	int i = -1;
 	while (++i < 8)
 	{
@@ -249,7 +249,7 @@ void	ft_init_chair(t_mlx *mlx)
 			(j < 3) ? ft_strdel(&line) : 1;
 		}
 		tmp = ft_strsplit(line, ' ');
-		mlx->obj_l[id]->rot[i] = (t_img*)malloc(sizeof(t_img));
+		(!(mlx->obj_l[id]->rot[i] = (t_img*)malloc(sizeof(t_img)))) ? ft_mem_error() : 1;
 		mlx->obj_l[id]->rot[i]->w = ft_atoi(&tmp[0][1]);
 		mlx->obj_l[id]->rot[i]->h = ft_atoi(tmp[1]);
 		mlx->obj_l[id]->rot[i]->img = mlx_xpm_file_to_image(mlx->mlx, chair[i], &mlx->obj_l[id]->rot[i]->w, &mlx->obj_l[id]->rot[i]->h);
@@ -272,8 +272,8 @@ void	ft_init_explosion(t_mlx *mlx)
 						"textures/obj/explosion/explosion13.xpm", "textures/obj/explosion/explosion14.xpm", "textures/obj/explosion/explosion15.xpm",
 						"textures/obj/explosion/explosion16.xpm", "textures/obj/explosion/explosion17.xpm", "textures/obj/explosion/explosion18.xpm",
 						"textures/obj/explosion/explosion19.xpm", "textures/obj/explosion/explosion20.xpm", "textures/obj/explosion/explosion21.xpm" };
-	mlx->obj_l[id] = (t_anim_list*)malloc(sizeof(t_anim_list));
-	mlx->obj_l[id]->anim = (t_img**)malloc(sizeof(t_img*) * 21);
+	(!(mlx->obj_l[id] = (t_anim_list*)malloc(sizeof(t_anim_list)))) ? ft_mem_error() : 1;
+	(!(mlx->obj_l[id]->anim = (t_img**)malloc(sizeof(t_img*) * 21))) ? ft_mem_error() : 1;
 	mlx->obj_l[id]->anim_n = 21;
 	mlx->obj_l[id]->delay = 5;
 	mlx->obj_l[id]->expl = 1;
@@ -288,7 +288,7 @@ void	ft_init_explosion(t_mlx *mlx)
 			(j < 3) ? ft_strdel(&line) : 1;
 		}
 		char **tmp = ft_strsplit(line, ' ');
-		mlx->obj_l[id]->anim[i] = (t_img*)malloc(sizeof(t_img));
+		(!(mlx->obj_l[id]->anim[i] = (t_img*)malloc(sizeof(t_img)))) ? ft_mem_error() : 1;
 		mlx->obj_l[id]->anim[i]->w = ft_atoi(&tmp[0][1]);
 		mlx->obj_l[id]->anim[i]->h = ft_atoi(tmp[1]);
 		mlx->obj_l[id]->anim[i]->img = mlx_xpm_file_to_image(mlx->mlx, expl[i], &mlx->obj_l[id]->anim[i]->w, &mlx->obj_l[id]->anim[i]->h);
@@ -311,8 +311,8 @@ void	ft_init_fire_a(t_mlx *mlx)
 						"textures/obj/fire_a/fire_a09.xpm", "textures/obj/fire_a/fire_a10.xpm",
 						"textures/obj/fire_a/fire_a11.xpm", "textures/obj/fire_a/fire_a12.xpm",
 						"textures/obj/fire_a/fire_a13.xpm", "textures/obj/fire_a/fire_a14.xpm" };
-	mlx->obj_l[id] = (t_anim_list*)malloc(sizeof(t_anim_list));
-	mlx->obj_l[id]->anim = (t_img**)malloc(sizeof(t_img*) * 13);
+	(!(mlx->obj_l[id] = (t_anim_list*)malloc(sizeof(t_anim_list))) ? ft_mem_error() : 1);
+	(!(mlx->obj_l[id]->anim = (t_img**)malloc(sizeof(t_img*) * 13))) ? ft_mem_error() : 1;
 	mlx->obj_l[id]->anim_n = 13;
 	mlx->obj_l[id]->delay = 4;
 	mlx->obj_l[id]->expl = 0;
@@ -327,7 +327,7 @@ void	ft_init_fire_a(t_mlx *mlx)
 			(j < 3) ? ft_strdel(&line) : 1;
 		}
 		char **tmp = ft_strsplit(line, ' ');
-		mlx->obj_l[id]->anim[i] = (t_img*)malloc(sizeof(t_img));
+		(!(mlx->obj_l[id]->anim[i] = (t_img*)malloc(sizeof(t_img)))) ? ft_mem_error() : 1;
 		mlx->obj_l[id]->anim[i]->w = ft_atoi(&tmp[0][1]);
 		mlx->obj_l[id]->anim[i]->h = ft_atoi(tmp[1]);
 		mlx->obj_l[id]->anim[i]->img = mlx_xpm_file_to_image(mlx->mlx, fire[i], &mlx->obj_l[id]->anim[i]->w, &mlx->obj_l[id]->anim[i]->h);
@@ -345,8 +345,8 @@ void	ft_init_canister(t_mlx *mlx)
 	int id = 6;
 	char *can[4] = { "textures/obj/canister/canister01.xpm", "textures/obj/canister/canister02.xpm",
 						"textures/obj/canister/canister03.xpm", "textures/obj/canister/canister03.xpm" };
-	mlx->obj_l[id] = (t_anim_list*)malloc(sizeof(t_anim_list));
-	mlx->obj_l[id]->anim = (t_img**)malloc(sizeof(t_img*) * 4);
+	(!(mlx->obj_l[id] = (t_anim_list*)malloc(sizeof(t_anim_list)))) ? ft_mem_error() : 1;
+	(!(mlx->obj_l[id]->anim = (t_img**)malloc(sizeof(t_img*) * 4))) ? ft_mem_error() : 1;
 	mlx->obj_l[id]->anim_n = 4;
 	mlx->obj_l[id]->delay = 7;
 	mlx->obj_l[id]->expl = 0;
@@ -361,7 +361,7 @@ void	ft_init_canister(t_mlx *mlx)
 			(j < 3) ? ft_strdel(&line) : 1;
 		}
 		char **tmp = ft_strsplit(line, ' ');
-		mlx->obj_l[id]->anim[i] = (t_img*)malloc(sizeof(t_img));
+		(!(mlx->obj_l[id]->anim[i] = (t_img*)malloc(sizeof(t_img)))) ? ft_mem_error() : 1;
 		mlx->obj_l[id]->anim[i]->w = ft_atoi(&tmp[0][1]);
 		mlx->obj_l[id]->anim[i]->h = ft_atoi(tmp[1]);
 		mlx->obj_l[id]->anim[i]->img = mlx_xpm_file_to_image(mlx->mlx, can[i], &mlx->obj_l[id]->anim[i]->w, &mlx->obj_l[id]->anim[i]->h);
@@ -379,8 +379,8 @@ void	ft_init_water(t_mlx *mlx)
 	int id = 5;
 	char *water[4] = { "textures/obj/water/water01.xpm", "textures/obj/water/water02.xpm",
 						"textures/obj/water/water03.xpm", "textures/obj/water/water04.xpm" };
-	mlx->obj_l[id] = (t_anim_list*)malloc(sizeof(t_anim_list));
-	mlx->obj_l[id]->anim = (t_img**)malloc(sizeof(t_img*) * 4);
+	(!(mlx->obj_l[id] = (t_anim_list*)malloc(sizeof(t_anim_list))) ? ft_mem_error() : 1);
+	(!(mlx->obj_l[id]->anim = (t_img**)malloc(sizeof(t_img*) * 4))) ? ft_mem_error() : 1;
 	mlx->obj_l[id]->anim_n = 4;
 	mlx->obj_l[id]->delay = 6;
 	mlx->obj_l[id]->expl = 0;
@@ -395,7 +395,7 @@ void	ft_init_water(t_mlx *mlx)
 			(j < 3) ? ft_strdel(&line) : 1;
 		}
 		char **tmp = ft_strsplit(line, ' ');
-		mlx->obj_l[id]->anim[i] = (t_img*)malloc(sizeof(t_img));
+		(!(mlx->obj_l[id]->anim[i] = (t_img*)malloc(sizeof(t_img)))) ? ft_mem_error() : 1;
 		mlx->obj_l[id]->anim[i]->w = ft_atoi(&tmp[0][1]);
 		mlx->obj_l[id]->anim[i]->h = ft_atoi(tmp[1]);
 		mlx->obj_l[id]->anim[i]->img = mlx_xpm_file_to_image(mlx->mlx, water[i], &mlx->obj_l[id]->anim[i]->w, &mlx->obj_l[id]->anim[i]->h);
@@ -413,8 +413,8 @@ void	ft_init_firepot(t_mlx *mlx)
 	int id = 4;
 	char *pot[4] = { "textures/obj/firepot/firepot1.xpm", "textures/obj/firepot/firepot2.xpm",
 						"textures/obj/firepot/firepot3.xpm", "textures/obj/firepot/firepot4.xpm" };
-	mlx->obj_l[id] = (t_anim_list*)malloc(sizeof(t_anim_list));
-	mlx->obj_l[id]->anim = (t_img**)malloc(sizeof(t_img*) * 4);
+	(!(mlx->obj_l[id] = (t_anim_list*)malloc(sizeof(t_anim_list)))) ? ft_mem_error() : 1;
+	(!(mlx->obj_l[id]->anim = (t_img**)malloc(sizeof(t_img*) * 4))) ? ft_mem_error() : 1;
 	mlx->obj_l[id]->anim_n = 4;
 	mlx->obj_l[id]->delay = 6;
 	mlx->obj_l[id]->expl = 0;
@@ -429,7 +429,7 @@ void	ft_init_firepot(t_mlx *mlx)
 			(j < 3) ? ft_strdel(&line) : 1;
 		}
 		char **tmp = ft_strsplit(line, ' ');
-		mlx->obj_l[id]->anim[i] = (t_img*)malloc(sizeof(t_img));
+		(!(mlx->obj_l[id]->anim[i] = (t_img*)malloc(sizeof(t_img)))) ? ft_mem_error() : 1;
 		mlx->obj_l[id]->anim[i]->w = ft_atoi(&tmp[0][1]);
 		mlx->obj_l[id]->anim[i]->h = ft_atoi(tmp[1]);
 		mlx->obj_l[id]->anim[i]->img = mlx_xpm_file_to_image(mlx->mlx, pot[i], &mlx->obj_l[id]->anim[i]->w, &mlx->obj_l[id]->anim[i]->h);
@@ -456,9 +456,9 @@ void	ft_init_static_obj_medkit(t_mlx *mlx)
 			(j < 3) ? ft_strdel(&line) : 1;
 		}
 		char **tmp = ft_strsplit(line, ' ');
-		mlx->obj_l[i] = (t_anim_list*)malloc(sizeof(t_anim_list));
-		mlx->obj_l[i]->anim = (t_img**)malloc(sizeof(t_img*));
-		mlx->obj_l[i]->anim[0] = (t_img*)malloc(sizeof(t_img));
+		(!(mlx->obj_l[i] = (t_anim_list*)malloc(sizeof(t_anim_list)))) ? ft_mem_error() : 1;
+		(!(mlx->obj_l[i]->anim = (t_img**)malloc(sizeof(t_img*))) ? ft_mem_error() : 1);
+		(!(mlx->obj_l[i]->anim[0] = (t_img*)malloc(sizeof(t_img)))) ? ft_mem_error() : 1;
 		mlx->obj_l[i]->anim[0]->w = ft_atoi(&tmp[0][1]);
 		mlx->obj_l[i]->anim[0]->h = ft_atoi(tmp[1]);
 		mlx->obj_l[i]->anim[0]->img = mlx_xpm_file_to_image(mlx->mlx, objs[i - 18], &mlx->obj_l[i]->anim[0]->w, &mlx->obj_l[i]->anim[0]->h);
@@ -487,9 +487,9 @@ void	ft_init_static_obj_ammo(t_mlx *mlx)
 			(j < 3) ? ft_strdel(&line) : 1;
 		}
 		char **tmp = ft_strsplit(line, ' ');
-		mlx->obj_l[i] = (t_anim_list*)malloc(sizeof(t_anim_list));
-		mlx->obj_l[i]->anim = (t_img**)malloc(sizeof(t_img*));
-		mlx->obj_l[i]->anim[0] = (t_img*)malloc(sizeof(t_img));
+		(!(mlx->obj_l[i] = (t_anim_list*)malloc(sizeof(t_anim_list)))) ? ft_mem_error() : 1;
+		(!(mlx->obj_l[i]->anim = (t_img**)malloc(sizeof(t_img*)))) ? ft_mem_error() : 1;
+		(!(mlx->obj_l[i]->anim[0] = (t_img*)malloc(sizeof(t_img)))) ? ft_mem_error() : 1;
 		mlx->obj_l[i]->anim[0]->w = ft_atoi(&tmp[0][1]);
 		mlx->obj_l[i]->anim[0]->h = ft_atoi(tmp[1]);
 		mlx->obj_l[i]->anim[0]->img = mlx_xpm_file_to_image(mlx->mlx, objs[i - 13], &mlx->obj_l[i]->anim[0]->w, &mlx->obj_l[i]->anim[0]->h);
@@ -519,9 +519,9 @@ void	ft_init_static_obj(t_mlx *mlx)
 			(j < 3) ? ft_strdel(&line) : 1;
 		}
 		char **tmp = ft_strsplit(line, ' ');
-		mlx->obj_l[i] = (t_anim_list*)malloc(sizeof(t_anim_list));
-		mlx->obj_l[i]->anim = (t_img**)malloc(sizeof(t_img*));
-		mlx->obj_l[i]->anim[0] = (t_img*)malloc(sizeof(t_img));
+		(!(mlx->obj_l[i] = (t_anim_list*)malloc(sizeof(t_anim_list)))) ? ft_mem_error() : 1;
+		(!(mlx->obj_l[i]->anim = (t_img**)malloc(sizeof(t_img*)))) ? ft_mem_error() : 1;
+		(!(mlx->obj_l[i]->anim[0] = (t_img*)malloc(sizeof(t_img)))) ? ft_mem_error() : 1;
 		mlx->obj_l[i]->anim[0]->w = ft_atoi(&tmp[0][1]);
 		mlx->obj_l[i]->anim[0]->h = ft_atoi(tmp[1]);
 		mlx->obj_l[i]->anim[0]->img = mlx_xpm_file_to_image(mlx->mlx, objs[i], &mlx->obj_l[i]->anim[0]->w, &mlx->obj_l[i]->anim[0]->h);
@@ -656,7 +656,7 @@ void	ft_init_anim_obj(t_mlx *mlx)
 
 void	ft_init_obj(t_mlx *mlx)
 {
-	mlx->obj_l = (t_anim_list**)malloc(sizeof(t_anim_list*) * OBJ);
+	(!(mlx->obj_l = (t_anim_list**)malloc(sizeof(t_anim_list*) * OBJ))) ? ft_mem_error() : 1;
 	ft_init_static_obj(mlx);
 	ft_init_static_obj_ammo(mlx);
 	ft_init_static_obj_medkit(mlx);

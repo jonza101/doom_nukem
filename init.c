@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/28 21:24:48 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/12 20:41:33 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/13 21:03:09 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void	ft_init_menu_buttons(t_mlx *mlx)
 			(j < 3) ? ft_strdel(&line) : 1;
 		}
 		char **tmp = ft_strsplit(line, ' ');
-		mlx->menu_play[i] = (t_img*)malloc(sizeof(t_img));
+		(!(mlx->menu_play[i] = (t_img*)malloc(sizeof(t_img)))) ? ft_mem_error() : 1;
 		mlx->menu_play[i]->w = ft_atoi(&tmp[0][1]);
 		mlx->menu_play[i]->h = ft_atoi(tmp[1]);
 		mlx->menu_play[i]->img = mlx_xpm_file_to_image(mlx->mlx, play[i], &mlx->menu_play[i]->w, &mlx->menu_play[i]->h);
@@ -93,7 +93,7 @@ void	ft_init_menu_buttons(t_mlx *mlx)
 			(j < 3) ? ft_strdel(&line) : 1;
 		}
 		char **tmp = ft_strsplit(line, ' ');
-		mlx->menu_quit[i] = (t_img*)malloc(sizeof(t_img));
+		(!(mlx->menu_quit[i] = (t_img*)malloc(sizeof(t_img)))) ? ft_mem_error() : 1;
 		mlx->menu_quit[i]->w = ft_atoi(&tmp[0][1]);
 		mlx->menu_quit[i]->h = ft_atoi(tmp[1]);
 		mlx->menu_quit[i]->img = mlx_xpm_file_to_image(mlx->mlx, quit[i], &mlx->menu_quit[i]->w, &mlx->menu_quit[i]->h);
@@ -114,7 +114,7 @@ void	ft_init_menu_buttons(t_mlx *mlx)
 			(j < 3) ? ft_strdel(&line) : 1;
 		}
 		char **tmp = ft_strsplit(line, ' ');
-		mlx->menu_pointer[i] = (t_img*)malloc(sizeof(t_img));
+		(!(mlx->menu_pointer[i] = (t_img*)malloc(sizeof(t_img)))) ? ft_mem_error() : 1;
 		mlx->menu_pointer[i]->w = ft_atoi(&tmp[0][1]);
 		mlx->menu_pointer[i]->h = ft_atoi(tmp[1]);
 		mlx->menu_pointer[i]->img = mlx_xpm_file_to_image(mlx->mlx, pointer[i], &mlx->menu_pointer[i]->w, &mlx->menu_pointer[i]->h);
@@ -142,7 +142,7 @@ void	ft_init_menu_font(t_mlx *mlx)
 			(j < 3) ? ft_strdel(&line) : 1;
 		}
 		char **tmp = ft_strsplit(line, ' ');
-		mlx->menu_font[i] = (t_img*)malloc(sizeof(t_img));
+		(!(mlx->menu_font[i] = (t_img*)malloc(sizeof(t_img)))) ? ft_mem_error() : 1;
 		mlx->menu_font[i]->w = ft_atoi(&tmp[0][1]);
 		mlx->menu_font[i]->h = ft_atoi(tmp[1]);
 		mlx->menu_font[i]->img = mlx_xpm_file_to_image(mlx->mlx, font[i], &mlx->menu_font[i]->w, &mlx->menu_font[i]->h);
@@ -172,7 +172,7 @@ void	ft_init_font(t_mlx *mlx)
 			(j < 3) ? ft_strdel(&line) : 1;
 		}
 		char **tmp = ft_strsplit(line, ' ');
-		mlx->font[i] = (t_img*)malloc(sizeof(t_img));
+		(!(mlx->font[i] = (t_img*)malloc(sizeof(t_img)))) ? ft_mem_error() : 1;
 		mlx->font[i]->w = ft_atoi(&tmp[0][1]);
 		mlx->font[i]->h = ft_atoi(tmp[1]);
 		mlx->font[i]->img = mlx_xpm_file_to_image(mlx->mlx, font[i], &mlx->font[i]->w, &mlx->font[i]->h);
@@ -199,7 +199,7 @@ void	ft_init_sky(t_mlx *mlx)
 			(j < 3) ? ft_strdel(&line) : 1;
 		}
 		char **tmp = ft_strsplit(line, ' ');
-		mlx->sky[i] = (t_img*)malloc(sizeof(t_img));
+		(!(mlx->sky[i] = (t_img*)malloc(sizeof(t_img)))) ? ft_mem_error() : 1;
 		mlx->sky[i]->w = ft_atoi(&tmp[0][1]);
 		mlx->sky[i]->h = ft_atoi(tmp[1]);
 		mlx->sky[i]->img = mlx_xpm_file_to_image(mlx->mlx, sky[i], &mlx->sky[i]->w, &mlx->sky[i]->h);
@@ -216,7 +216,7 @@ void	ft_init_transparent(t_mlx *mlx)
 	char *line;
 	char *twall[TRANSPARENT] = { "textures/transparent/glass.xpm", "textures/transparent/bars.xpm", "textures/transparent/fence.xpm",
 								"textures/transparent/breakable_wall_hole.xpm" };
-	mlx->trans = (t_anim_list**)malloc(sizeof(t_anim_list*) * TRANSPARENT);
+	(!(mlx->trans = (t_anim_list**)malloc(sizeof(t_anim_list*) * TRANSPARENT))) ? ft_mem_error() : 1;
 	int i = -1;
 	while (++i < TRANSPARENT)
 	{
@@ -228,11 +228,11 @@ void	ft_init_transparent(t_mlx *mlx)
 			(j < 3) ? ft_strdel(&line) : 1;
 		}
 		char **tmp = ft_strsplit(line, ' ');
-		mlx->trans[i] = (t_anim_list*)malloc(sizeof(t_anim_list));
-		mlx->trans[i]->anim = (t_img**)malloc(sizeof(t_img*));
+		(!(mlx->trans[i] = (t_anim_list*)malloc(sizeof(t_anim_list)))) ? ft_mem_error() : 1;
+		(!(mlx->trans[i]->anim = (t_img**)malloc(sizeof(t_img*)))) ? ft_mem_error() : 1;
 		mlx->trans[i]->anim_n = 1;
 		mlx->trans[i]->expl = 0;
-		mlx->trans[i]->anim[0] = (t_img*)malloc(sizeof(t_img));
+		(!(mlx->trans[i]->anim[0] = (t_img*)malloc(sizeof(t_img)))) ? ft_mem_error() : 1;
 		mlx->trans[i]->anim[0]->w = ft_atoi(&tmp[0][1]);
 		mlx->trans[i]->anim[0]->h = ft_atoi(tmp[1]);
 		mlx->trans[i]->anim[0]->img = mlx_xpm_file_to_image(mlx->mlx, twall[i], &mlx->trans[i]->anim[0]->w, &mlx->trans[i]->anim[0]->h);
@@ -260,7 +260,7 @@ void	ft_init_textures(t_mlx *mlx)
 			(j < 3) ? ft_strdel(&line) : 1;
 		}
 		char **tmp = ft_strsplit(line, ' ');
-		mlx->txt[i] = (t_img*)malloc(sizeof(t_img));
+		(!(mlx->txt[i] = (t_img*)malloc(sizeof(t_img)))) ? ft_mem_error() : 1;
 		mlx->txt[i]->w = ft_atoi(&tmp[0][1]);
 		mlx->txt[i]->h = ft_atoi(tmp[1]);
 		mlx->txt[i]->img = mlx_xpm_file_to_image(mlx->mlx, txts[i], &mlx->txt[i]->w, &mlx->txt[i]->h);

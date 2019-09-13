@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/17 18:28:03 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/09 19:28:57 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/13 21:22:19 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,11 @@ void	ft_interact_check(t_mlx *mlx, int sect, int side, t_vec3 *pos)
 
 void	ft_add_first_wobj(t_mlx *mlx, t_vec3 *pos, int sect, int side)
 {
-	mlx->wobj_list = (t_wobj*)malloc(sizeof(t_wobj));
+	(!(mlx->wobj_list = (t_wobj*)malloc(sizeof(t_wobj)))) ? ft_mem_error() : 1;
 	mlx->wobj_list->sect = sect;
 	mlx->wobj_list->side = side;
 
-	mlx->wobj_list->pos = (t_vec3*)malloc(sizeof(t_vec3));
+	(!(mlx->wobj_list->pos = (t_vec3*)malloc(sizeof(t_vec3)))) ? ft_mem_error() : 1;
 	mlx->wobj_list->pos->x = pos->x;
 	mlx->wobj_list->pos->y = pos->y;
 	mlx->wobj_list->pos->z = pos->z;
@@ -57,8 +57,8 @@ void	ft_add_first_wobj(t_mlx *mlx, t_vec3 *pos, int sect, int side)
 	mlx->wobj_list->anim_i = 0;
 	mlx->wobj_list->frame = mlx->wobj_l[mlx->wobj_list->wobj_i]->anim[0];
 
-	mlx->wobj_list->p1 = (t_vec2*)malloc(sizeof(t_vec2));
-	mlx->wobj_list->p2 = (t_vec2*)malloc(sizeof(t_vec2));
+	(!(mlx->wobj_list->p1 = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
+	(!(mlx->wobj_list->p2 = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
 
 	double dx1 = mlx->sect[sect]->verts[side + 0]->x - mlx->wobj_list->pos->x;
 	double dy1 = mlx->sect[sect]->verts[side + 0]->y - mlx->wobj_list->pos->y;
@@ -90,10 +90,10 @@ void	ft_add_wobj(t_mlx *mlx, t_vec3 *pos, int sect, int side)
 	if ((mlx->sect_wobj[sect]->side[side] >= MAX_WSPRITES_ON_WALL) || (mlx->last_wobj->pos->x == pos->x && mlx->last_wobj->pos->y == pos->y && mlx->last_wobj->pos->z == pos->z))
 		return ;
 
-	mlx->last_wobj->next = (t_wobj*)malloc(sizeof(t_wobj));
+	(!(mlx->last_wobj->next = (t_wobj*)malloc(sizeof(t_wobj)))) ? ft_mem_error() : 1;
 	mlx->last_wobj->next->sect = sect;
 	mlx->last_wobj->next->side = side;
-	mlx->last_wobj->next->pos = (t_vec3*)malloc(sizeof(t_vec3));
+	(!(mlx->last_wobj->next->pos = (t_vec3*)malloc(sizeof(t_vec3)))) ? ft_mem_error() : 1;
 	mlx->last_wobj->next->pos->x = pos->x;
 	mlx->last_wobj->next->pos->y = pos->y;
 	mlx->last_wobj->next->pos->z = pos->z;
@@ -104,8 +104,8 @@ void	ft_add_wobj(t_mlx *mlx, t_vec3 *pos, int sect, int side)
 	mlx->last_wobj->next->anim_i = 0;
 	mlx->last_wobj->next->frame = mlx->wobj_l[mlx->last_wobj->next->wobj_i]->anim[0];
 
-	mlx->last_wobj->next->p1 = (t_vec2*)malloc(sizeof(t_vec2));
-	mlx->last_wobj->next->p2 = (t_vec2*)malloc(sizeof(t_vec2));
+	(!(mlx->last_wobj->next->p1 = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
+	(!(mlx->last_wobj->next->p2 = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
 
 	double dx1 = mlx->sect[sect]->verts[side + 0]->x - mlx->last_wobj->next->pos->x;
 	double dy1 = mlx->sect[sect]->verts[side + 0]->y - mlx->last_wobj->next->pos->y;
@@ -194,62 +194,51 @@ void	ft_wobj_specs_calc(t_mlx *mlx, t_sector *sector, int s, int w_count)
 			double nearside = 1e-5f;
 			double farside = 20.0f;
 
-			t_vec2 *wi1 = (t_vec2*)malloc(sizeof(t_vec2));
-			t_vec2 *wi2 = (t_vec2*)malloc(sizeof(t_vec2));
+			ft_intersect(mlx->wi1, mlx->rend_wobj[w]->wtx1, mlx->rend_wobj[w]->wtz1, mlx->rend_wobj[w]->wtx2, mlx->rend_wobj[w]->wtz2, -nearside, near_z, -farside, far_z);
+			ft_intersect(mlx->wi2, mlx->rend_wobj[w]->wtx1, mlx->rend_wobj[w]->wtz1, mlx->rend_wobj[w]->wtx2, mlx->rend_wobj[w]->wtz2, nearside, near_z, farside, far_z);
 
-			ft_intersect(wi1, mlx->rend_wobj[w]->wtx1, mlx->rend_wobj[w]->wtz1, mlx->rend_wobj[w]->wtx2, mlx->rend_wobj[w]->wtz2, -nearside, near_z, -farside, far_z);
-			ft_intersect(wi2, mlx->rend_wobj[w]->wtx1, mlx->rend_wobj[w]->wtz1, mlx->rend_wobj[w]->wtx2, mlx->rend_wobj[w]->wtz2, nearside, near_z, farside, far_z);
-
-			t_vec2 *worg1 = (t_vec2*)malloc(sizeof(t_vec2));
-			t_vec2 *worg2 = (t_vec2*)malloc(sizeof(t_vec2));
-			worg1->x = mlx->rend_wobj[w]->wtx1;
-			worg1->y = mlx->rend_wobj[w]->wtz1;
-			worg2->x = mlx->rend_wobj[w]->wtx2;
-			worg2->y = mlx->rend_wobj[w]->wtz2;
+			mlx->worg1->x = mlx->rend_wobj[w]->wtx1;
+			mlx->worg1->y = mlx->rend_wobj[w]->wtz1;
+			mlx->worg2->x = mlx->rend_wobj[w]->wtx2;
+			mlx->worg2->y = mlx->rend_wobj[w]->wtz2;
 
 			if (mlx->rend_wobj[w]->wtz1 < near_z)
 			{
-				if (wi1->y > 0)
+				if (mlx->wi1->y > 0)
 				{
-					mlx->rend_wobj[w]->wtx1 = wi1->x;
-					mlx->rend_wobj[w]->wtz1 = wi1->y;
+					mlx->rend_wobj[w]->wtx1 = mlx->wi1->x;
+					mlx->rend_wobj[w]->wtz1 = mlx->wi1->y;
 				}
 				else
 				{
-					mlx->rend_wobj[w]->wtx1 = wi2->x;
-					mlx->rend_wobj[w]->wtz1 = wi2->y;
+					mlx->rend_wobj[w]->wtx1 = mlx->wi2->x;
+					mlx->rend_wobj[w]->wtz1 = mlx->wi2->y;
 				}
 			}
 			if (mlx->rend_wobj[w]->wtz2 < near_z)
 			{
-				if (wi1->y > 0)
+				if (mlx->wi1->y > 0)
 				{
-					mlx->rend_wobj[w]->wtx2 = wi1->x;
-					mlx->rend_wobj[w]->wtz2 = wi1->y;
+					mlx->rend_wobj[w]->wtx2 = mlx->wi1->x;
+					mlx->rend_wobj[w]->wtz2 = mlx->wi1->y;
 				}
 				else
 				{
-					mlx->rend_wobj[w]->wtx2 = wi2->x;
-					mlx->rend_wobj[w]->wtz2 = wi2->y;
+					mlx->rend_wobj[w]->wtx2 = mlx->wi2->x;
+					mlx->rend_wobj[w]->wtz2 = mlx->wi2->y;
 				}
 			}
 
 			if (fabs(mlx->rend_wobj[w]->wtx2 - mlx->rend_wobj[w]->wtx1) > fabs(mlx->rend_wobj[w]->wtz2 - mlx->rend_wobj[w]->wtz1))
 			{
-				mlx->rend_wobj[w]->wu0 = (mlx->rend_wobj[w]->wtx1 - worg1->x) * mlx->wobj_l[mlx->rend_wobj[w]->wobj->wobj_i]->wobj_specs->u1 / (worg2->x - worg1->x);
-				mlx->rend_wobj[w]->wu1 = (mlx->rend_wobj[w]->wtx2 - worg1->x) * mlx->wobj_l[mlx->rend_wobj[w]->wobj->wobj_i]->wobj_specs->u1 / (worg2->x - worg1->x);
+				mlx->rend_wobj[w]->wu0 = (mlx->rend_wobj[w]->wtx1 - mlx->worg1->x) * mlx->wobj_l[mlx->rend_wobj[w]->wobj->wobj_i]->wobj_specs->u1 / (mlx->worg2->x - mlx->worg1->x);
+				mlx->rend_wobj[w]->wu1 = (mlx->rend_wobj[w]->wtx2 - mlx->worg1->x) * mlx->wobj_l[mlx->rend_wobj[w]->wobj->wobj_i]->wobj_specs->u1 / (mlx->worg2->x - mlx->worg1->x);
 			}
 			else
 			{
-				mlx->rend_wobj[w]->wu0 = (mlx->rend_wobj[w]->wtz1 - worg1->y) * mlx->wobj_l[mlx->rend_wobj[w]->wobj->wobj_i]->wobj_specs->u1 / (worg2->y - worg1->y);
-				mlx->rend_wobj[w]->wu1 = (mlx->rend_wobj[w]->wtz2 - worg1->y) * mlx->wobj_l[mlx->rend_wobj[w]->wobj->wobj_i]->wobj_specs->u1 / (worg2->y - worg1->y);
+				mlx->rend_wobj[w]->wu0 = (mlx->rend_wobj[w]->wtz1 - mlx->worg1->y) * mlx->wobj_l[mlx->rend_wobj[w]->wobj->wobj_i]->wobj_specs->u1 / (mlx->worg2->y - mlx->worg1->y);
+				mlx->rend_wobj[w]->wu1 = (mlx->rend_wobj[w]->wtz2 - mlx->worg1->y) * mlx->wobj_l[mlx->rend_wobj[w]->wobj->wobj_i]->wobj_specs->u1 / (mlx->worg2->y - mlx->worg1->y);
 			}
-
-			free(wi1);
-			free(wi2);
-
-			free(worg1);
-			free(worg2);
 		}
 
 		if (mlx->rend_wobj[w]->w_flag)

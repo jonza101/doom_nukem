@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/12 20:41:45 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/13 21:19:40 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -509,6 +509,10 @@ typedef	struct		s_mlx
 	t_vec2			*i2;
 	t_vec2			*org1;
 	t_vec2			*org2;
+	t_vec2			*wi1;
+	t_vec2			*wi2;
+	t_vec2			*worg1;
+	t_vec2			*worg2;
 
 	t_vec2			*p0;
 	t_vec2			*p1;
@@ -602,6 +606,7 @@ void				ft_drawseg_sort(t_mlx *mlx);
 void				ft_thread(t_mlx *mlx);
 
 void				ft_drawseg_error();
+void				ft_mem_error();
 
 void				ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector);
 void				ft_find_obj_sect(t_mlx *mlx, int sector);

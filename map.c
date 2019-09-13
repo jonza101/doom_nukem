@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/09 23:04:23 by lsandor-         ###   ########.fr       */
+/*   Updated: 2019/09/13 21:23:21 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,10 @@ int		ft_find_sect_mirror_side(t_mlx *mlx, int sector, int side, int sect_to_find
 
 void	ft_set_obj_collider(t_mlx *mlx, t_obj *obj)
 {
-	obj->specs->verts = (t_vec2**)malloc(sizeof(t_vec2*) * 5);
+	(!(obj->specs->verts = (t_vec2**)malloc(sizeof(t_vec2*) * 5))) ? ft_mem_error() : 1;
 	int f = -1;
 	while (++f < 5)
-		obj->specs->verts[f] = (t_vec2*)malloc(sizeof(t_vec2));
+		(!(obj->specs->verts[f] = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
 	obj->specs->has_collider = 1;
 
 	obj->specs->verts[0]->x = obj->specs->x - mlx->obj_l[obj->specs->obj_i]->col_w;
@@ -83,7 +83,6 @@ void	ft_strsplit_free(char **temp)
 	free(temp);
 }
 
-//		UNSTABLE
 double	ft_atof(char *str)
 {
 	int len, dot;
@@ -121,7 +120,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 	int s = 1;
 	int t = 1;
 	int o = 1;
-	int g = 1;		//	TRANSPARENT
+	int g = 1;
 	int w = 1;
 	int seg = 1;
 	
@@ -154,35 +153,35 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 			temp = ft_strsplit(line, ' ');
 			if (v > 1)
 			{
-				tmp_v = (t_vec2**)malloc(sizeof(t_vec2*) * (v - 1));
+				(!(tmp_v = (t_vec2**)malloc(sizeof(t_vec2*) * (v - 1)))) ? ft_mem_error() : 1;
 				int j = v - 2;
 				while (j >= 0)
 				{
-					tmp_v[j] = (t_vec2*)malloc(sizeof(t_vec2));
+					(!(tmp_v[j] = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
 					ft_memcpy(tmp_v[j], verts[j], sizeof(t_vec2));
 					free(verts[j]);
 					j--;
 				}
 				free(verts);
-				verts = (t_vec2**)malloc(sizeof(t_vec2*) * v);
+				(!(verts = (t_vec2**)malloc(sizeof(t_vec2*) * v))) ? ft_mem_error() : 1;
 				j = 0;
 				while (j < v - 1)
 				{
-					verts[j] = (t_vec2*)malloc(sizeof(t_vec2));
+					(!(verts[j] = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
 					ft_memcpy(verts[j], tmp_v[j], sizeof(t_vec2));
 					free(tmp_v[j]);
 					j++;
 				}
 				free(tmp_v);
-				verts[v - 1] = (t_vec2*)malloc(sizeof(t_vec2));
+				(!(verts[v - 1] = (t_vec2*)malloc(sizeof(t_vec2))) ? ft_mem_error() : 1);
 				verts[v - 1]->x = (double)ft_atof(temp[2]);
 				verts[v - 1]->y = (double)ft_atof(temp[1]);
 				v++;
 			}
 			else
 			{
-				verts = (t_vec2**)malloc(sizeof(t_vec2*) * 1);
-				verts[0] = (t_vec2*)malloc(sizeof(t_vec2));
+				(!(verts = (t_vec2**)malloc(sizeof(t_vec2*) * 1))) ? ft_mem_error() : 1;
+				(!(verts[0] = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
 				verts[0]->x = (double)ft_atof(temp[2]);
 				verts[0]->y = (double)ft_atof(temp[1]);
 				int j = 0;
@@ -195,27 +194,27 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 			temp = ft_strsplit(line, '|');
 			if (s > 1)
 			{
-				tmp_s = (t_sector**)malloc(sizeof(t_sector) * (s - 1));
+				(!(tmp_s = (t_sector**)malloc(sizeof(t_sector) * (s - 1)))) ? ft_mem_error() : 1;
 				int j = s - 2;
 				while (j >= 0)
 				{
-					tmp_s[j] = (t_sector*)malloc(sizeof(t_sector));
+					(!(tmp_s[j] = (t_sector*)malloc(sizeof(t_sector))) ? ft_mem_error() : 1);
 					ft_memcpy(tmp_s[j], mlx->sect[j], sizeof(t_sector));
 					free(mlx->sect[j]);
 					j--;
 				}
 				free(mlx->sect);
-				mlx->sect = (t_sector**)malloc(sizeof(t_sector) * s);
+				(!(mlx->sect = (t_sector**)malloc(sizeof(t_sector) * s))) ? ft_mem_error() : 1;
 				j = 0;
 				while (j < s - 1)
 				{
-					mlx->sect[j] = (t_sector*)malloc(sizeof(t_sector));
+					(!(mlx->sect[j] = (t_sector*)malloc(sizeof(t_sector)))) ? ft_mem_error() : 1;
 					ft_memcpy(mlx->sect[j], tmp_s[j], sizeof(t_sector));
 					free(tmp_s[j]);
 					j++;
 				}
 				free(tmp_s);
-				mlx->sect[s - 1] = (t_sector*)malloc(sizeof(t_sector));
+				(!(mlx->sect[s - 1] = (t_sector*)malloc(sizeof(t_sector)))) ? ft_mem_error() : 1;
 
 				char **t;
 				t = ft_strsplit(temp[1], ' ');
@@ -229,21 +228,21 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				while (t[v_count])
 					v_count++;
 				mlx->sect[s - 1]->verts_count = v_count;
-				mlx->sect[s - 1]->verts = (t_vec2**)malloc(sizeof(t_vec2*) * (v_count + 1));
+				(!(mlx->sect[s - 1]->verts = (t_vec2**)malloc(sizeof(t_vec2*) * (v_count + 1)))) ? ft_mem_error() : 1;
 
 				mlx->sect[s - 1]->txt_count = v_count;
-				mlx->sect[s - 1]->texts = (char**)malloc(sizeof(char*) * v_count);
+				(!(mlx->sect[s - 1]->texts = (char**)malloc(sizeof(char*) * v_count))) ? ft_mem_error() : 1;
 
 				j = -1;
 				while (++j < v_count)
 				{
-					mlx->sect[s - 1]->verts[j + 1] = (t_vec2*)malloc(sizeof(t_vec2));
+					(!(mlx->sect[s - 1]->verts[j + 1] = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
 					mlx->sect[s - 1]->verts[j + 1]->x = (double)verts[ft_atoi(t[j])]->x;
 					mlx->sect[s - 1]->verts[j + 1]->y = (double)verts[ft_atoi(t[j])]->y;
 
 					mlx->sect[s - 1]->texts[j] = NULL;
 				}
-				mlx->sect[s - 1]->verts[0] = (t_vec2*)malloc(sizeof(t_vec2));
+				(!(mlx->sect[s - 1]->verts[0] = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
 				mlx->sect[s - 1]->verts[0]->x = (double)verts[ft_atoi(t[j - 1])]->x;
 				mlx->sect[s - 1]->verts[0]->y = (double)verts[ft_atoi(t[j - 1])]->y;
 
@@ -254,7 +253,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				while (t[n_count])
 					n_count++;
 				mlx->sect[s - 1]->neighbors_count = n_count;
-				mlx->sect[s - 1]->neighbors = (int*)malloc(sizeof(int) * n_count);
+				(!(mlx->sect[s - 1]->neighbors = (int*)malloc(sizeof(int) * n_count))) ? ft_mem_error() : 1;
 				j = 0;
 				while (j < n_count)
 				{
@@ -287,8 +286,8 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 			}
 			else
 			{
-				mlx->sect = (t_sector**)malloc(sizeof(t_sector*) * 1);
-				mlx->sect[0] = (t_sector*)malloc(sizeof(t_sector));
+				(!(mlx->sect = (t_sector**)malloc(sizeof(t_sector*) * 1))) ? ft_mem_error() : 1;
+				(!(mlx->sect[0] = (t_sector*)malloc(sizeof(t_sector)))) ? ft_mem_error() : 1;
 
 				char **t;
 				t = ft_strsplit(temp[1], ' ');
@@ -302,21 +301,21 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				while (t[v_count])
 					v_count++;
 				mlx->sect[0]->verts_count = v_count;
-				mlx->sect[0]->verts = (t_vec2**)malloc(sizeof(t_vec2*) * (v_count + 1));
+				(!(mlx->sect[0]->verts = (t_vec2**)malloc(sizeof(t_vec2*) * (v_count + 1)))) ? ft_mem_error() : 1;
 
 				mlx->sect[0]->txt_count = v_count;
-				mlx->sect[0]->texts = (char**)malloc(sizeof(char*) * v_count);
+				(!(mlx->sect[0]->texts = (char**)malloc(sizeof(char*) * v_count))) ? ft_mem_error() : 1;
 
 				int j = -1;
 				while (++j < v_count)
 				{
-					mlx->sect[0]->verts[j + 1] = (t_vec2*)malloc(sizeof(t_vec2));
+					(!(mlx->sect[0]->verts[j + 1] = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
 					mlx->sect[0]->verts[j + 1]->x = (double)verts[ft_atoi(t[j])]->x;
 					mlx->sect[0]->verts[j + 1]->y = (double)verts[ft_atoi(t[j])]->y;
 
 					mlx->sect[0]->texts[j] = NULL;
 				}
-				mlx->sect[0]->verts[0] = (t_vec2*)malloc(sizeof(t_vec2));
+				(!(mlx->sect[0]->verts[0] = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
 				mlx->sect[0]->verts[0]->x = (double)verts[ft_atoi(t[j - 1])]->x;
 				mlx->sect[0]->verts[0]->y = (double)verts[ft_atoi(t[j - 1])]->y;
 
@@ -327,7 +326,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				while (t[n_count])
 					n_count++;
 				mlx->sect[0]->neighbors_count = n_count;
-				mlx->sect[0]->neighbors = (int*)malloc(sizeof(int) * n_count);
+				(!(mlx->sect[0]->neighbors = (int*)malloc(sizeof(int) * n_count))) ? ft_mem_error() : 1;
 				j = 0;
 				while (j < n_count)
 				{
@@ -394,8 +393,8 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 
 			if (sect->obj_count > 0)
 			{
-				sect->obj_list->next = (t_obj*)malloc(sizeof(t_obj));
-				sect->obj_list->next->specs = (t_obj_specs*)malloc(sizeof(t_obj_specs));
+				(!(sect->obj_list->next = (t_obj*)malloc(sizeof(t_obj))) ? ft_mem_error() : 1);
+				(!(sect->obj_list->next->specs = (t_obj_specs*)malloc(sizeof(t_obj_specs)))) ? ft_mem_error() : 1;
 				sect->obj_list->next->specs->sect = sect_n;
 				sect->obj_list->next->specs->x = ft_atof(tmp_t[0]);
 				sect->obj_list->next->specs->y = ft_atof(tmp_t[1]);
@@ -419,8 +418,8 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 			}
 			else
 			{
-				sect->obj_list = (t_obj*)malloc(sizeof(t_obj));
-				sect->obj_list->specs = (t_obj_specs*)malloc(sizeof(t_obj_specs));
+				(!(sect->obj_list = (t_obj*)malloc(sizeof(t_obj)))) ? ft_mem_error() : 1;
+				(!(sect->obj_list->specs = (t_obj_specs*)malloc(sizeof(t_obj_specs)))) ? ft_mem_error() : 1;
 				sect->obj_list->specs->sect = sect_n;
 				sect->obj_list->specs->x = ft_atof(tmp_t[0]);
 				sect->obj_list->specs->y = ft_atof(tmp_t[1]);
@@ -452,7 +451,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 			temp = ft_strsplit(line, '|');
 			if (g > 1)
 			{
-				mlx->trans_list->next = (t_trans*)malloc(sizeof(t_trans));
+				(!(mlx->trans_list->next = (t_trans*)malloc(sizeof(t_trans)))) ? ft_mem_error() : 1;
 				mlx->trans_list->next->sect = ft_atoi(temp[1]);
 				mlx->trans_list->next->side = ft_atoi(temp[2]);
 				mlx->trans_list->next->trans_i = ft_atoi(temp[3]);
@@ -461,7 +460,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->trans_list->prev = trans_prev;
 				trans_prev = mlx->trans_list;
 
-				mlx->trans_list->next = (t_trans*)malloc(sizeof(t_trans));
+				(!(mlx->trans_list->next = (t_trans*)malloc(sizeof(t_trans)))) ? ft_mem_error() : 1;
 				int neigh_sect = (mlx->sect[mlx->trans_list->sect]->neighbors[mlx->trans_list->side]);
 				int mirror_side = ft_find_sect_mirror_side(mlx, mlx->trans_list->sect, mlx->trans_list->side, neigh_sect);
 				mlx->trans_list->next->sect = neigh_sect;
@@ -474,7 +473,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 			}
 			else
 			{
-				mlx->trans_list = (t_trans*)malloc(sizeof(t_trans));
+				(!(mlx->trans_list = (t_trans*)malloc(sizeof(t_trans)))) ? ft_mem_error() : 1;
 				mlx->trans_list->sect = ft_atoi(temp[1]);
 				mlx->trans_list->side = ft_atoi(temp[2]);
 				mlx->trans_list->trans_i = ft_atoi(temp[3]);
@@ -483,7 +482,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				temp_trans = mlx->trans_list;
 				trans_prev = mlx->trans_list;
 
-				mlx->trans_list->next = (t_trans*)malloc(sizeof(t_trans));
+				(!(mlx->trans_list->next = (t_trans*)malloc(sizeof(t_trans)))) ? ft_mem_error() : 1;
 				int neigh_sect = (mlx->sect[mlx->trans_list->sect]->neighbors[mlx->trans_list->side]);
 				int mirror_side = ft_find_sect_mirror_side(mlx, mlx->trans_list->sect, mlx->trans_list->side, neigh_sect);
 
@@ -526,7 +525,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 
 			if (mlx->wobj_count > 0 && swtch)
 			{
-				mlx->wobj_list->next = (t_wobj*)malloc(sizeof(t_wobj));
+				(!(mlx->wobj_list->next = (t_wobj*)malloc(sizeof(t_wobj)))) ? ft_mem_error() : 1;
 				mlx->wobj_list->next->sect = w_sect;
 				mlx->wobj_list->next->side = w_side;
 				mlx->wobj_list->next->wobj_i = w_i;
@@ -534,13 +533,13 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->wobj_list->next->del = 0;
 				mlx->wobj_list->next->anim_i = 0;
 				mlx->wobj_list->next->frame = mlx->wobj_l[w_i]->anim[0];
-				mlx->wobj_list->next->pos = (t_vec3*)malloc(sizeof(t_vec3));
+				(!(mlx->wobj_list->next->pos = (t_vec3*)malloc(sizeof(t_vec3)))) ? ft_mem_error() : 1;
 				mlx->wobj_list->next->pos->x = ft_atof(w_pos[0]);
 				mlx->wobj_list->next->pos->y = ft_atof(w_pos[1]);
 				mlx->wobj_list->next->pos->z = ft_atof(w_pos[2]);
 
-				mlx->wobj_list->next->p1 = (t_vec2*)malloc(sizeof(t_vec2));
-				mlx->wobj_list->next->p2 = (t_vec2*)malloc(sizeof(t_vec2));
+				(!(mlx->wobj_list->next->p1 = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
+				(!(mlx->wobj_list->next->p2 = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
 
 				mlx->wobj_list = mlx->wobj_list->next;
 				mlx->wobj_list->next = NULL;
@@ -551,7 +550,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 			}
 			else if (mlx->wobj_count == 0 && swtch)
 			{
-				mlx->wobj_list = (t_wobj*)malloc(sizeof(t_wobj));
+				(!(mlx->wobj_list = (t_wobj*)malloc(sizeof(t_wobj)))) ? ft_mem_error() : 1;
 				mlx->wobj_list->sect = w_sect;
 				mlx->wobj_list->side = w_side;
 				mlx->wobj_list->wobj_i = w_i;
@@ -559,13 +558,13 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->wobj_list->del = 0;
 				mlx->wobj_list->anim_i = 0;
 				mlx->wobj_list->frame = mlx->wobj_l[w_i]->anim[0];
-				mlx->wobj_list->pos = (t_vec3*)malloc(sizeof(t_vec3));
+				(!(mlx->wobj_list->pos = (t_vec3*)malloc(sizeof(t_vec3)))) ? ft_mem_error() : 1;
 				mlx->wobj_list->pos->x = ft_atof(w_pos[0]);
 				mlx->wobj_list->pos->y = ft_atof(w_pos[1]);
 				mlx->wobj_list->pos->z = ft_atof(w_pos[2]);
 
-				mlx->wobj_list->p1 = (t_vec2*)malloc(sizeof(t_vec2));
-				mlx->wobj_list->p2 = (t_vec2*)malloc(sizeof(t_vec2));
+				(!(mlx->wobj_list->p1 = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
+				(!(mlx->wobj_list->p2 = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
 
 				mlx->wobj_list->next = NULL;
 				temp_wobj = mlx->wobj_list;
@@ -595,8 +594,8 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 		{
 			temp = ft_strsplit(line, '|');
 
-			mlx->player->pos = (t_vec3*)malloc(sizeof(t_vec3));
-			mlx->player->velocity = (t_vec3*)malloc(sizeof(t_vec3));
+			(!(mlx->player->pos = (t_vec3*)malloc(sizeof(t_vec3)))) ? ft_mem_error() : 1;
+			(!(mlx->player->velocity = (t_vec3*)malloc(sizeof(t_vec3)))) ? ft_mem_error() : 1;
 
 			mlx->player->eye_h = EYE_H;
 			mlx->player->angle = (double)ft_atof(temp[3]);
@@ -628,7 +627,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 	{
 		mlx->wobj_list->next = NULL;
 		mlx->wobj_list = temp_wobj;
-		mlx->shoot_p = (t_vec2*)malloc(sizeof(t_vec2));
+		(!(mlx->shoot_p = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
 		ft_wobj_pos_correct(mlx);
 	}
 
@@ -638,12 +637,12 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 		free(verts[j]);
 	free(verts);
 
-	mlx->sect_wobj = (t_sect_wobj**)malloc(sizeof(t_sect_wobj*) * mlx->num_sec);
+	(!(mlx->sect_wobj = (t_sect_wobj**)malloc(sizeof(t_sect_wobj*) * mlx->num_sec))) ? ft_mem_error() : 1;
 	int i = -1;
 	while (++i < mlx->num_sec)
 	{
-		mlx->sect_wobj[i] = (t_sect_wobj*)malloc(sizeof(t_sect_wobj));
-		mlx->sect_wobj[i]->side = (int*)malloc(sizeof(int) * mlx->sect[i]->verts_count);
+		(!(mlx->sect_wobj[i] = (t_sect_wobj*)malloc(sizeof(t_sect_wobj)))) ? ft_mem_error() : 1;
+		(!(mlx->sect_wobj[i]->side = (int*)malloc(sizeof(int) * mlx->sect[i]->verts_count))) ? ft_mem_error() : 1;
 		int t = -1;
 		while (++t < mlx->sect[i]->verts_count)
 		{

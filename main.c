@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/12 20:55:45 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/13 21:26:23 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,22 +95,22 @@ void ft_init(t_mlx *mlx)
 	mlx->altfire = 0;
 	mlx->fire_range = FIRE_RANGE;
 
-	mlx->scaler = (t_scaler*)malloc(sizeof(t_scaler));
-	mlx->ya_int = (t_scaler*)malloc(sizeof(t_scaler));
-	mlx->yb_int = (t_scaler*)malloc(sizeof(t_scaler));
-	mlx->nya_int = (t_scaler*)malloc(sizeof(t_scaler));
-	mlx->nyb_int = (t_scaler*)malloc(sizeof(t_scaler));
+	(!(mlx->scaler = (t_scaler*)malloc(sizeof(t_scaler)))) ? ft_mem_error() : 1;
+	(!(mlx->ya_int = (t_scaler*)malloc(sizeof(t_scaler)))) ? ft_mem_error() : 1;
+	(!(mlx->yb_int = (t_scaler*)malloc(sizeof(t_scaler)))) ? ft_mem_error() : 1;
+	(!(mlx->nya_int = (t_scaler*)malloc(sizeof(t_scaler)))) ? ft_mem_error() : 1;
+	(!(mlx->nyb_int = (t_scaler*)malloc(sizeof(t_scaler)))) ? ft_mem_error() : 1;
 
-	mlx->wya_int = (t_scaler*)malloc(sizeof(t_scaler));
-	mlx->wyb_int = (t_scaler*)malloc(sizeof(t_scaler));
+	(!(mlx->wya_int = (t_scaler*)malloc(sizeof(t_scaler)))) ? ft_mem_error() : 1;
+	(!(mlx->wyb_int = (t_scaler*)malloc(sizeof(t_scaler)))) ? ft_mem_error() : 1;
 
-	mlx->rend_wobj = (t_rend_wobj**)malloc(sizeof(t_rend_wobj*) * MAX_WSPRITES_ON_WALL);
+	(!(mlx->rend_wobj = (t_rend_wobj**)malloc(sizeof(t_rend_wobj*) * MAX_WSPRITES_ON_WALL))) ? ft_mem_error() : 1;
 	int w = -1;
 	while (++w < MAX_WSPRITES_ON_WALL)
 	{
-		mlx->rend_wobj[w] = (t_rend_wobj*)malloc(sizeof(t_rend_wobj));
-		mlx->rend_wobj[w]->wya_int = (t_scaler*)malloc(sizeof(t_scaler));
-		mlx->rend_wobj[w]->wyb_int = (t_scaler*)malloc(sizeof(t_scaler));
+		(!(mlx->rend_wobj[w] = (t_rend_wobj*)malloc(sizeof(t_rend_wobj)))) ? ft_mem_error() : 1;
+		(!(mlx->rend_wobj[w]->wya_int = (t_scaler*)malloc(sizeof(t_scaler)))) ? ft_mem_error() : 1;
+		(!(mlx->rend_wobj[w]->wyb_int = (t_scaler*)malloc(sizeof(t_scaler)))) ? ft_mem_error() : 1;
 	}
 
 	mlx->u0 = 0;
@@ -126,11 +126,11 @@ void ft_init(t_mlx *mlx)
 
 	mlx->seg = 0;
 	mlx->seg_i = 0;
-	mlx->opening = (int**)malloc(sizeof(int*) * H);
+	(!(mlx->opening = (int**)malloc(sizeof(int*) * H))) ? ft_mem_error() : 1;
 	int y = -1;
 	while (++y < H)
 	{
-		mlx->opening[y] = (int*)malloc(sizeof(int) * W);
+		(!(mlx->opening[y] = (int*)malloc(sizeof(int) * W))) ? ft_mem_error() : 1;
 		int x = -1;
 		while (++x < W)
 			mlx->opening[y][x] = -1;
@@ -139,14 +139,19 @@ void ft_init(t_mlx *mlx)
 	mlx->sky_offset_x = 0;
 	mlx->sky_offset_y = 100;
 
-	mlx->i1 = (t_vec2*)malloc(sizeof(t_vec2));
-	mlx->i2 = (t_vec2*)malloc(sizeof(t_vec2));
-	mlx->org1 = (t_vec2*)malloc(sizeof(t_vec2));
-	mlx->org2 = (t_vec2*)malloc(sizeof(t_vec2));
+	(!(mlx->i1 = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
+	(!(mlx->i2 = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
+	(!(mlx->org1 = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
+	(!(mlx->org2 = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
 
-	mlx->p0 = (t_vec2*)malloc(sizeof(t_vec2));
-	mlx->p1 = (t_vec2*)malloc(sizeof(t_vec2));
-	mlx->pos = (t_vec3*)malloc(sizeof(t_vec3));
+	(!(mlx->wi1 = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
+	(!(mlx->wi2 = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
+	(!(mlx->worg1 = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
+	(!(mlx->worg2 = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
+
+	(!(mlx->p0 = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
+	(!(mlx->p1 = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
+	(!(mlx->pos = (t_vec3*)malloc(sizeof(t_vec3)))) ? ft_mem_error() : 1;
 
 	mlx->menu = 1;
 	ft_init_menu_fire(mlx);
@@ -165,11 +170,11 @@ void ft_init(t_mlx *mlx)
 	mlx->button_i = 0;
 }
 
-int main()
+int main(int argc, char **argv)
 {
 	t_mlx *mlx;
 
-	mlx = (t_mlx *)malloc(sizeof(t_mlx));
+	(!(mlx = (t_mlx *)malloc(sizeof(t_mlx)))) ? ft_mem_error() : 1;
 	mlx->mlx = mlx_init();
 	mlx->win = mlx_new_window(mlx->mlx, W, H, "Doom-Nukem");
 	mlx->img = mlx_new_image(mlx->mlx, W, H);
@@ -180,7 +185,10 @@ int main()
 	mlx->shoot_p = (t_vec2 *)malloc(sizeof(t_vec2));
 
 	ft_init_graphics(mlx);
-	ft_load_map(mlx, "maps/map4");
+	if (argc == 2)
+		ft_load_map(mlx, argv[1]);
+	else
+		ft_load_map(mlx, "maps/map4");
 	ft_init(mlx);
 
 	// mlx_hook(mlx->win, 6, 1L << 6, ft_mouse_move, mlx);
