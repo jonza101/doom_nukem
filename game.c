@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:40:26 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/13 17:56:38 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/15 18:30:56 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	ft_check_doors(t_mlx *mlx)
 			else if (!sector->open && !sector->close && sector->up)
 			{
 				double time_diff = difftime(time(NULL), sector->start_time);
-				printf("%d time %f\n", s, time_diff);
+				// printf("%d time %f\n", s, time_diff);
 				if (time_diff >= DOOR_TIME)
 				{
 					if (mlx->player->sector != s)

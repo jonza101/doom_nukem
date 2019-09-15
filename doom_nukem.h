@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/13 21:19:40 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/15 18:39:27 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -607,6 +607,11 @@ void				ft_thread(t_mlx *mlx);
 
 void				ft_drawseg_error();
 void				ft_mem_error();
+void				ft_map_error();
+void				ft_sect_error(int sect);
+void				ft_obj_error(t_obj *obj, int n);
+void				ft_player_sect_error();
+void				ft_player_count_error(int count);
 
 void				ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector);
 void				ft_find_obj_sect(t_mlx *mlx, int sector);
@@ -627,6 +632,7 @@ void				ft_wobj_specs_calc(t_mlx *mlx, t_sector *sector, int s, int w_count);
 void				ft_add_wobj(t_mlx *mlx, t_vec3 *pos, int sect, int side);
 
 int					ft_line_intersect(t_mlx *mlx, t_vec2 *p0, t_vec2 *p1, t_vec2 *v0, t_vec2 *v1);
+int					ft_line_intersect_(t_vec2 *p0, t_vec2 *p1, t_vec2 *v0, t_vec2 *v1);
 
 int					ft_color_convert(int color, double lum);
 
@@ -654,5 +660,10 @@ void				ft_init_menu_buttons(t_mlx *mlx);
 
 void				ft_play(t_mlx *mlx);
 int					ft_close(int i);
+
+int					ft_fval_check(char *val);
+int					ft_ival_check(char *val);
+
+void				ft_validate_map(t_mlx *mlx);
 
 #endif

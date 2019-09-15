@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/13 21:23:21 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/15 18:52:20 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 	int g = 1;
 	int w = 1;
 	int seg = 1;
+	int p = 0;
 	
 	char *line;
 	int fd = open(map_file, O_RDONLY);
@@ -151,6 +152,12 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 		if (line[0] == 'v' && line[1] == ' ')
 		{
 			temp = ft_strsplit(line, ' ');
+
+			int l = -1;
+			while (temp[++l]);
+			if (l < 3)
+				ft_map_error();
+
 			if (v > 1)
 			{
 				(!(tmp_v = (t_vec2**)malloc(sizeof(t_vec2*) * (v - 1)))) ? ft_mem_error() : 1;
@@ -174,6 +181,10 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				}
 				free(tmp_v);
 				(!(verts[v - 1] = (t_vec2*)malloc(sizeof(t_vec2))) ? ft_mem_error() : 1);
+
+				if (!ft_fval_check(temp[1]) || !ft_fval_check(temp[2]))
+					ft_map_error();
+
 				verts[v - 1]->x = (double)ft_atof(temp[2]);
 				verts[v - 1]->y = (double)ft_atof(temp[1]);
 				v++;
@@ -182,6 +193,10 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 			{
 				(!(verts = (t_vec2**)malloc(sizeof(t_vec2*) * 1))) ? ft_mem_error() : 1;
 				(!(verts[0] = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
+
+				if (!ft_fval_check(temp[1]) || !ft_fval_check(temp[2]))
+					ft_map_error();
+
 				verts[0]->x = (double)ft_atof(temp[2]);
 				verts[0]->y = (double)ft_atof(temp[1]);
 				int j = 0;
@@ -192,6 +207,12 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 		if (line[0] == 's' && line[1] == '|')
 		{
 			temp = ft_strsplit(line, '|');
+
+			int l = -1;
+			while (temp[++l]);
+			if (l < 4)
+				ft_map_error();
+
 			if (s > 1)
 			{
 				(!(tmp_s = (t_sector**)malloc(sizeof(t_sector) * (s - 1)))) ? ft_mem_error() : 1;
@@ -218,8 +239,15 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 
 				char **t;
 				t = ft_strsplit(temp[1], ' ');
+
+				if (!ft_fval_check(t[0]) || !ft_fval_check(t[1]))
+					ft_map_error();
+
 				mlx->sect[s - 1]->floor = (double)ft_atof(t[0]);
 				mlx->sect[s - 1]->ceiling = (double)ft_atof(t[1]);
+
+				if (mlx->sect[s - 1]->floor > mlx->sect[s - 1]->ceiling)
+					ft_map_error();
 
 				ft_strsplit_free(t);
 
@@ -237,12 +265,26 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				while (++j < v_count)
 				{
 					(!(mlx->sect[s - 1]->verts[j + 1] = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
-					mlx->sect[s - 1]->verts[j + 1]->x = (double)verts[ft_atoi(t[j])]->x;
-					mlx->sect[s - 1]->verts[j + 1]->y = (double)verts[ft_atoi(t[j])]->y;
+
+					if (!ft_ival_check(t[j]))
+						ft_map_error();
+					int indx = ft_atoi(t[j]);
+					if (indx < 0 || indx > v - 2)
+						ft_map_error();
+
+					mlx->sect[s - 1]->verts[j + 1]->x = (double)verts[indx]->x;
+					mlx->sect[s - 1]->verts[j + 1]->y = (double)verts[indx]->y;
 
 					mlx->sect[s - 1]->texts[j] = NULL;
 				}
 				(!(mlx->sect[s - 1]->verts[0] = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
+
+				if (!ft_ival_check(t[j - 1]))
+					ft_map_error();
+				int indx = ft_atoi(t[j - 1]);
+				if (indx < 0 || indx > v - 2)
+					ft_map_error();
+
 				mlx->sect[s - 1]->verts[0]->x = (double)verts[ft_atoi(t[j - 1])]->x;
 				mlx->sect[s - 1]->verts[0]->y = (double)verts[ft_atoi(t[j - 1])]->y;
 
@@ -252,11 +294,19 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				int n_count = 0;
 				while (t[n_count])
 					n_count++;
+
+				if (n_count != v_count)
+					ft_map_error();
+
 				mlx->sect[s - 1]->neighbors_count = n_count;
 				(!(mlx->sect[s - 1]->neighbors = (int*)malloc(sizeof(int) * n_count))) ? ft_mem_error() : 1;
 				j = 0;
 				while (j < n_count)
 				{
+					int neigh = ft_atoi(t[j]);
+					if (neigh < -1 || neigh > v - 2)
+						ft_map_error();
+
 					mlx->sect[s - 1]->neighbors[j] = ft_atoi(t[j]);
 					j++;
 				}
@@ -266,7 +316,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->sect[s - 1]->obj_list = NULL;
 				mlx->sect[s - 1]->obj_count = 0;
 
-				if (temp[4])
+				if (temp[4] && ft_fval_check(temp[4]))
 				{
 					mlx->sect[s - 1]->light = 0;
 					mlx->sect[s - 1]->lum = ft_clamp(ft_atof(temp[4]), 0.25f, 0.95f);
@@ -291,8 +341,15 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 
 				char **t;
 				t = ft_strsplit(temp[1], ' ');
+
+				if (!ft_fval_check(t[0]) || !ft_fval_check(t[1]))
+					ft_map_error();
+
 				mlx->sect[0]->floor = (double)ft_atof(t[0]);
 				mlx->sect[0]->ceiling = (double)ft_atof(t[1]);
+
+				if (mlx->sect[0]->floor > mlx->sect[0]->ceiling)
+					ft_map_error();
 
 				ft_strsplit_free(t);
 
@@ -310,14 +367,28 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				while (++j < v_count)
 				{
 					(!(mlx->sect[0]->verts[j + 1] = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
-					mlx->sect[0]->verts[j + 1]->x = (double)verts[ft_atoi(t[j])]->x;
-					mlx->sect[0]->verts[j + 1]->y = (double)verts[ft_atoi(t[j])]->y;
+
+					if (!ft_ival_check(t[j]))
+						ft_map_error();
+					int indx = ft_atoi(t[j]);
+					if (indx < 0 || indx > v - 2)
+						ft_map_error();
+
+					mlx->sect[0]->verts[j + 1]->x = (double)verts[indx]->x;
+					mlx->sect[0]->verts[j + 1]->y = (double)verts[indx]->y;
 
 					mlx->sect[0]->texts[j] = NULL;
 				}
 				(!(mlx->sect[0]->verts[0] = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
-				mlx->sect[0]->verts[0]->x = (double)verts[ft_atoi(t[j - 1])]->x;
-				mlx->sect[0]->verts[0]->y = (double)verts[ft_atoi(t[j - 1])]->y;
+
+				if (!ft_ival_check(t[j - 1]))
+						ft_map_error();
+				int indx = ft_atoi(t[j - 1]);
+				if (indx < 0 || indx > v - 2)
+					ft_map_error();
+
+				mlx->sect[0]->verts[0]->x = (double)verts[indx]->x;
+				mlx->sect[0]->verts[0]->y = (double)verts[indx]->y;
 
 				ft_strsplit_free(t);
 
@@ -325,12 +396,20 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				int n_count = 0;
 				while (t[n_count])
 					n_count++;
+
+				if (n_count != v_count)
+					ft_map_error();
+
 				mlx->sect[0]->neighbors_count = n_count;
 				(!(mlx->sect[0]->neighbors = (int*)malloc(sizeof(int) * n_count))) ? ft_mem_error() : 1;
 				j = 0;
 				while (j < n_count)
 				{
-					mlx->sect[0]->neighbors[j] = ft_atoi(t[j]);
+					int neigh = ft_atoi(t[j]);
+					if (neigh < -1 || neigh > v - 2)
+						ft_map_error();
+
+					mlx->sect[0]->neighbors[j] = neigh;
 					j++;
 				}
 				mlx->sect[0]->ceil_txt = -1;
@@ -339,7 +418,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				mlx->sect[0]->obj_list = NULL;
 				mlx->sect[0]->obj_count = 0;
 
-				if (temp[4])
+				if (temp[4] && ft_fval_check(temp[4]))
 				{
 					mlx->sect[0]->light = 0;
 					mlx->sect[0]->lum = ft_clamp(ft_atof(temp[4]), 0.25f, 0.95f);
@@ -363,23 +442,53 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 		if (line[0] == 't' && line[1] == '|')
 		{
 			temp = ft_strsplit(line, '|');
-			int tmp = ft_atoi(temp[1]);
-			char **tmp_t = ft_strsplit(temp[3], ' ');
-			int j = -1;
-			while (++j < mlx->sect[tmp]->txt_count)
-				mlx->sect[tmp]->texts[j] = ft_strdup(tmp_t[j]);
 
-			ft_strsplit_free(tmp_t);
+			int l = -1;
+			while (temp[++l]);
+			if (l < 4 || !ft_ival_check(temp[1]))
+				ft_map_error();
+			int sect = ft_atoi(temp[1]);
+			if (sect < 0 || sect > s - 2)
+				ft_map_error();
 
-			tmp_t = ft_strsplit(temp[2], ' ');
-			mlx->sect[tmp]->floor_txt = ft_atoi(tmp_t[0]);
-			mlx->sect[tmp]->ceil_txt = ft_atoi(tmp_t[1]);
+			char **tmp_t = ft_strsplit(temp[2], ' ');
+
+			l = -1;
+			while (tmp_t[++l]);
+			if (l < 2)
+				ft_map_error();
+
+			int floor_txt = ft_atoi(tmp_t[0]);
+			int ceil_txt = ft_atoi(tmp_t[1]);
+			if (floor_txt < 0 || floor_txt > TXT - 1)
+				mlx->sect[sect]->floor_txt = -1;
+			else
+				mlx->sect[sect]->floor_txt = floor_txt;
+			if (ceil_txt < 0 || ceil_txt > TXT - 1)
+				mlx->sect[sect]->ceil_txt = -1;
+			else
+				mlx->sect[sect]->ceil_txt = ceil_txt;
 
 			if (ft_strcmp(tmp_t[1], "sky") == 0)
 			{
-				mlx->sect[tmp]->sky = 1;
-				mlx->sect[tmp]->ceil_txt = -1;
+				mlx->sect[sect]->sky = 1;
+				mlx->sect[sect]->ceil_txt = -1;
 			}
+			if (!ft_ival_check(tmp_t[0]) || (!ft_ival_check(tmp_t[1]) && mlx->sect[sect]->sky != 1))
+				ft_map_error();
+
+			ft_strsplit_free(tmp_t);
+
+			tmp_t = ft_strsplit(temp[3], ' ');
+
+			l = -1;
+			while (tmp_t[++l]);
+			if (l != mlx->sect[sect]->verts_count)
+				ft_map_error();
+
+			int j = -1;
+			while (++j < mlx->sect[sect]->txt_count)
+				mlx->sect[sect]->texts[j] = ft_strdup(tmp_t[j]);
 
 			ft_strsplit_free(tmp_t);
 			ft_strsplit_free(temp);
@@ -387,8 +496,27 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 		if (line[0] == 'o' && line[1] == '|')
 		{
 			temp = ft_strsplit(line, '|');
+			int l = -1;
+			while (temp[++l]);
+			if (l < 4)
+				ft_map_error();
+
 			char **tmp_t = ft_strsplit(temp[2], ' ');
+			l = -1;
+			while (tmp_t[++l]);
+			if (l != 2 || !ft_fval_check(tmp_t[0]) || !ft_fval_check(tmp_t[1]))
+				ft_map_error();
+
 			int sect_n = ft_atoi(temp[1]);
+			if (sect_n < 0 || sect_n > s - 2)
+				ft_map_error();
+
+			if (!ft_ival_check(temp[3]))
+				ft_map_error();
+			int obj_i = ft_atoi(temp[3]);
+			if (obj_i < 0 || obj_i > OBJ - 1)
+				ft_map_error();
+
 			t_sector *sect = mlx->sect[sect_n];
 
 			if (sect->obj_count > 0)
@@ -399,7 +527,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				sect->obj_list->next->specs->x = ft_atof(tmp_t[0]);
 				sect->obj_list->next->specs->y = ft_atof(tmp_t[1]);
 				sect->obj_list->next->specs->z = mlx->sect[sect_n]->floor;
-				sect->obj_list->next->specs->obj_i = ft_atoi(temp[3]);
+				sect->obj_list->next->specs->obj_i = obj_i;
 				sect->obj_list->next->specs->has_collider = 0;
 				if (ft_obj_index_check(sect->obj_list->next->specs->obj_i))
 					ft_set_obj_collider(mlx, sect->obj_list->next);
@@ -424,7 +552,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				sect->obj_list->specs->x = ft_atof(tmp_t[0]);
 				sect->obj_list->specs->y = ft_atof(tmp_t[1]);
 				sect->obj_list->specs->z = mlx->sect[sect_n]->floor;
-				sect->obj_list->specs->obj_i = ft_atoi(temp[3]);
+				sect->obj_list->specs->obj_i = obj_i;
 				sect->obj_list->specs->has_collider = 0;
 				if (ft_obj_index_check(sect->obj_list->specs->obj_i))
 					ft_set_obj_collider(mlx, sect->obj_list);
@@ -449,12 +577,29 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 		if (line[0] == 'g' && line[1] == '|')
 		{
 			temp = ft_strsplit(line, '|');
+			int l = -1;
+			while (temp[++l]);
+			if (l < 4 || !ft_ival_check(temp[1]) || !ft_ival_check(temp[2]) || !ft_ival_check(temp[3]))
+				ft_map_error();
+
+			int sect = ft_atoi(temp[1]);
+			if (sect < 0 || sect > s - 2)
+				ft_map_error();
+
+			int side = ft_atoi(temp[2]);
+			if (side < 0 || side > mlx->sect[sect]->verts_count - 1)
+				ft_map_error();
+
+			int trans_i = ft_atoi(temp[3]);
+			if (trans_i < 0 || trans_i > TRANSPARENT - 1)
+				ft_map_error();
+
 			if (g > 1)
 			{
 				(!(mlx->trans_list->next = (t_trans*)malloc(sizeof(t_trans)))) ? ft_mem_error() : 1;
-				mlx->trans_list->next->sect = ft_atoi(temp[1]);
-				mlx->trans_list->next->side = ft_atoi(temp[2]);
-				mlx->trans_list->next->trans_i = ft_atoi(temp[3]);
+				mlx->trans_list->next->sect = sect;
+				mlx->trans_list->next->side = side;
+				mlx->trans_list->next->trans_i = trans_i;
 				mlx->trans_list = mlx->trans_list->next;
 
 				mlx->trans_list->prev = trans_prev;
@@ -462,7 +607,12 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 
 				(!(mlx->trans_list->next = (t_trans*)malloc(sizeof(t_trans)))) ? ft_mem_error() : 1;
 				int neigh_sect = (mlx->sect[mlx->trans_list->sect]->neighbors[mlx->trans_list->side]);
+
+				if (neigh_sect < 0)
+					ft_map_error();
+
 				int mirror_side = ft_find_sect_mirror_side(mlx, mlx->trans_list->sect, mlx->trans_list->side, neigh_sect);
+
 				mlx->trans_list->next->sect = neigh_sect;
 				mlx->trans_list->next->side = mirror_side;
 				mlx->trans_list->next->trans_i = mlx->trans_list->trans_i;
@@ -474,9 +624,9 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 			else
 			{
 				(!(mlx->trans_list = (t_trans*)malloc(sizeof(t_trans)))) ? ft_mem_error() : 1;
-				mlx->trans_list->sect = ft_atoi(temp[1]);
-				mlx->trans_list->side = ft_atoi(temp[2]);
-				mlx->trans_list->trans_i = ft_atoi(temp[3]);
+				mlx->trans_list->sect = sect;
+				mlx->trans_list->side = side;
+				mlx->trans_list->trans_i = trans_i;
 
 				mlx->trans_list->prev = NULL;
 				temp_trans = mlx->trans_list;
@@ -484,6 +634,10 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 
 				(!(mlx->trans_list->next = (t_trans*)malloc(sizeof(t_trans)))) ? ft_mem_error() : 1;
 				int neigh_sect = (mlx->sect[mlx->trans_list->sect]->neighbors[mlx->trans_list->side]);
+
+				if (neigh_sect < 0)
+					ft_map_error();
+
 				int mirror_side = ft_find_sect_mirror_side(mlx, mlx->trans_list->sect, mlx->trans_list->side, neigh_sect);
 
 				mlx->trans_list->next->sect = neigh_sect;
@@ -502,11 +656,28 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 		if (line[0] == 'w' && line[1] == '|')
 		{
 			temp = ft_strsplit(line, '|');
-			
+			int l = -1;
+			while (temp[++l]);
+			if (l < 5 || !ft_ival_check(temp[1]) || !ft_ival_check(temp[2]) || !ft_ival_check(temp[4]))
+				ft_map_error();
+
 			int w_sect = ft_atoi(temp[1]);
+			if (w_sect < 0 || w_sect > s - 2)
+				ft_map_error();
+
 			int w_side = ft_atoi(temp[2]);
+			if (w_side < 0 || w_side > mlx->sect[w_sect]->verts_count - 1)
+				ft_map_error();
+
 			char **w_pos = ft_strsplit(temp[3], ' ');
+			l = -1;
+			while (w_pos[++l]);
+			if (l != 3 || !ft_fval_check(w_pos[0]) || !ft_fval_check(w_pos[1]) || !ft_fval_check(w_pos[2]))
+				ft_map_error();
+
 			int w_i = ft_atoi(temp[4]);
+			if (w_i < 0 || w_i > WOBJ - 1)
+				ft_map_error();
 
 			short swtch = 1;
 			if (w_i == 8 && mlx->sect[w_sect]->has_switcher)
@@ -514,7 +685,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 
 			if (w_i == 8)
 			{
-				if (temp[5])
+				if (temp[5] && ft_fval_check(temp[5]))
 				{
 					double lum = ft_atof(temp[5]);
 					if (lum >= 0.25f && lum <= 0.95f)
@@ -579,7 +750,14 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 		if (line[0] == 'd' && line[1] == '|')
 		{
 			temp = ft_strsplit(line, '|');
+			int l = -1;
+			while (temp[++l]);
+			if (l < 2 || !ft_ival_check(temp[1]))
+				ft_map_error();
+
 			int sect = ft_atoi(temp[1]);
+			if (sect < 0 || sect > s - 2)
+				ft_map_error();
 
 			mlx->sect[sect]->is_door = 1;
 			mlx->sect[sect]->close = 0;
@@ -593,21 +771,36 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 		if (line[0] == 'p' && line[1] == '|')
 		{
 			temp = ft_strsplit(line, '|');
+			int l = -1;
+			while (temp[++l]);
+			if (l < 4 || !ft_ival_check(temp[2]) || !ft_fval_check(temp[3]))
+				ft_map_error();
+
+			int sect = ft_atoi(temp[2]);
+			if (sect < 0 || sect > s - 2)
+				ft_map_error();
 
 			(!(mlx->player->pos = (t_vec3*)malloc(sizeof(t_vec3)))) ? ft_mem_error() : 1;
 			(!(mlx->player->velocity = (t_vec3*)malloc(sizeof(t_vec3)))) ? ft_mem_error() : 1;
 
 			mlx->player->eye_h = EYE_H;
 			mlx->player->angle = (double)ft_atof(temp[3]);
-			mlx->player->sector = ft_atoi(temp[2]);
+			mlx->player->sector = sect;
 
 			char **t;
 			t = ft_strsplit(temp[1], ' ');
+			l = -1;
+			while (t[++l]);
+			if (l != 2 || !ft_fval_check(t[0]) || !ft_fval_check(t[1]))
+				ft_map_error();
+
 			mlx->player->pos->x = (double)ft_atof(t[0]);
 			mlx->player->pos->y = (double)ft_atof(t[1]);
 			mlx->player->pos->z = (double)mlx->sect[mlx->player->sector]->floor + mlx->player->eye_h;
 
 			mlx->player->jetpack = 0;
+
+			p++;
 
 			ft_strsplit_free(t);
 			ft_strsplit_free(temp);
@@ -630,6 +823,9 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 		(!(mlx->shoot_p = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
 		ft_wobj_pos_correct(mlx);
 	}
+
+	if (p != 1)
+		ft_player_count_error(p);
 
 	printf("px %f	py %f	sect %d\n\n", mlx->player->pos->x, mlx->player->pos->y, mlx->player->sector);
 	int j = -1;
@@ -660,5 +856,8 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 		mlx->sect_wobj[wobj->sect]->side[wobj->side]++;
 		wobj = wobj->next;
 	}
+
+	ft_validate_map(mlx);
+
 	printf("\n");
 }

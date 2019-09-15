@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 15:17:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/05 18:51:14 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/15 16:58:03 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,12 +227,14 @@ void	ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector)
 		}
 	}
 
-	if (x1 < -W || x1 > 2 * W || x2 < -W || x2 > 2 * W || obj->dist < 0.25f)
+	if (x1 < -W || x1 > 2 * W || x2 < -W || x2 > 2 * W || obj->dist < 0.5f)
 		return ;
 	int ox = -1;
 	while (++ox < obj_w)
 	{
 		int xc = (int)(obj_middle - (obj_w / 2.0f) + ox);
+		if (xc < 0 || xc > W - 1)
+			continue;
 		int oy = -1;
 		while (++oy < obj_h)
 		{
@@ -240,9 +242,9 @@ void	ft_draw_sector_obj(t_mlx *mlx, t_obj *obj, int sector)
 			double sample_oy = (double)oy / (double)obj_h;
 			int color = ft_texture_sampling(frame, sample_ox, sample_oy);
 			int yc = (int)ya + (int)oy;
-			if (color != IGNORE_COLOR && color != IGNORE_COLOR1)
+			if (yc >= 0 && yc < H)
 			{
-				if (yc >= 0 && yc < H && xc >= 0 && xc < W)
+				if (color != IGNORE_COLOR && color != IGNORE_COLOR1)
 				{
 					if ((mlx->opening[yc][xc] == obj->specs->sect || mlx->opening[yc][xc] == -1))
 					{

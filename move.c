@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/11 15:06:15 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/13 17:03:25 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/15 18:20:09 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int		ft_trans_find(t_mlx *mlx, int sect, int s)
 	return (0);
 }
 
-int		ft_line_intersect_move(t_mlx *mlx, t_vec2 *p0, t_vec2 *p1, t_vec2 *v0, t_vec2 *v1)
+int		ft_line_intersect_(t_vec2 *p0, t_vec2 *p1, t_vec2 *v0, t_vec2 *v1)
 {
 	double	s1_x;
 	double	s1_y;
@@ -141,7 +141,7 @@ void	ft_collision(t_mlx *mlx)
 				int v = -1;
 				while (++v < 4)
 				{
-					if (ft_line_intersect_move(mlx, mlx->p0, mlx->p1, obj->specs->verts[v + 0], obj->specs->verts[v + 1])
+					if (ft_line_intersect_(mlx->p0, mlx->p1, obj->specs->verts[v + 0], obj->specs->verts[v + 1])
 							&& ft_point_side(px + dx, py + dy,
 								obj->specs->verts[v + 0]->x, obj->specs->verts[v + 0]->y,
 								obj->specs->verts[v + 1]->x, obj->specs->verts[v + 1]->y) >= 0)
@@ -184,7 +184,7 @@ void	ft_collision(t_mlx *mlx)
 			if ((ft_intersect_box(px, py, px + (dx * 2.0f), py + (dy * 2.0f),
 					sector->verts[prev]->x, sector->verts[prev]->y,
 					sector->verts[s + 0]->x, sector->verts[s + 0]->y)
-				|| ft_line_intersect_move(mlx, mlx->p0, mlx->p1, sector->verts[prev], sector->verts[s + 0]))
+				|| ft_line_intersect_(mlx->p0, mlx->p1, sector->verts[prev], sector->verts[s + 0]))
 				&& ft_point_side(px + (dx * 2.0f), py + (dy * 2.0f),
 					sector->verts[prev]->x, sector->verts[prev]->y,
 					sector->verts[s + 0]->x, sector->verts[s + 0]->y) <= 0)
@@ -205,7 +205,7 @@ void	ft_collision(t_mlx *mlx)
 			if ((ft_intersect_box(px, py, px + (dx * 2.0f), py + (dy * 2.0f),
 					sector->verts[s + 1]->x, sector->verts[s + 1]->y,
 					sector->verts[next]->x, sector->verts[next]->y)
-				|| ft_line_intersect_move(mlx, mlx->p0, mlx->p1, sector->verts[s + 1], sector->verts[next]))
+				|| ft_line_intersect_(mlx->p0, mlx->p1, sector->verts[s + 1], sector->verts[next]))
 				&& ft_point_side(px + (dx * 2.0f), py + (dy * 2.0f),
 					sector->verts[s + 1]->x, sector->verts[s + 1]->y,
 					sector->verts[next]->x, sector->verts[next]->y) <= 0)

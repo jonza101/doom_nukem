@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/13 19:04:32 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/15 18:47:34 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ int		ft_check(t_vec3 *p, t_vec2 *v1, t_vec2 *v2)							//	-1.5 -> 1.5
 	double ny = v2->x - v1->x;
 
 	double p_c = (nx * (p->x - v1->x) + ny * (p->y - v1->y)) / sqrtf(nx * nx + ny * ny);
-	printf("check %f\n", p_c);
 	if (p_c <= 1.5f)
 		return (1);
 	return (0);
@@ -206,73 +205,38 @@ void	ft_draw(t_mlx *mlx)
 
 			int neighbor = (sector->neighbors[s]);
 
-			// int e_check = 0;
-			// int edge = 0;
-			// if (mlx->now->sector_n == mlx->player->sector)
-			// {
-			// 	e_check = ft_check(mlx->player->pos, sector->verts[s + 0], sector->verts[s + 1]);
+			int e_check = 0;
+			int edge = 0;
+			if (mlx->now->sector_n == mlx->player->sector)
+			{
+				e_check = ft_check(mlx->player->pos, sector->verts[s + 0], sector->verts[s + 1]);
 
-			// 	mlx->p0->x = mlx->player->pos->x;
-			// 	mlx->p0->y = mlx->player->pos->y;
-			// 	mlx->p1->x = mlx->p0->x + cosf(mlx->player->angle) * FIRE_RANGE;
-			// 	mlx->p1->y = mlx->p0->y + sinf(mlx->player->angle) * FIRE_RANGE;
-			// 	if (e_check == 1 && ft_line_intersect(mlx, mlx->p0, mlx->p1, sector->verts[s + 0], sector->verts[s + 1]))
-			// 	{
-			// 		t_vec2 *v1 = sector->verts[s + 0];
-			// 		t_vec2 *v2 = sector->verts[s + 1];
+				mlx->p0->x = mlx->player->pos->x;
+				mlx->p0->y = mlx->player->pos->y;
+				mlx->p1->x = mlx->p0->x + cosf(mlx->player->angle) * FIRE_RANGE;
+				mlx->p1->y = mlx->p0->y + sinf(mlx->player->angle) * FIRE_RANGE;
+				if (e_check == 1 && ft_line_intersect(mlx, mlx->p0, mlx->p1, sector->verts[s + 0], sector->verts[s + 1]))
+				{
+					t_vec2 *v1 = sector->verts[s + 0];
+					t_vec2 *v2 = sector->verts[s + 1];
 
-			// 		double pr0 = fabs((v2->y - v1->y) * mlx->p0->x - (v2->x - v1->x) * mlx->p0->y + v2->x * v1->y - v2->y * v1->x) / sqrtf(powf(v2->y - v1->y, 2) + powf(v2->x - v1->x, 2));
-			// 		double pr1 = fabs((v2->y - v1->y) * mlx->p1->x - (v2->x - v1->x) * mlx->p1->y + v2->x * v1->y - v2->y * v1->x) / sqrtf(powf(v2->y - v1->y, 2) + powf(v2->x - v1->x, 2));
+					double pr0 = fabs((v2->y - v1->y) * mlx->p0->x - (v2->x - v1->x) * mlx->p0->y + v2->x * v1->y - v2->y * v1->x) / sqrtf(powf(v2->y - v1->y, 2) + powf(v2->x - v1->x, 2));
+					double pr1 = fabs((v2->y - v1->y) * mlx->p1->x - (v2->x - v1->x) * mlx->p1->y + v2->x * v1->y - v2->y * v1->x) / sqrtf(powf(v2->y - v1->y, 2) + powf(v2->x - v1->x, 2));
 
-			// 		double dx = mlx->p0->x - mlx->p1->x;
-			// 		double dy = mlx->p0->y - mlx->p1->y;
-			// 		double w_len = sqrtf(dx * dx + dy * dy);
+					double dx = mlx->p0->x - mlx->p1->x;
+					double dy = mlx->p0->y - mlx->p1->y;
+					double w_len = sqrtf(dx * dx + dy * dy);
 
-			// 		double seg = (pr1 + pr0 != 0) ? (w_len * pr0) / (pr1 + pr0) : 1;
+					double seg = (pr1 + pr0 != 0) ? (w_len * pr0) / (pr1 + pr0) : 1;
 
-			// 		double ang = asinf(pr0 / seg);
-			// 		double deg = ang * (180 / M_PI);
-			// 		printf("rad ang %f\n", ang);
-			// 		printf("deg ang %f\n\n", deg);
+					double ang = asinf(pr0 / seg);
+					double deg = ang * (180 / M_PI);
 
-			// 		mlx->edge = (ang > 1.32f && (x1 >= x2 || x2 < mlx->now->sx1 || x1 > mlx->now->sx2) && neighbor >= 0) ? 1 : 0;
-			// 		edge = (ang > 1.32f && (x1 >= x2 || x2 < mlx->now->sx1 || x1 > mlx->now->sx2) && neighbor < 0) ? 1 : 0;
-			// 		// if (mlx->edge)
-			// 		// {
-			// 		// 	double diff_l = fabs(1.57f - ang);
-			// 		// 	double diff_r = fabs(ang - 1.32f);
-			// 		// 	// // printf("diff_l %f\n", diff_l);
-			// 		// 	// // printf("diff_r %f\n\n", diff_r);
-			// 		// 	if (diff_l < diff_r)
-			// 		// 		mlx->player->angle += diff_r;
-			// 		// 	else
-			// 		// 		mlx->player->angle -= diff_l;
-			// 		// 	// if (diff_l < diff_r)
-			// 		// 	// {
-			// 		// 	// 	mlx->player->angle -= diff_l;
-			// 		// 	// 	mlx->left = 1;
-			// 		// 	// 	if (mlx->right == 1)
-			// 		// 	// 		mlx->e_angle = mlx->player->angle;
-			// 		// 	// 	mlx->right = 0;
-			// 		// 	// }
-			// 		// 	// else
-			// 		// 	// {
-			// 		// 	// 	mlx->player->angle += diff_r;
-			// 		// 	// 	mlx->right = 1;
-			// 		// 	// 	if (mlx->left == 1)
-			// 		// 	// 		mlx->e_angle = mlx->player->angle;
-			// 		// 	// 	mlx->left = 0;
-			// 		// 	// }
-			// 		// 	mlx->player->sin_angle = sinf(mlx->player->angle);
-			// 		// 	mlx->player->cos_angle = cosf(mlx->player->angle);
-			// 		// 	ft_draw(mlx);
-			// 		// 	return;
-			// 		// }
-			// 	}
-			// 	// printf("edge %d\n", edge);
-			// }
+					edge = (ang > 1.32f && (x1 >= x2 || x2 < mlx->now->sx1 || x1 > mlx->now->sx2) && neighbor < 0) ? 1 : 0;
+			}
+		}
 
-			if ((x1 >= x2 || x2 < mlx->now->sx1 || x1 > mlx->now->sx2))
+			if ((x1 >= x2 || x2 < mlx->now->sx1 || x1 > mlx->now->sx2) && !edge)
 				continue;
 
 			//	ACQUIRE THE FLOOR AND CEILING HEIGHTS, RELATIVE TO WHERE THE PLAYER'S VIEW IS
@@ -301,7 +265,7 @@ void	ft_draw(t_mlx *mlx)
 			int ny2b = H / 2 + (int)(-(nyfloor + tz2 * mlx->player->yaw) * yscale2);
 
 			//	RENDER THE WALL
-			int beginx = ft_max(x1, mlx->now->sx1);
+			int beginx = (!edge) ? ft_max(x1, mlx->now->sx1) : 0;
 			int endx = ft_min(x2, mlx->now->sx2);
 
 			ft_scaler_init(mlx->ya_int, x1, beginx, x2, y1a, y2a);
