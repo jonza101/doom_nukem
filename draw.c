@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/27 13:56:20 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/11 19:05:39 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/16 21:42:14 by lsandor-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,10 @@ void	ft_gun_anim(t_mlx *mlx, t_weapon *gun, int delay, int cont_delay)
 	if (mlx->player->weapon_state == 1)
 	{
 		if (mlx->gun_delay == 0 && mlx->gun_fire_i == 0)
+		{
+			Mix_PlayChannel(SHOTS_CH, mlx->player->weapon->shot, 0);
 			ft_shoot(mlx);
+		}
 		mlx->gun_delay++;
 		if (mlx->gun_delay >= delay)
 		{
@@ -33,6 +36,8 @@ void	ft_gun_anim(t_mlx *mlx, t_weapon *gun, int delay, int cont_delay)
 			mlx->gun_delay = 0;
 			if (gun != mlx->player->shotgun)
 				gun->mag_ammo--;
+			if (gun->mag_ammo == 0 && mlx->player->weapon == mlx->player->a_rifle)
+				Mix_HaltChannel(15);
 		}
 	}
 	else if (mlx->player->weapon_state == 2)
@@ -54,6 +59,7 @@ void	ft_gun_anim(t_mlx *mlx, t_weapon *gun, int delay, int cont_delay)
 			if (!mlx->altfire)
 				mlx->altfire = 1;
 			gun->mag_ammo--;
+			Mix_PlayChannel(SHOTS_CH, mlx->player->weapon->shot, 0);
 			ft_shoot(mlx);
 		}
 	}

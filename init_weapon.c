@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_weapon.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/30 12:49:39 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/13 21:10:31 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/16 21:30:50 by lsandor-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,7 @@ void	ft_init_arifle_idle(t_mlx *mlx)
 void	ft_init_arifle(t_mlx *mlx)
 {
 	(!(mlx->player->a_rifle = (t_weapon*)malloc(sizeof(t_weapon)))) ? ft_mem_error() : 1;
-	mlx->player->a_rifle->fire_delay = 1;
+	mlx->player->a_rifle->fire_delay = 2;
 	mlx->player->a_rifle->has_altfire = 0;
 	mlx->player->a_rifle->has_reload_ptt = 1;
 	mlx->player->a_rifle->mag_ammo = ARIFLE_AMMO;
@@ -153,6 +153,11 @@ void	ft_init_arifle(t_mlx *mlx)
 	ft_init_arifle_fire(mlx);
 	ft_init_arifle_reload(mlx);
 	ft_init_arifle_reload_ptt(mlx);
+	mlx->player->a_rifle->shot = Mix_LoadWAV("/sound/rifle.wav");
+	mlx->player->a_rifle->assreloadboost = Mix_LoadWAV("/sound/assschelk.wav");
+	mlx->player->a_rifle->assreload = Mix_LoadWAV("/sound/export.wav");
+	mlx->player->a_rifle->reload = Mix_LoadWAV("/sound/assreload.wav");
+	mlx->player->a_rifle->assreloadshort = Mix_LoadWAV("/sound/relaodslow.wav");
 }
 
 void	ft_init_shotgun_fire(t_mlx *mlx)
@@ -226,6 +231,7 @@ void	ft_init_shotgun(t_mlx *mlx)
 	mlx->player->shotgun->x_offset = 18;
 	ft_init_shotgun_idle(mlx);
 	ft_init_shotgun_fire(mlx);
+	mlx->player->shotgun->shot = Mix_LoadWAV("/sound/shotgun.wav");
 }
 
 void	ft_init_revolver_reload(t_mlx *mlx)
@@ -384,7 +390,7 @@ void	ft_init_revolver_idle(t_mlx *mlx)
 void	ft_init_revolver(t_mlx *mlx)
 {
 	(!(mlx->player->revolver = (t_weapon*)malloc(sizeof(t_weapon)))) ? ft_mem_error() : 1;
-	mlx->player->revolver->fire_delay = 3;
+	mlx->player->revolver->fire_delay = 4;
 	mlx->player->revolver->altfire_delay = 2;
 	mlx->player->revolver->altfire_cont_delay = 2;
 	mlx->player->revolver->has_reload_ptt = 0;
@@ -399,4 +405,6 @@ void	ft_init_revolver(t_mlx *mlx)
 	ft_init_revolver_altfire(mlx);
 	ft_init_revolver_altfire_cont(mlx);
 	ft_init_revolver_reload(mlx);
+	mlx->player->revolver->shot = Mix_LoadWAV("/sound/pistol.wav");
+	mlx->player->revolver->reload = Mix_LoadWAV("/sound/reloadrev.wav");
 }

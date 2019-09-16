@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   funcs.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:38 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/16 20:11:30 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/16 21:44:19 by lsandor-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,13 +44,6 @@ int		ft_overlap(double a0, double a1, double b0, double b1)
 {
 	return(ft_min(a0, a1) <= ft_max(b0, b1) && ft_min(b0, b1) <= ft_max(a0, a1));
 }
-
-// int		i_b(t_xy a, t_xy b, t_xy c, t_xy d)
-// {
-// 	if (overlap(a.x, b.x, c.x, d.x) && overlap(a.y, b.y, c.y, d.y))
-// 		return (1);
-// 	return (0);
-// }
 
 int		ft_intersect_box(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3)
 {
@@ -92,6 +85,8 @@ void	ft_scaler_init(t_scaler *scaler, int a, int b, int c, int d, int f)
 int		ft_scaler_next(t_scaler *scaler)
 {
 	scaler->cache += scaler->fd;
+	if (scaler->ca == 0)	
+		return (0);
 	while (scaler->cache >= scaler->ca)
 	{
 		scaler->result += scaler->bop;

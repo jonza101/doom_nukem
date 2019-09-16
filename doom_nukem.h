@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doom_nukem.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/16 16:42:01 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/16 21:28:30 by lsandor-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <pthread.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 
 #define W 1280
 #define H 720
@@ -42,7 +44,7 @@
 #define MAX_WSPRITES_ON_WALL 128
 #define MAX_VISTRANSPARENT 64
 
-#define DBL_MAX 1.7976931348623158e+308
+// #define DBL_MAX 1.7976931348623158e+308
 
 #define UPPER_COLOR 0x330315
 #define LOWER_COLOR 0x1B0030
@@ -75,6 +77,7 @@
 #define INTERACT_RANGE 2.5
 #define SPEED_BOOST_DUR 30
 #define	HP_BOOST_DUR 30
+#define MAX_DOOR_DIST_VOL 50
 
 #define DOOR_TIME 10
 
@@ -82,6 +85,25 @@
 #define LEFT -100
 #define BOTTOM -621
 #define TOP 818
+
+#define VOLUME 128
+#define COUNT_CH 22
+#define SHOTS_CH 15
+#define STEP_CH 20
+#define RELOAD_CH 16
+#define JUMP_CH 21
+#define SWICH_CH 17
+#define BOOM_CH 18
+
+/*
+Mix_channels
+
+15 - shots
+16 - reload
+20 - step
+21 - jump
+17 - swich/door
+ */
 
 typedef struct		s_vec2
 {
@@ -196,6 +218,7 @@ typedef	struct		s_obj
 {
 	t_obj_specs		*specs;
 	double			dist;
+	int 			chan;
 
 	struct s_obj	*next;
 }					t_obj;
@@ -301,6 +324,7 @@ typedef struct		s_sector
 	short			open;
 	short			up;
 	time_t			start_time;
+	double			door_dist;
 
 	short			is_finish;
 
@@ -347,6 +371,12 @@ typedef	struct		s_weapon
 
 	double			scaler;
 	int				x_offset;
+	Mix_Chunk		*shot;
+	Mix_Chunk		*reload;
+	Mix_Chunk		*assreloadshort;
+	Mix_Chunk		*assreload;
+	Mix_Chunk		*assreloadboost;
+	Mix_Chunk		*assreloadboostshort;
 }					t_weapon;
 
 typedef	struct		s_boost
@@ -407,6 +437,33 @@ typedef	struct		s_player
 	t_weapon		*shotgun;
 	t_weapon		*a_rifle;
 }					t_player;
+
+typedef struct s_music
+{
+	Mix_Music	*mus1;
+	Mix_Music	*mus2;
+	Mix_Music	*mus3;
+	Mix_Music	*mus4;
+	Mix_Music	*mus5;
+	int			nummus;
+}				t_music;
+
+typedef struct s_bup
+{
+	Mix_Chunk	*fire;
+	Mix_Chunk	*step;
+	int			cstep;
+	Mix_Chunk	*jump;
+	Mix_Chunk	*swich;
+	Mix_Chunk	*door;
+	Mix_Chunk	*boom;
+}				t_bup;
+
+typedef struct	s_snd
+{
+	t_music		*music;
+	t_bup		*chunks;
+}				t_snd;
 
 typedef	struct		s_mlx
 {
@@ -532,11 +589,19 @@ typedef	struct		s_mlx
 	short			menu;
 	short			button_i;
 
+	t_snd			*snd;
+
 	short			end;
 
 	int				fire[36];
 	int				fire_buff[W * H * 2];
 }					t_mlx;
+
+//adoyle
+void				sound_eff(t_mlx *mlx);
+void				ft_init_obj(t_mlx *mlx);
+
+void				ft_image(t_mlx *mlx, int x, int y, int color);
 
 void				ft_load_map(t_mlx *mlx, char *map_file);
 
@@ -563,7 +628,7 @@ void				ft_collision(t_mlx *mlx);
 void				ft_player_view(t_mlx *mlx);
 
 void				ft_init_textures(t_mlx *mlx);
-void				ft_init_obj(t_mlx *mlx);
+void				ft_ini(t_mlx *mlx);
 void				ft_init_wobj(t_mlx *mlx);
 void				ft_init_transparent(t_mlx *mlx);
 void				ft_init_sky(t_mlx *mlx);

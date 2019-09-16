@@ -29,6 +29,8 @@ int ft_mouse_release(int keycode, int x, int y, t_mlx *mlx)
 {
 	if (keycode == LEFT_CLICK && mlx->player->weapon_state == 1 && mlx->player->weapon == mlx->player->a_rifle && !mlx->menu)
 	{
+		if (mlx->player->weapon == mlx->player->a_rifle)
+			Mix_HaltChannel(15);
 		mlx->player->weapon_state = 0;
 		mlx->gun_fire_i = 0;
 		mlx->gun_delay = 0;

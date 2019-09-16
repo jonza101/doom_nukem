@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   game.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:40:26 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/16 17:18:54 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/16 21:45:57 by lsandor-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,14 @@ void	ft_check_doors(t_mlx *mlx)
 		t_sector *sector = mlx->sect[s];
 		if (sector->is_door)
 		{
+			printf("sect %d			dist %f\n", s, sector->door_dist);
 			if (sector->open)
 			{
 				sector->ceiling += 0.75f;
+				// Mix_PlayChannel(17, mlx->snd->chunks->door, 0);
 				if (sector->ceiling >= sector->start_ceiling)
 				{
+					// Mix_PlayChannel(17, mlx->snd->chunks->door, 0);
 					sector->open = 0;
 					sector->up = 1;
 					sector->ceiling = sector->start_ceiling;
@@ -34,6 +37,18 @@ void	ft_check_doors(t_mlx *mlx)
 			else if (!sector->open && !sector->close && sector->up)
 			{
 				double time_diff = difftime(time(NULL), sector->start_time);
+				printf("%d time %f\n\n", s, time_diff);
+				double h = sector->ceiling - sector->floor;
+				double h2 = h / 15;
+				if (time_diff >= DOOR_TIME - 0.85 / h2 && !(Mix_Playing(17)) && mlx->player->sector != s)
+				{
+					if (sector->door_dist <= MAX_DOOR_DIST_VOL)
+					{
+						Mix_Volume(17, VOLUME - (sector->door_dist / MAX_DOOR_DIST_VOL) * VOLUME);
+						Mix_PlayChannel(17, mlx->snd->chunks->door, 0);
+						// Mix_VolumeChunk(mlx->snd->chunks->door, VOLUME);
+					}
+				}
 				if (time_diff >= DOOR_TIME)
 				{
 					if (mlx->player->sector != s)
@@ -46,8 +61,10 @@ void	ft_check_doors(t_mlx *mlx)
 			else if (sector->close && !sector->up)
 			{
 				sector->ceiling -= 0.75f;
+				// Mix_PlayChannel(17, mlx->snd->chunks->door, 0);
 				if (sector->ceiling <= sector->floor)
 				{
+					// Mix_PlayChannel(17, mlx->snd->chunks->door, 0);
 					sector->close = 0;
 					sector->open = 0;
 					sector->ceiling = sector->floor;

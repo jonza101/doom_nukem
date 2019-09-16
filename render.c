@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/16 20:26:42 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/16 21:52:27 by lsandor-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,17 @@ void	ft_draw(t_mlx *mlx)
 		int s = -1;
 		while (++s < sector->verts_count)
 		{
+			if (sector->is_door)
+            {
+                double dx1 = sector->verts[s + 0]->x - mlx->player->pos->x;
+                double dy1 = sector->verts[s + 0]->y - mlx->player->pos->y;
+                double dist1 = sqrtf(dx1 * dx1 + dy1 * dy1);
+                double dx2 = sector->verts[s + 1]->x - mlx->player->pos->x;
+                double dy2 = sector->verts[s + 1]->y - mlx->player->pos->y;
+                double dist2 = sqrtf(dx2 * dx2 + dy2 * dy2);
+                sector->door_dist = (dist1 < dist2) ? dist1 : dist2;
+            }
+
 			mlx->open_f = 0;
 
 			mlx->r_trans = -1;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/16 18:27:58 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/16 21:34:15 by lsandor-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,55 @@ int ft_close(int i)
 {
 	i = 1;
 	exit(0);
+}
+
+void	initvolume(t_mlx *mlx)
+{
+	Mix_VolumeChunk(mlx->snd->chunks->step, VOLUME);
+	Mix_VolumeChunk(mlx->snd->chunks->jump, VOLUME);
+	Mix_VolumeChunk(mlx->snd->chunks->swich, VOLUME);
+	Mix_VolumeChunk(mlx->snd->chunks->door, VOLUME);
+	Mix_VolumeChunk(mlx->snd->chunks->fire, VOLUME);
+	Mix_VolumeChunk(mlx->snd->chunks->boom, VOLUME);
+}
+
+void	initsdl(t_mlx *mlx)
+{
+	SDL_Window *window;
+	t_snd *snd;
+	snd = malloc(sizeof(t_snd));
+	snd->music = malloc(sizeof(t_music));
+	snd->chunks = malloc(sizeof(t_bup));
+	mlx->snd = snd;
+//	if (SDL_Init(SDL_INIT_AUDIO) < 0)
+//		return ;
+	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
+		return ;
+	// window = SDL_CreateWindow("Hello, SDL 2!",SDL_WINDOWPOS_UNDEFINED,
+	// 						  SDL_WINDOWPOS_UNDEFINED, 640, 640,
+	// 						  SDL_WINDOW_SHOWN);
+	if (Mix_OpenAudio( 22050, MIX_DEFAULT_FORMAT, 2, 4096 ) == -1) 
+		return ;
+	snd->music->mus1 = NULL;
+	//snd->music->mus1 = Mix_LoadMUS( "/sound/blade1.ogg"); //объединить все дорожки музщыки в одну для оптимизации
+	// snd->music->mus2 = Mix_LoadMUS( "/sound/blade2.ogg");
+	// snd->music->mus3 = Mix_LoadMUS( "/sound/blade3.ogg");
+	// snd->music->mus4 = Mix_LoadMUS( "/sound/blade4.ogg");
+	// snd->music->mus5 = Mix_LoadMUS( "/sound/blade5.ogg");
+	mlx->snd->music->nummus = 1;
+	mlx->snd->chunks->fire = Mix_LoadWAV("/sound/fire_zkyuzme_.wav");
+	mlx->snd->chunks->step = Mix_LoadWAV("/sound/step.wav");
+	mlx->snd->chunks->jump = Mix_LoadWAV("/sound/jump.wav");
+	mlx->snd->chunks->swich = Mix_LoadWAV("/sound/swich.wav");
+	mlx->snd->chunks->door = Mix_LoadWAV("/sound/door.wav");
+	mlx->snd->chunks->boom = Mix_LoadWAV("/sound/boom.wav");
+	// mlx->player->revolver->shot = Mix_LoadWAV("/sound/pistol.wav");
+	// mlx->player->shotgun->shot = Mix_LoadWAV("/sound/shotgun.wav");
+	while (!(snd->music->mus1))
+		snd->music->mus1 = Mix_LoadMUS( "/sound/blade1.ogg");
+	Mix_AllocateChannels(COUNT_CH);
+	mlx->snd->chunks->cstep = -1;
+	initvolume(mlx);
 }
 
 int ft_mouse_move(int x, int y, t_mlx *mlx)
@@ -170,6 +219,32 @@ void ft_init(t_mlx *mlx)
 	mlx->end = 0;
 }
 
+void	playmusic(t_music *music)
+{
+	if (Mix_PlayingMusic() == 0)
+	{
+		if (music->nummus == 1)
+		{
+			music->nummus = 2;
+			Mix_PlayMusic(music->mus1, 0);
+		}
+		else if (music->nummus == 2)
+		{
+			music->nummus = 1;
+			Mix_PlayMusic(music->mus1, 0);
+		}
+//		if (Mix_PlayMusic(music->mus3, 0) == -1)
+//			return;
+//		while (Mix_PlayingMusic());
+//		if (Mix_PlayMusic(music->mus4, 0) == -1)
+//			return;
+//		while (Mix_PlayingMusic());
+//		if (Mix_PlayMusic(music->mus5, 0) == -1)
+//			return;
+//		while (Mix_PlayingMusic());
+	}
+}
+
 int main(int argc, char **argv)
 {
 	t_mlx *mlx;
@@ -182,12 +257,16 @@ int main(int argc, char **argv)
 
 	mlx->player = (t_player *)malloc(sizeof(t_player));
 
+	initsdl(mlx);
 	ft_init_graphics(mlx);
 	if (argc == 2)
 		ft_load_map(mlx, argv[1]);
 	else
 		ft_load_map(mlx, "maps/map4");
 	ft_init(mlx);
+
+	//adoyle
+	playmusic(mlx->snd->music);
 
 	// mlx_hook(mlx->win, 6, 1L << 6, ft_mouse_move, mlx);
 	mlx_hook(mlx->win, 4, 0, ft_mouse_press, mlx);
