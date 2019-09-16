@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:38 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/15 15:04:07 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/16 20:11:30 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,13 @@ int		ft_overlap(double a0, double a1, double b0, double b1)
 {
 	return(ft_min(a0, a1) <= ft_max(b0, b1) && ft_min(b0, b1) <= ft_max(a0, a1));
 }
+
+// int		i_b(t_xy a, t_xy b, t_xy c, t_xy d)
+// {
+// 	if (overlap(a.x, b.x, c.x, d.x) && overlap(a.y, b.y, c.y, d.y))
+// 		return (1);
+// 	return (0);
+// }
 
 int		ft_intersect_box(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3)
 {
@@ -85,8 +92,6 @@ void	ft_scaler_init(t_scaler *scaler, int a, int b, int c, int d, int f)
 int		ft_scaler_next(t_scaler *scaler)
 {
 	scaler->cache += scaler->fd;
-	if (scaler->ca == 0)
-		return (0);
 	while (scaler->cache >= scaler->ca)
 	{
 		scaler->result += scaler->bop;
@@ -172,7 +177,7 @@ void	ft_draw_vline(t_mlx *mlx, int x, int y1, int y2, int top_color,int middle_c
 	}
 }
 
-void	ft_draw_tvline(t_mlx *mlx, int x, int y1, int y2, unsigned txtx, t_img *texture, int rend_i)		//|		0 - WALL	|	1 - TRANSPARENT	|	1 - WALL_OBJECT		|
+void	ft_draw_tvline(t_mlx *mlx, int x, int y1, int y2, unsigned txtx, t_img *texture, int rend_i)
 {
 	y1 = ft_clamp(y1, 0, H - 1);
 	y2 = ft_clamp(y2, 0, H - 1);

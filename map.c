@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/15 18:52:20 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/16 20:23:18 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 	char *line;
 	int fd = open(map_file, O_RDONLY);
 	if (fd < 0)
-		return ;
+		ft_map_error();
 	
 	char **temp;
 
@@ -255,6 +255,10 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				int v_count = 0;
 				while (t[v_count])
 					v_count++;
+
+				if (v_count < 3)
+					ft_map_error();
+
 				mlx->sect[s - 1]->verts_count = v_count;
 				(!(mlx->sect[s - 1]->verts = (t_vec2**)malloc(sizeof(t_vec2*) * (v_count + 1)))) ? ft_mem_error() : 1;
 
@@ -331,6 +335,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 
 				mlx->sect[s - 1]->sky = 0;
 				mlx->sect[s - 1]->is_door = 0;
+				mlx->sect[s - 1]->is_finish = 0;
 
 				ft_strsplit_free(t);
 			}
@@ -357,6 +362,10 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 				int v_count = 0;
 				while (t[v_count])
 					v_count++;
+
+				if (v_count < 3)
+					ft_map_error();
+
 				mlx->sect[0]->verts_count = v_count;
 				(!(mlx->sect[0]->verts = (t_vec2**)malloc(sizeof(t_vec2*) * (v_count + 1)))) ? ft_mem_error() : 1;
 
@@ -433,6 +442,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 
 				mlx->sect[0]->sky = 0;
 				mlx->sect[0]->is_door = 0;
+				mlx->sect[0]->is_finish = 0;
 
 				ft_strsplit_free(t);
 			}
@@ -805,6 +815,19 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 			ft_strsplit_free(t);
 			ft_strsplit_free(temp);
 		}
+		if (line[0] == 'f' && line[1] == '|')
+		{
+			temp = ft_strsplit(line, '|');
+			int l = -1;
+			while (temp[++l]);
+			if (l < 2 || !ft_ival_check(temp[1]))
+				ft_map_error();
+			int sect = ft_atoi(temp[1]);
+			if (sect < 0 || sect > s - 2)
+				ft_map_error();
+			mlx->sect[sect]->is_finish = 1;
+			ft_strsplit_free(temp);
+		}
 		ft_strdel(&line);
 	}
 	close(fd);
@@ -827,7 +850,6 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 	if (p != 1)
 		ft_player_count_error(p);
 
-	printf("px %f	py %f	sect %d\n\n", mlx->player->pos->x, mlx->player->pos->y, mlx->player->sector);
 	int j = -1;
 	while (++j < v - 1)
 		free(verts[j]);
@@ -858,6 +880,4 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 	}
 
 	ft_validate_map(mlx);
-
-	printf("\n");
 }

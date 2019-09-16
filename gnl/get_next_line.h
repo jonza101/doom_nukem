@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/29 12:52:51 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/07/13 16:24:37 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/16 17:12:10 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,5 @@
 # include <string.h>
 
 int			get_next_line(const int fd, char **line);
-void		ft_cut_line(char **temp, int fd, char **line, int len);
-int			ft_newline_check(char *buff);
 
 #endif

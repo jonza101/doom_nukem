@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:40:26 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/15 18:30:56 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/16 17:18:54 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ void	ft_check_doors(t_mlx *mlx)
 			else if (!sector->open && !sector->close && sector->up)
 			{
 				double time_diff = difftime(time(NULL), sector->start_time);
-				// printf("%d time %f\n", s, time_diff);
 				if (time_diff >= DOOR_TIME)
 				{
 					if (mlx->player->sector != s)
@@ -57,6 +56,62 @@ void	ft_check_doors(t_mlx *mlx)
 			}
 		}
 	}
+}
+
+void	ft_draw_end(t_mlx *mlx)
+{
+	// int x = -1;
+	// while (++x < W)
+	// {
+	// 	int y = -1;
+	// 	while (++y < H)
+	// 		mlx->data[y * W + x] = mlx->fire[0];
+	// }
+
+	int x = -1;
+	while (++x < W)
+	{
+		int y = 0;
+		mlx->data[x] = mlx->fire[0];
+		while (++y < H)
+		{
+			int src = y * W + x;
+			int pix = mlx->fire_buff[src];
+			if (pix == 0)
+				mlx->fire_buff[src - W] = 0;
+			else
+			{
+				int random = (rand() % 3) & 3;
+				int dst = src - random + 1;
+				mlx->fire_buff[dst - W] = abs(mlx->fire_buff[src] - (random & 1));
+			}
+			mlx->data[src] = mlx->fire[mlx->fire_buff[src]];
+		}
+	}
+
+	ft_draw_chr(mlx, mlx->end_font[0], 478, 362, 120);
+	ft_draw_chr(mlx, mlx->end_font[1], 539, 360, 115);
+	ft_draw_chr(mlx, mlx->end_font[2], 600, 362, 120);
+	ft_draw_chr(mlx, mlx->end_font[2], 680, 362, 120);
+	ft_draw_chr(mlx, mlx->end_font[3], 741, 359, 114);
+	ft_draw_chr(mlx, mlx->end_font[4], 801, 360, 115);
+
+	// int i = -1;
+	// while (++i < H)
+	// {
+	// 	mlx->data[i * W + W / 2] = 0xFF0000;
+	// 	mlx->data[i * W + 569] = 0xFF0000;
+	// 	mlx->data[i * W + 508] = 0xFF0000;
+	// 	mlx->data[i * W + 710] = 0xFF0000;
+	// 	mlx->data[i * W + 770] = 0xFF0000;
+	// }
+	// i = -1;
+	// while (++i < W)
+	// {
+	// 	mlx->data[H / 2 * W + i] = 0xFF0000;
+	// 	mlx->data[300 * W + i] = 0xFF0000;
+	// 	mlx->data[423 * W + i] = 0xFF0000;
+	// }
 }
 
 void	ft_draw_menu_back(t_mlx *mlx)
@@ -82,7 +137,7 @@ void	ft_draw_menu_back(t_mlx *mlx)
 		}
 	}
 
-	ft_draw_chr(mlx, mlx->menu_font[0], 572, 86, 127);
+	ft_draw_chr(mlx, mlx->menu_font[0], 573, 86, 127);
 	ft_draw_chr(mlx, mlx->menu_font[1], 619, 75, 105);
 	ft_draw_chr(mlx, mlx->menu_font[1], 661, 75, 105);
 	ft_draw_chr(mlx, mlx->menu_font[2], 712, 88, 132);
@@ -123,28 +178,43 @@ void	ft_draw_menu_back(t_mlx *mlx)
 
 void	ft_play(t_mlx *mlx)
 {
+	int y = -1;
+	while (++y < H * 2)
+	{
+		int x = -1;
+		while (++x < W)
+		{
+			if (y == H - 1)
+				mlx->fire_buff[y * W + x] = 35;
+			else
+				mlx->fire_buff[y * W + x] = 0;
+		}
+	}
 	mlx->menu = 0;
 }
 
 int		ft_game_loop(t_mlx *mlx)
 {
+	ft_bzero(mlx->data, W * H * 4);
 	if (mlx->menu)
 	{
-		// printf("%d\n", mlx->button_i);
-		ft_bzero(mlx->data, W * H * 4);
 		mlx_clear_window(mlx->mlx, mlx->win);
 		ft_draw_menu_back(mlx);
+		mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
+		return (0);
+	}
+	if (mlx->end)
+	{
+		mlx_clear_window(mlx->mlx, mlx->win);
+		ft_draw_end(mlx);
 		mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
 		return (0);
 	}
 
 	// clock_t start_time = clock();
 
-	ft_bzero(mlx->data, W * H * 4);
-
 	ft_drawseg_sort(mlx);
 
-	// printf("doors %d\n", mlx->activated_doors);
 	(mlx->activated_doors) ? ft_check_doors(mlx) : 1;
 
 	ft_collision(mlx);

@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/06 14:49:08 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/08/28 21:14:28 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/16 17:48:05 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,11 +73,11 @@ int		get_next_line(const int fd, char **line)
 		if (ft_newline_check(buff) == 0)
 			break ;
 	}
+	free(buff);
 	if (len < 0)
 		return (-1);
 	if (len == 0 && (temp[fd] == NULL || temp[fd][0] == '\0'))
 		return (0);
-	free(buff);
 	ft_cut_line(temp, fd, line, len);
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/15 18:47:34 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/16 20:26:42 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,8 +146,7 @@ void	ft_draw(t_mlx *mlx)
 				double nearside = 1e-5f;
 				double farside = 20.0f;
 
-				// //	FIND AN INTERSECTION BETWEEN THE WALL AND THE APPROXIMATE EDGES OF PLAYER'S VIEW
-
+				//	FIND AN INTERSECTION BETWEEN THE WALL AND THE APPROXIMATE EDGES OF PLAYER'S VIEW
 				ft_intersect(mlx->i1, tx1, tz1, tx2, tz2, -nearside, near_z, -farside, far_z);
 				ft_intersect(mlx->i2, tx1, tz1, tx2, tz2, nearside, near_z, farside, far_z);
 
@@ -233,8 +232,8 @@ void	ft_draw(t_mlx *mlx)
 					double deg = ang * (180 / M_PI);
 
 					edge = (ang > 1.32f && (x1 >= x2 || x2 < mlx->now->sx1 || x1 > mlx->now->sx2) && neighbor < 0) ? 1 : 0;
+				}
 			}
-		}
 
 			if ((x1 >= x2 || x2 < mlx->now->sx1 || x1 > mlx->now->sx2) && !edge)
 				continue;
@@ -265,7 +264,8 @@ void	ft_draw(t_mlx *mlx)
 			int ny2b = H / 2 + (int)(-(nyfloor + tz2 * mlx->player->yaw) * yscale2);
 
 			//	RENDER THE WALL
-			int beginx = (!edge) ? ft_max(x1, mlx->now->sx1) : 0;
+			// int beginx = (!edge) ? ft_max(x1, mlx->now->sx1) : 0;
+			int beginx = ft_max(x1, mlx->now->sx1);
 			int endx = ft_min(x2, mlx->now->sx2);
 
 			ft_scaler_init(mlx->ya_int, x1, beginx, x2, y1a, y2a);
@@ -312,6 +312,12 @@ void	ft_draw(t_mlx *mlx)
 
 				mlx->cnya = ft_clamp(nya, ytop[x], ybottom[x]);
 				mlx->cnyb = ft_clamp(nyb, ytop[x], ybottom[x]);
+
+				// if (mlx->now->sector_n == mlx->player->sector)
+				// {
+				// 	if (x == beginx || x == endx)
+				// 		printf("cya %d			cyb %d\n", mlx->cya, mlx->cyb);
+				// }
 
 				int ceil_t = sector->ceil_txt;
 				int floor_t = sector->floor_txt;
@@ -529,7 +535,5 @@ void	ft_draw(t_mlx *mlx)
 		}
 		++rendered_sect[mlx->now->sector_n];
 		ft_sect_obj(mlx, mlx->now->sector_n);
-		// if (mlx->now->sector_n == mlx->player->sector)
-		// 	printf("\n");
 	}
 }

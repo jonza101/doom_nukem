@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/11 15:06:15 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/15 18:20:09 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/16 18:06:36 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,8 @@ void	ft_move_player(t_mlx *mlx, double dx, double dy)
 				sector->verts[s + 1]->x, sector->verts[s + 1]->y) < 0)
 			{
 				mlx->player->sector = neighbor;
+				if (mlx->sect[neighbor]->is_finish)
+					mlx->end = 1;
 				break ;
 			}
 	}

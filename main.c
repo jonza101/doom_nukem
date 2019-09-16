@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/15 18:04:50 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/16 18:27:58 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ void ft_init_graphics(t_mlx *mlx)
 
 	ft_init_menu_font(mlx);
 	ft_init_menu_buttons(mlx);
+	ft_init_end(mlx);
 }
 
 void ft_init(t_mlx *mlx)
@@ -166,6 +167,7 @@ void ft_init(t_mlx *mlx)
 		}
 	}
 	mlx->button_i = 0;
+	mlx->end = 0;
 }
 
 int main(int argc, char **argv)
@@ -179,8 +181,6 @@ int main(int argc, char **argv)
 	mlx->data = (int *)mlx_get_data_addr(mlx->img, &mlx->bpp, &mlx->size_line, &mlx->endian);
 
 	mlx->player = (t_player *)malloc(sizeof(t_player));
-
-	mlx->shoot_p = (t_vec2 *)malloc(sizeof(t_vec2));
 
 	ft_init_graphics(mlx);
 	if (argc == 2)

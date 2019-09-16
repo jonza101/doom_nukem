@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/15 18:39:27 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/16 16:42:01 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -302,6 +302,8 @@ typedef struct		s_sector
 	short			up;
 	time_t			start_time;
 
+	short			is_finish;
+
 	int				*neighbors;
 	int				neighbors_count;
 
@@ -459,6 +461,7 @@ typedef	struct		s_mlx
 	t_img			*menu_play[4];
 	t_img			*menu_quit[4];
 	t_img			*menu_pointer[2];
+	t_img			*end_font[5];
 
 	int				hud_x;
 	short			hud_r;
@@ -529,12 +532,11 @@ typedef	struct		s_mlx
 	short			menu;
 	short			button_i;
 
+	short			end;
+
 	int				fire[36];
 	int				fire_buff[W * H * 2];
 }					t_mlx;
-
-void				ft_image(t_mlx *mlx, int x, int y, int color);
-
 
 void				ft_load_map(t_mlx *mlx, char *map_file);
 
@@ -657,6 +659,7 @@ int 				ft_mouse_move(int x, int y, t_mlx *mlx);
 void				ft_init_menu_fire(t_mlx *mlx);
 void				ft_init_menu_font(t_mlx *mlx);
 void				ft_init_menu_buttons(t_mlx *mlx);
+void				ft_init_end(t_mlx *mlx);
 
 void				ft_play(t_mlx *mlx);
 int					ft_close(int i);

@@ -6,11 +6,39 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/28 21:24:48 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/13 21:03:09 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/16 16:47:57 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doom_nukem.h"
+
+void	ft_init_end(t_mlx *mlx)
+{
+	int fd;
+	char *line;
+	char *end[5] = { "textures/m_menu/font/t.xpm", "textures/m_menu/font/_h.xpm", "textures/m_menu/font/_e.xpm",
+					"textures/m_menu/font/_n.xpm", "textures/m_menu/font/_d.xpm" };
+	int i = -1;
+	while (++i < 5)
+	{
+		fd = open(end[i], O_RDONLY);
+		int j = -1;
+		while (++j < 4)
+		{
+			get_next_line(fd, &line);
+			(j < 3) ? ft_strdel(&line) : 1;
+		}
+		char **tmp = ft_strsplit(line, ' ');
+		(!(mlx->end_font[i] = (t_img*)malloc(sizeof(t_img)))) ? ft_mem_error() : 1;
+		mlx->end_font[i]->w = ft_atoi(&tmp[0][1]);
+		mlx->end_font[i]->h = ft_atoi(tmp[1]);
+		mlx->end_font[i]->img = mlx_xpm_file_to_image(mlx->mlx, end[i], &mlx->end_font[i]->w, &mlx->end_font[i]->h);
+		mlx->end_font[i]->data = (int*)mlx_get_data_addr(mlx->end_font[i]->img, &mlx->end_font[i]->bpp, &mlx->end_font[i]->size_line, &mlx->end_font[i]->endian);
+		ft_strsplit_free(tmp);
+		close(fd);
+		ft_strdel(&line);
+	}
+}
 
 void	ft_init_menu_fire(t_mlx *mlx)
 {
