@@ -6,7 +6,7 @@
 /*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:26:57 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/16 21:52:27 by lsandor-         ###   ########.fr       */
+/*   Updated: 2019/09/16 21:59:14 by lsandor-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -275,8 +275,7 @@ void	ft_draw(t_mlx *mlx)
 			int ny2b = H / 2 + (int)(-(nyfloor + tz2 * mlx->player->yaw) * yscale2);
 
 			//	RENDER THE WALL
-			// int beginx = (!edge) ? ft_max(x1, mlx->now->sx1) : 0;
-			int beginx = ft_max(x1, mlx->now->sx1);
+			int beginx = (!edge) ? ft_max(x1, mlx->now->sx1) : 0;
 			int endx = ft_min(x2, mlx->now->sx2);
 
 			ft_scaler_init(mlx->ya_int, x1, beginx, x2, y1a, y2a);
