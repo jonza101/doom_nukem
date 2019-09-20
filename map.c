@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/20 15:38:06 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/20 18:41:47 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int		ft_find_sect_mirror_side(t_mlx *mlx, int sector, int side, int sect_to_find
 		}
 	}
 	t_sector *sect_to = mlx->sect[sect_to_find];
-	s = 0;
+	s = -1;
 	while (++s < sect_to->verts_count)
 	{
 		if (v1->x == sect_to->verts[s + 1]->x && v1->y == sect_to->verts[s + 1]->y
