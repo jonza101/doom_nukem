@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/19 19:57:41 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/20 15:38:21 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,6 +188,7 @@ void ft_init(t_mlx *mlx)
 	(!(mlx->worg2 = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
 
 	(!(mlx->pos = (t_vec3*)malloc(sizeof(t_vec3)))) ? ft_mem_error() : 1;
+	(!(mlx->shoot_p = (t_vec2*)malloc(sizeof(t_vec2)))) ? ft_mem_error() : 1;
 
 	mlx->menu = 1;
 	ft_init_menu_fire(mlx);

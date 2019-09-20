@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doom_nukem.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/16 21:28:30 by lsandor-         ###   ########.fr       */
+/*   Updated: 2019/09/20 15:40:01 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@
 #define TXT 4					//		3	-	DOOR
 #define OBJ 20
 #define WOBJ 9
-#define TRANSPARENT 4
+#define TRANSPARENT 2
 #define SKY 1
 #define MENU_IMGS_NUM 4
 #define BOOST 2

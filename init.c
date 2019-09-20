@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/28 21:24:48 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/16 16:47:57 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/20 15:40:27 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,8 +242,7 @@ void	ft_init_transparent(t_mlx *mlx)
 {
 	int fd;
 	char *line;
-	char *twall[TRANSPARENT] = { "textures/transparent/glass.xpm", "textures/transparent/bars.xpm", "textures/transparent/fence.xpm",
-								"textures/transparent/breakable_wall_hole.xpm" };
+	char *twall[TRANSPARENT] = { "textures/transparent/glass.xpm", "textures/transparent/bars.xpm" };
 	(!(mlx->trans = (t_anim_list**)malloc(sizeof(t_anim_list*) * TRANSPARENT))) ? ft_mem_error() : 1;
 	int i = -1;
 	while (++i < TRANSPARENT)
