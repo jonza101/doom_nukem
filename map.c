@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/20 18:41:47 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/20 20:35:28 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,7 +215,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 
 			if (s > 1)
 			{
-				(!(tmp_s = (t_sector**)malloc(sizeof(t_sector) * (s - 1)))) ? ft_mem_error() : 1;
+				(!(tmp_s = (t_sector**)malloc(sizeof(t_sector*) * (s - 1)))) ? ft_mem_error() : 1;
 				int j = s - 2;
 				while (j >= 0)
 				{
@@ -225,7 +225,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 					j--;
 				}
 				free(mlx->sect);
-				(!(mlx->sect = (t_sector**)malloc(sizeof(t_sector) * s))) ? ft_mem_error() : 1;
+				(!(mlx->sect = (t_sector**)malloc(sizeof(t_sector*) * s))) ? ft_mem_error() : 1;
 				j = 0;
 				while (j < s - 1)
 				{
