@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/15 15:21:01 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/15 18:44:59 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/22 17:46:25 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,8 +113,8 @@ void	ft_validate_map(t_mlx *mlx)
 	}
 	mlx->p0->x = mlx->player->pos->x;
 	mlx->p0->y = mlx->player->pos->y;
-	mlx->p1->x = mlx->p1->x + FIRE_RANGE * 10;
-	mlx->p1->y = mlx->p1->y;
+	mlx->p1->x = mlx->p0->x + FIRE_RANGE * 10;
+	mlx->p1->y = mlx->p0->y;
 	if (!ft_point_inside_check(mlx->sect[mlx->player->sector], mlx->p0, mlx->p1))
 		ft_player_sect_error();
 }
