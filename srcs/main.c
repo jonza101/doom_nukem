@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:10 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/20 15:38:21 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/24 20:47:09 by lsandor-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ void	initvolume(t_mlx *mlx)
 
 void	initsdl(t_mlx *mlx)
 {
-	SDL_Window *window;
 	t_snd *snd;
 	(!(snd = malloc(sizeof(t_snd)))) ? ft_mem_error() : 1;;
 	(!(snd->music = malloc(sizeof(t_music)))) ? ft_mem_error() : 1;;

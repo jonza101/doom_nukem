@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/20 20:35:28 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/09/24 20:53:48 by lsandor-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,11 +118,7 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 {
 	int v = 1;
 	int s = 1;
-	int t = 1;
-	int o = 1;
 	int g = 1;
-	int w = 1;
-	int seg = 1;
 	int p = 0;
 	
 	char *line;
@@ -136,13 +132,12 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 
 	t_sector **tmp_s = NULL;
 
-	t_obj *temp_obj = NULL;
 
 	t_trans *temp_trans = NULL, *trans_prev = NULL;
 	mlx->trans_list = NULL;
 	mlx->trans_count = 0;
 
-	t_wobj *temp_wobj = NULL, *wobj_last = NULL;
+	t_wobj *temp_wobj = NULL;
 	mlx->wobj_list = NULL;
 	mlx->wobj_count = 0;
 
@@ -199,7 +194,6 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 
 				verts[0]->x = (double)ft_atof(temp[2]);
 				verts[0]->y = (double)ft_atof(temp[1]);
-				int j = 0;
 				v++;
 			}
 			ft_strsplit_free(temp);
