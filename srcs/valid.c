@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/15 15:21:01 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/22 17:46:25 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/10/04 13:55:03 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,13 @@ void	ft_validate_map(t_mlx *mlx)
 	{
 		if (!ft_sect_convex_check(mlx->sect[s]))
 			ft_sect_error(s);
+
+		int n = -1;
+		while (++n < mlx->sect[s]->neighbors_count)
+		{
+			if (mlx->sect[s]->neighbors[n] < 0 || mlx->sect[s]->neighbors[n] > mlx->num_sec - 1)
+				ft_map_error();
+		}
 
 		int o = 0;
 		t_obj *obj = mlx->sect[s]->obj_list;

@@ -3,16 +3,16 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+         #
+#    By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/06/08 15:22:17 by lsandor-          #+#    #+#              #
-#    Updated: 2019/09/24 21:07:43 by lsandor-         ###   ########.fr        #
+#    Updated: 2019/10/04 13:27:41 by zjeyne-l         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = doom-nukem
 # -Wall -Wextra -Werror
-FLAGS = -g -Ofast
+FLAGS = -g
 CC = gcc
 LIBRARIES = -lft -L$(LIBFT_DIRECTORY) -L ~/.brew/lib -lSDL2-2.0.0 -L ~/.brew/lib -lSDL2_mixer-2.0.0 -lm -lpthread -lmlx -framework OpenGL -framework AppKit
 INCLUDES = -I$(HEADERS_DIRECTORY) -I$(LIBFT_HEADERS) -I ~/.brew/include
