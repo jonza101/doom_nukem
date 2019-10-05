@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/15 15:21:01 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/10/04 13:55:03 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/10/05 19:56:08 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ void	ft_validate_map(t_mlx *mlx)
 		int n = -1;
 		while (++n < mlx->sect[s]->neighbors_count)
 		{
-			if (mlx->sect[s]->neighbors[n] < 0 || mlx->sect[s]->neighbors[n] > mlx->num_sec - 1)
+			if (mlx->sect[s]->neighbors[n] < -1 || mlx->sect[s]->neighbors[n] > mlx->num_sec - 1)
 				ft_map_error();
 		}
 
