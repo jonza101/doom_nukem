@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ray.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/12 17:10:17 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/16 21:36:02 by lsandor-         ###   ########.fr       */
+/*   Updated: 2019/10/08 20:10:23 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,8 +167,8 @@ void	ft_shoot(t_mlx *mlx)
 			double dyy = mlx->shoot_p->y - py;
 			double p_dist = sqrtf(dxx * dxx + dyy * dyy);
 			double sz = p_dist * tanf(angle_z) + pz;
-			double p_sect_f = mlx->sect[mlx->player->sector]->floor;
-			double p_sect_c = mlx->sect[mlx->player->sector]->ceiling;
+			double p_sect_f = sector->floor;
+			double p_sect_c = sector->ceiling;
 
 			if (ft_shoot_obj(mlx, p_dist, mlx->now->sector_n))
 				return ;

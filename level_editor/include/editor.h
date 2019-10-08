@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsteuber <jsteuber@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/06 15:55:16 by jsteuber          #+#    #+#             */
-/*   Updated: 2019/10/07 20:25:25 by jsteuber         ###   ########.fr       */
+/*   Updated: 2019/10/08 17:35:10 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,18 +60,18 @@
 # define ICON_SIZE 50
 
 # define ST_FLOOR_HIGHT 0
-# define ST_CEIL_HIGHT 30
-# define ST_ILLUMINATION 0.75f
-# define ST_TEXTURE 0
-# define ST_FTEX 0
-# define ST_CTEX 555
+# define ST_CEIL_HIGHT 35
+# define ST_ILLUMINATION 1.0f
+# define ST_TEXTURE -1
+# define ST_FTEX -1
+# define ST_CTEX -1
 
 # define COMPRESSING 30
 # define UNIT_SIZE 0.5f
 
 # define SKY 11
 
-# define SAVEPATH "../maps/map4"
+# define SAVEPATH "../maps/default_map"
 
 # define BUFF_SIZE 100
 # define FD_STORAGE_NUM 11

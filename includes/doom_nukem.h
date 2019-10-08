@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doom_nukem.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:24:36 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/24 21:00:24 by lsandor-         ###   ########.fr       */
+/*   Updated: 2019/10/08 20:16:15 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,9 @@
 #define FOV_H (1.0 * 0.63 * H / W)
 #define FOV_V (1.0 * 0.2f)
 
-#define MAX_QUEUE 32
+#define MAX_QUEUE 64
 
-#define MAX_DRAWSEG 256
+#define MAX_DRAWSEG 512
 #define MAX_VISSPRITES 64
 #define MAX_VISWSPRITES 64
 #define MAX_WSPRITES_ON_WALL 128
@@ -72,7 +72,7 @@
 #define BOOST 2
 #define FONT 13
 
-#define FIRE_RANGE 10000
+#define FIRE_RANGE 1000000
 #define MELEE_RANGE 1
 #define INTERACT_RANGE 2.5
 #define SPEED_BOOST_DUR 30
