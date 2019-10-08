@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lsandor- <lsandor-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/08 15:25:41 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/09/24 20:53:48 by lsandor-         ###   ########.fr       */
+/*   Updated: 2019/10/08 15:48:21 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -762,13 +762,15 @@ void	ft_load_map(t_mlx *mlx, char *map_file)
 			int sect = ft_atoi(temp[1]);
 			if (sect < 0 || sect > s - 2)
 				ft_map_error();
-
+			if (!mlx->sect[sect]->is_door)
+			{
 			mlx->sect[sect]->is_door = 1;
 			mlx->sect[sect]->close = 0;
 			mlx->sect[sect]->open = 0;
 			mlx->sect[sect]->up = 0;
 			mlx->sect[sect]->start_ceiling = mlx->sect[sect]->ceiling;
 			mlx->sect[sect]->ceiling = mlx->sect[sect]->floor;
+			}
 
 			ft_strsplit_free(temp);
 		}

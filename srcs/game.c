@@ -6,7 +6,7 @@
 /*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:40:26 by zjeyne-l          #+#    #+#             */
-/*   Updated: 2019/10/03 18:42:14 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/10/08 15:48:14 by zjeyne-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	ft_check_doors(t_mlx *mlx)
 		t_sector *sector = mlx->sect[s];
 		if (sector->is_door)
 		{
-			printf("sect %d			dist %f\n", s, sector->door_dist);
+			//printf("sect %d			dist %f\n", s, sector->door_dist);
 			if (sector->open)
 			{
 				sector->ceiling += 0.75f;
@@ -37,7 +37,7 @@ void	ft_check_doors(t_mlx *mlx)
 			else if (!sector->open && !sector->close && sector->up)
 			{
 				double time_diff = difftime(time(NULL), sector->start_time);
-				printf("%d time %f\n\n", s, time_diff);
+				//printf("%d time %f\n\n", s, time_diff);
 				double h = sector->ceiling - sector->floor;
 				double h2 = h / 15;
 				if (time_diff >= DOOR_TIME - 0.85 / h2 && !(Mix_Playing(17)) && mlx->player->sector != s)
