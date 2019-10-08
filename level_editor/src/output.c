@@ -68,6 +68,7 @@ static void		record_doors(t_core *cr, int fd)
 			free(tmp);
 			ft_strcat(text, "|\n");
 			ft_putstr_fd(text, fd);
+			ft_strclr(text);
 		}
 		sec = sec->next;
 	}
@@ -91,6 +92,7 @@ static void		record_finish(t_core *cr, int fd)
 			free(tmp);
 			ft_strcat(text, "|\n");
 			ft_putstr_fd(text, fd);
+			ft_strclr(text);
 		}
 		sec = sec->next;
 	}
