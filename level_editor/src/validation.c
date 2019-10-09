@@ -6,7 +6,7 @@
 /*   By: jsteuber <jsteuber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/06 15:54:47 by jsteuber          #+#    #+#             */
-/*   Updated: 2019/10/09 16:45:25 by jsteuber         ###   ########.fr       */
+/*   Updated: 2019/10/09 16:58:14 by jsteuber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,12 @@ int		validate_map(t_core *cr)
 	char	*line;
 
 	open_gamesave(&fd);
+	if (read(fd, NULL, 0) < 0)
+	{
+		ft_putstr("Error: can't read from file\n");
+		close(fd);
+		return (1);
+	}
 	prepare_gnlstr(&cr->gnlstr[11]);
 	while (gnl_struct(&cr->gnlstr[11], fd, &line) > 0)
 	{
