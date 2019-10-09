@@ -6,7 +6,7 @@
 /*   By: jsteuber <jsteuber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/06 15:54:47 by jsteuber          #+#    #+#             */
-/*   Updated: 2019/10/09 16:39:23 by jsteuber         ###   ########.fr       */
+/*   Updated: 2019/10/09 16:45:25 by jsteuber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,11 @@ int		validate_map(t_core *cr)
 		if (ft_strstr(line, "||"))
 		{
 			ft_putstr("Error: invalid map\n");
+			end_reading(&line, fd);
 			return (1);
 		}
 		free(line);
 	}
-	free(line);
-	close(fd);
+	end_reading(&line, fd);
 	return (0);
 }
