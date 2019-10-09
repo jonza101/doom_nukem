@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zjeyne-l <zjeyne-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jsteuber <jsteuber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/06 15:55:16 by jsteuber          #+#    #+#             */
-/*   Updated: 2019/10/08 17:35:10 by zjeyne-l         ###   ########.fr       */
+/*   Updated: 2019/10/09 16:36:45 by jsteuber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@
 # define SAVEPATH "../maps/default_map"
 
 # define BUFF_SIZE 100
-# define FD_STORAGE_NUM 11
+# define FD_STORAGE_NUM 12
 
 # define STR_SMALL 20
 # define STR_MED 100
@@ -432,5 +432,6 @@ void							find_any_wall_in_sec(t_core *cr, t_wall *wall, \
 int refid, int pr2);
 void							strnew_nullcheck(char **str, int len);
 void							end_reading(char **line, int fd);
+int								validate_map(t_core *cr);
 
 #endif

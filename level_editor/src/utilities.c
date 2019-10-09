@@ -6,7 +6,7 @@
 /*   By: jsteuber <jsteuber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/06 15:54:47 by jsteuber          #+#    #+#             */
-/*   Updated: 2019/09/24 20:53:21 by jsteuber         ###   ########.fr       */
+/*   Updated: 2019/10/09 16:28:01 by jsteuber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ void		err_ex(int pr)
 		ft_putstr("Error: unexpected GNL data\n");
 	else if (pr == 2)
 		ft_putstr("Error: can't open file\n");
+	else if (pr == 3)
+		ft_putstr("Invalid map\n");
 	exit(1);
 }
 

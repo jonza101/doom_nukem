@@ -6,7 +6,7 @@
 /*   By: jsteuber <jsteuber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/06 15:54:47 by jsteuber          #+#    #+#             */
-/*   Updated: 2019/09/19 20:01:46 by jsteuber         ###   ########.fr       */
+/*   Updated: 2019/10/09 16:39:36 by jsteuber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,8 @@ void					load_map(t_core *cr)
 	cr->sec_num = 0;
 	while (cr->wlist)
 		erase_by_id(cr, 0);
+	if (validate_map(cr))
+		return ;
 	load_sectors(cr, &i);
 	load_sec_info(cr);
 	while (*cr->olist)
